@@ -1,0 +1,56 @@
+# The study contract: every rule that more than one step must agree on lives here, and
+# only here. Steps that depend on it list this file as an input, so editing it reruns
+# exactly those steps (data-pipeline content-hash checkpoints).
+#
+# Which drives to sample, and how densely, is in sample.toml. Model hyperparameters are
+# in pipeline.toml, one step per model.
+
+[data]
+# Boot SSDs share the panel with the HDDs. They are a different failure population.
+ssd_model_pattern = 'SSD|^CT\d+MX|DELLBOSS|WDS\d|SA510|ZA\d+(?:CM|NM|GM)|MTFD|SSDSC|Micron'
+
+[split]
+# Drives are split by a stable sha256 bucket of the serial number (0-99), so no drive is in
+# more than one split. On top of that the split is temporal: train/val rows stop at
+# train_end, and test snapshots start at test_start.
+train_buckets = [0, 70]   # [lo, hi)
+val_buckets = [70, 80]    # early stopping and alert-threshold selection
+test_buckets = [80, 100]
+train_end = "2023-12-31"
+test_start = "2024-01-01"
+
+[label]
+# Discrete-time survival: the future after each snapshot is cut into these bins (days).
+# The hazard model predicts P(fail in bin | alive at bin start). Survival is the product.
+bin_edges = [0, 7, 14, 30, 60, 90, 180, 365]
+# Horizons reported by evaluation. Each must be a bin edge.
+horizons = [7, 30, 90, 180, 365]
+# The yes/no baseline classifier answers "fails within this many days?".
+binary_horizon = 30
+
+[features]
+# SMART attributes read from the panel, as raw values. VARCHAR columns are cast to DOUBLE.
+raw = [4, 5, 9, 10, 12, 18, 22, 23, 24, 183, 184, 187, 188, 189, 190, 191, 192, 193,
+       194, 196, 197, 198, 199, 200, 240, 241, 242]
+# Attributes whose raw value is vendor-packed: the normalized value is used instead.
+normalized = [1, 3, 5, 7, 187, 197, 198]
+# Columns that get "change over the last N days" features (date-keyed windows, not rows).
+trend = ["smart_1_normalized", "smart_5_raw", "smart_7_normalized", "smart_10_raw",
+         "smart_183_raw", "smart_184_raw", "smart_187_raw", "smart_188_raw", "smart_189_raw",
+         "smart_193_raw", "smart_197_raw", "smart_198_raw", "smart_199_raw"]
+trend_windows = [7, 30]
+# The most common drive models (counted over train drives only) become categorical
+# levels. Everything else is "other".
+top_models = 30
+# The counters behind the classic "any reallocated/pending/uncorrectable sector" rule.
+# Used by the rule baseline.
+critical_counters = ["smart_5_raw", "smart_187_raw", "smart_188_raw", "smart_197_raw",
+                     "smart_198_raw"]
+
+[evaluation]
+# The alert threshold is chosen on validation drives so that this fraction of healthy
+# drive-days raises an alert (a false-alarm budget). It is never tuned on test.
+alert_false_alarm_rate = 0.01
+# Drive-level (cluster) bootstrap for confidence intervals.
+bootstrap_rounds = 200
+bootstrap_seed = 20261021

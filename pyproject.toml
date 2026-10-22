@@ -1,0 +1,29 @@
+[project]
+name = "hard-drive-analysis"
+version = "3.0.0"
+description = "Can smartctl (SMART) metrics predict how much life a hard drive has left?"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "data-pipeline",
+    "duckdb>=1.5",
+    "lightgbm>=4.6",
+    "matplotlib>=3.10",
+    "numpy>=2.2",
+    "pandas>=2.2",
+    "pyarrow>=20",
+    "scikit-learn>=1.6",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+data-pipeline = { path = "../data-pipeline", editable = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["steps"]
