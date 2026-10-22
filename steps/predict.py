@@ -21,23 +21,19 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from common import Progress, load_snapshots, load_study
-from model import load_booster
-from survival import failure_probability, hazards_to_survival, life_quantile, restricted_mean_life
+from model import load_booster, raw_hazard_logits
+from survival import (
+    apply_platt, failure_probability, hazards_to_survival, life_quantile, restricted_mean_life,
+)
 
 RULE = "rule_counters"
 CHUNK = 200_000
 
 
-def _hazard_columns(booster, X: np.ndarray, edges: list[int], horizons: list[int],
-                    name: str) -> dict[str, np.ndarray]:
-    n = X.shape[0]
-    K = len(edges) - 1
-    h = np.empty((n, K))
-    for lo in range(0, n, CHUNK):
-        part = X[lo:lo + CHUNK]
-        for k in range(K):
-            with_bin = np.hstack([part, np.full((part.shape[0], 1), edges[k], np.float32)])
-            h[lo:lo + CHUNK, k] = booster.predict(with_bin)
+def _hazard_columns(booster, calibration, X: np.ndarray, edges: list[int],
+                    horizons: list[int], name: str) -> dict[str, np.ndarray]:
+    z = raw_hazard_logits(booster, X, edges, CHUNK)
+    h = np.column_stack([apply_platt(z[:, k], c) for k, c in enumerate(calibration)])
     S = hazards_to_survival(h)
     cols = {f"{name}__p{H}": failure_probability(S, edges, H) for H in horizons}
     cols[f"{name}__median_days"] = life_quantile(S, edges, 0.5)
@@ -72,11 +68,12 @@ def predict(ctx):
             if info["bin_edges"] != edges:
                 raise ValueError(f"{name} was trained with bins {info['bin_edges']}, "
                                  f"study has {edges}")
-            out.update(_hazard_columns(booster, Xm, edges, horizons, name))
+            out.update(_hazard_columns(booster, info["calibration"], Xm, edges, horizons, name))
         else:
             H = info["binary_horizon"]
-            out[f"{name}__p{H}"] = np.concatenate(
-                [booster.predict(Xm[lo:lo + CHUNK]) for lo in range(0, len(Xm), CHUNK)])
+            z = np.concatenate([booster.predict(Xm[lo:lo + CHUNK], raw_score=True)
+                                for lo in range(0, len(Xm), CHUNK)])
+            out[f"{name}__p{H}"] = apply_platt(z, info["calibration"][0])
         log(f"scored {name}")
 
     counters = study["features"]["critical_counters"]

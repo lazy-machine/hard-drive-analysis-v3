@@ -189,28 +189,40 @@ def report(ctx):
         lines.append(f"| {_label(name)} | {_fmt(c)} |")
 
     lines += ["", "## When will it fail? Remaining-life estimates", "",
-              "From each snapshot the survival model gives a curve. The median remaining "
-              "life is the day the curve crosses 50%, and the 10-90% interval is where the "
-              "failure probability goes from 10% to 90%. Beyond 365 days the model has no "
-              "bins, so the answer is \"more than a year\".", "",
+              "From each snapshot the survival model gives a curve: the day by which the "
+              "failure probability reaches 10%, 50% (the median remaining life) and 90%. "
+              "Beyond 365 days the model has no bins, so the answer is \"more than a year\".",
+              "", "**Are the predicted days right?** Among snapshots whose predicted day falls "
+              "within a year, the share that actually failed by that day should be close to "
+              "the target:", "",
+              "| model | failed by predicted 10% day | failed by predicted median | "
+              "failed by predicted 90% day |", "|---|---|---|---|"]
+    for r in metrics["life"]:
+        cells = []
+        for q in ("0.1", "0.5", "0.9"):
+            c = r["quantile_calibration"][q]
+            cells.append(f"{_pct(c['share_failed_by_predicted_day'])} (target "
+                         f"{_pct(c['target'], 0)}, {c['snapshots']} snapshots)")
+        lines.append(f"| {_label(r['model'])} | " + " | ".join(cells) + " |")
+    lines += ["", "**How early is a failure visible?** Snapshots of drives that do fail within "
+              "a year, by how far away the failure actually was. A median within a year means "
+              "the model already expects the drive to die within a year:", "",
               "| model | failing snapshots: median within a year | abs. error of median (days) "
-              "| actual day inside 10-90% interval | healthy snapshots: median beyond a year |",
-              "|---|---|---|---|---|"]
+              "| healthy snapshots: median beyond a year |", "|---|---|---|---|"]
     for r in metrics["life"]:
         lines.append(
             f"| {_label(r['model'])} | {_pct(r['share_median_within_horizon'])} | "
-            f"{_fmt(r['median_abs_error_days'], 0)} | {_pct(r['interval_q10_q90_coverage'])} | "
+            f"{_fmt(r['median_abs_error_days'], 0)} | "
             f"{_pct(r['healthy_share_median_beyond_horizon'])} |")
     ref_life = life_table[life_table["model"] == ref]
     if not ref_life.empty:
         lines += ["", f"By actual time to failure ({_label(ref)}):", "",
                   "| actual days to failure | snapshots | median predicted within a year "
-                  "| median of predicted median (days) | inside 10-90% interval |",
-                  "|---|---|---|---|---|"]
+                  "| median of predicted median (days) |", "|---|---|---|---|"]
         for _, r in ref_life.iterrows():
             lines.append(f"| {r['actual_days_to_failure']} | {r['snapshots']} | "
                          f"{_pct(r['share_median_within_horizon'])} | "
-                         f"{_days(r['median_of_predicted_median'])} | {_pct(r['coverage_q10_q90'])} |")
+                         f"{_days(r['median_of_predicted_median'])} |")
     lines += ["", "![remaining life](remaining_life.png)", "",
               "## Early warning", "",
               "The alert threshold is set on validation drives so that "
@@ -236,6 +248,25 @@ def report(ctx):
               "Also see `build/explore/km_by_counters.png` and `build/explore/models.csv`.", ""]
     (out / "report.md").write_text("\n".join(lines))
     return {"lines": len(lines)}
+
+
+def _timing_verdict(qc: dict) -> str:
+    """One sentence on whether predicted failure days are early, late or about right."""
+    off = []
+    for c in qc.values():
+        share, target = c["share_failed_by_predicted_day"], c["target"]
+        if share is not None and c["snapshots"] >= 30:
+            off.append((share - target) / max(target, 1 - target))
+    if not off:
+        return "Too few snapshots with a predicted day within a year to judge timing."
+    mean = float(np.mean(off))
+    if abs(mean) <= 0.15:
+        return "When the model names a day within the next year, it is about right on average:"
+    if mean < 0:
+        return ("When the model names a day within the next year, it is too pessimistic "
+                "(drives fail later than predicted):")
+    return ("When the model names a day within the next year, it is too optimistic (drives "
+            "fail earlier than predicted):")
 
 
 def _answer(disc, gains, metrics, ref) -> list[str]:
@@ -267,14 +298,17 @@ def _answer(disc, gains, metrics, ref) -> list[str]:
             "any useful recall many alerts are false (see Early warning).")
     life = next((r for r in metrics["life"] if r["model"] == ref), None)
     if life:
+        qc = life["quantile_calibration"]
         out.append(
-            f"- **When will it probably fail?** For drives that do fail within a year, the "
-            f"predicted median remaining life is within a year for "
-            f"{_pct(life['share_median_within_horizon'])} of snapshots, and the actual "
-            f"failure day falls inside the predicted 10-90% interval "
-            f"{_pct(life['interval_q10_q90_coverage'])} of the time. For healthy drives the "
-            f"model says \"more than a year\" {_pct(life['healthy_share_median_beyond_horizon'])} "
-            "of the time. A remaining-life estimate is a wide probability range, not a date.")
+            f"- **When will it probably fail?** {_timing_verdict(qc)} "
+            f"{_pct(qc['0.1']['share_failed_by_predicted_day'])} of drives failed by their "
+            f"predicted 10% day, {_pct(qc['0.5']['share_failed_by_predicted_day'])} by the "
+            f"predicted median and {_pct(qc['0.9']['share_failed_by_predicted_day'])} by the "
+            "predicted 90% day (targets 10/50/90%). For drives that do fail within a year it "
+            f"names a median within a year only {_pct(life['share_median_within_horizon'])} of "
+            "the time: most failures are not visible in SMART long in advance. For healthy "
+            f"drives it says \"more than a year\" "
+            f"{_pct(life['healthy_share_median_beyond_horizon'])} of the time.")
     rule = gains[gains["other"] == "rule_counters"] if not gains.empty else gains
     if not rule.empty:
         r = rule.sort_values("horizon").iloc[0]

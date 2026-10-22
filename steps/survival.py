@@ -77,6 +77,34 @@ class ExpandedSequence(lgb.Sequence):
         return np.hstack([rows, self.bin_start[key][:, None]])
 
 
+def fit_platt(z: np.ndarray, y: np.ndarray, w: np.ndarray) -> list[float]:
+    """Weighted logistic fit of y on raw logit z: returns (a, b), p = sigmoid(a + b z).
+
+    Used to recalibrate a model trained with tempered weights back to true
+    (inverse-probability weighted) probabilities. Rank order is unchanged when b > 0.
+    """
+    from scipy.optimize import minimize
+
+    z = np.asarray(z, dtype=float)
+    y = np.asarray(y, dtype=float)
+    w = np.asarray(w, dtype=float) / np.mean(w)
+
+    def nll(c):
+        t = c[0] + c[1] * z
+        s = 1.0 / (1.0 + np.exp(-t))
+        return np.sum(w * (np.logaddexp(0.0, t) - y * t)), np.array(
+            [np.sum(w * (s - y)), np.sum(w * (s - y) * z)])
+
+    res = minimize(nll, [0.0, 1.0], jac=True, method="L-BFGS-B")
+    if not res.success:
+        raise RuntimeError(f"calibration fit failed: {res.message}")
+    return [float(res.x[0]), float(res.x[1])]
+
+
+def apply_platt(z: np.ndarray, coef: list[float]) -> np.ndarray:
+    return 1.0 / (1.0 + np.exp(-(coef[0] + coef[1] * np.asarray(z))))
+
+
 def hazards_to_survival(h: np.ndarray) -> np.ndarray:
     """S at each bin end edge, shape (n, K): S[:, k] = prod_{j<=k} (1 - h_j)."""
     return np.cumprod(1.0 - np.clip(h, 0.0, 1.0), axis=1)

@@ -81,3 +81,15 @@ def test_bootstrap_resamples_whole_drives():
         assert counts[0] == counts[1] == counts[2]
         assert counts[3] == counts[4]
         assert counts[[0, 3, 5]].sum() == 3
+
+
+def test_quantile_calibration_counts_only_known_outcomes():
+    from evaluate import quantile_calibration
+
+    d = np.array([3, 20, 5, 40, 9])
+    e = np.array([1, 1, 0, 0, 0])
+    t = np.array([10.0, 10.0, 10.0, 10.0, np.inf])
+    # failed before day 10: row 0. survived past it: row 3. unknown: row 2 (censored at 5),
+    # row 1 failed after day 10 -> survived past it. row 4 has no finite prediction.
+    share, n = quantile_calibration(d, e, np.ones(5), t)
+    assert n == 3 and np.isclose(share, 1 / 3)

@@ -72,3 +72,13 @@ def test_quantile_when_survival_is_flat():
     S = hazards_to_survival(np.zeros((2, 3)))
     assert np.isinf(life_quantile(S, EDGES, 0.5)).all()
     assert np.allclose(restricted_mean_life(S, EDGES), 30)
+
+
+def test_platt_recovers_known_coefficients():
+    from survival import apply_platt, fit_platt
+
+    rng = np.random.default_rng(3)
+    z = rng.normal(-3, 1.5, 200_000)
+    y = (rng.random(z.size) < apply_platt(z, [-0.7, 1.4])).astype(int)
+    a, b = fit_platt(z, y, np.ones(z.size))
+    assert abs(a + 0.7) < 0.08 and abs(b - 1.4) < 0.05

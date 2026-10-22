@@ -204,8 +204,24 @@ def alerting(val, test, models, horizon, rate) -> tuple[list[dict], pd.DataFrame
     return summary, pd.DataFrame(curves)
 
 
+def quantile_calibration(d, e, w, t) -> tuple[float | None, int]:
+    """Weighted share of snapshots that failed before their predicted day t.
+
+    Only snapshots with a finite t and a known outcome at t count: failed before t, or
+    observed alive past t. For a calibrated q-quantile the share should be about q.
+    """
+    finite = np.isfinite(t)
+    failed = finite & (e == 1) & (d < t)
+    survived = finite & (d >= np.ceil(t))
+    known = failed | survived
+    if not known.any():
+        return None, 0
+    return float(np.sum(w[failed]) / np.sum(w[known])), int(known.sum())
+
+
 def life(test, models, last_edge) -> tuple[list[dict], pd.DataFrame]:
-    """Remaining-life estimates vs the actual time to failure (failing test drives)."""
+    """Remaining-life estimates: are the predicted days right, and how early is a failure
+    visible?"""
     summary, table = [], []
     d, e, w = (test[c].to_numpy() for c in ("duration_days", "event", "weight"))
     status = known_status(d, e, last_edge)
@@ -222,8 +238,13 @@ def life(test, models, last_edge) -> tuple[list[dict], pd.DataFrame]:
         def wmean(x, m):
             return float(np.sum(w[m] * x[m]) / np.sum(w[m])) if m.any() else None
 
+        qcal = {}
+        for q, col in ((0.1, q10), (0.5, med), (0.9, q90)):
+            share, n = quantile_calibration(d, e, w, col)
+            qcal[str(q)] = {"target": q, "share_failed_by_predicted_day": share, "snapshots": n}
         summary.append({
             "model": name,
+            "quantile_calibration": qcal,
             "failing_snapshots": int(fails.sum()),
             "share_median_within_horizon": wmean(finite.astype(float), fails),
             "median_abs_error_days": wmean(np.abs(np.where(finite, med, 0) - d), fails & finite),
