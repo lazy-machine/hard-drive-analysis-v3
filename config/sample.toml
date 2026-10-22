@@ -1,0 +1,37 @@
+# Which drives and snapshots the run uses. Pick a scale by setting `scale`.
+#
+# Sampling is stratified and weighted, so every scale estimates the same real-world
+# quantities (with more noise at smaller scales):
+#   - a drive that fails at some point is kept with probability failing_fraction,
+#     every other drive with probability healthy_fraction (stable hash of the serial,
+#     independent of the split hash). Each kept drive carries weight 1/fraction.
+#   - snapshots are taken every stride_days days (drive-specific offset), weight
+#     stride_days. In the dense_days before a failure every day is kept, weight 1.
+#
+# Changing the scale reruns cohort and everything downstream. drive_index (the
+# full-panel scan) does not read this file, so it stays cached.
+
+scale = "small"
+
+[scales.small]
+# Runs in a few minutes on a 15 GB laptop once drive_index is cached.
+failing_fraction = 0.04
+healthy_fraction = 0.004
+stride_days = 7
+dense_days = 60
+
+[scales.medium]
+# Tens of minutes on a 15 GB box. Roughly 5k failing and 9k healthy drives.
+failing_fraction = 0.2
+healthy_fraction = 0.02
+stride_days = 7
+dense_days = 90
+
+[scales.full]
+# Every failing HDD plus a 5% weighted sample of healthy ones. Sized for a 31 GB box
+# (see README "Scales and hardware"). Healthy drives are subsampled even here: the
+# full daily panel expanded into survival rows would need several hundred GB.
+failing_fraction = 1.0
+healthy_fraction = 0.05
+stride_days = 14
+dense_days = 90

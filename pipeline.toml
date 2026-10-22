@@ -1,0 +1,144 @@
+# hard-drive-analysis v3: can smartctl (SMART) metrics predict how much life a hard drive
+# has left, and when it will probably fail?
+#
+#   uv run data-pipeline            run whatever is out of date
+#   uv run data-pipeline -n         show what would run, and why
+#
+# Shared rules: config/study.toml. Scale (small/medium/full): config/sample.toml.
+# Models: one train_* step each. The predict step discovers them from its inputs.
+
+[pipeline]
+name = "hard-drive-analysis"
+python_path = ["steps"]
+state_dir = "build/.pipeline"
+
+# -- data --------------------------------------------------------------------------------
+
+[[steps]]
+name = "drive_index"
+description = "One row per drive: model, capacity, observed span, first failure (full-panel scan)"
+function = "drives:drive_index"
+inputs = { panel = "dataset/dataset.parquet" }
+outputs = { drives = "build/drives.parquet" }
+params = { chunk_months = 1 }
+requires = ["duckdb>=2.0"]
+watch = ["steps/common.py"]
+
+[[steps]]
+name = "cohort"
+description = "HDDs only, stable drive split, stratified weighted sample"
+function = "drives:cohort"
+inputs = { drives = "build/drives.parquet", study = "config/study.toml", sample = "config/sample.toml" }
+outputs = { cohort = "build/cohort.parquet", summary = "build/cohort-summary.json" }
+requires = ["pandas>=2.2", "pyarrow"]
+watch = ["steps/common.py"]
+
+[[steps]]
+name = "extract"
+description = "The cohort's daily rows: curated SMART columns, deduplicated, cut at first failure"
+function = "panel:extract"
+inputs = { panel = "dataset/dataset.parquet", cohort = "build/cohort.parquet", study = "config/study.toml" }
+outputs = { panel_dir = "build/panel" }
+params = { chunk_months = 1, batches = 8 }
+requires = ["duckdb>=2.0", "pandas>=2.2"]
+watch = ["steps/common.py"]
+
+[[steps]]
+name = "snapshots"
+description = "Sampled snapshots: date-keyed trend features and right-censored survival labels"
+function = "panel:snapshots"
+inputs = { panel_dir = "build/panel", cohort = "build/cohort.parquet", study = "config/study.toml", sample = "config/sample.toml" }
+outputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json" }
+requires = ["duckdb>=2.0", "pandas>=2.2"]
+watch = ["steps/common.py"]
+
+[[steps]]
+name = "verify"
+description = "Pre-training gate: split, temporal, label, weight and schema invariants"
+function = "verify:verify"
+inputs = { cohort = "build/cohort.parquet", snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml", sample = "config/sample.toml" }
+outputs = { report = "build/verify-report.json" }
+requires = ["duckdb>=2.0", "pandas>=2.2"]
+watch = ["steps/common.py", "steps/drives.py", "steps/panel.py"]
+
+[[steps]]
+name = "explore"
+description = "Failure rates per model, single-feature signal, correlations, survival by counters"
+function = "explore:explore"
+inputs = { drives = "build/drives.parquet", snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { dir = "build/explore" }
+depends_on = ["verify"]
+requires = ["matplotlib", "pandas>=2.2"]
+watch = ["steps/common.py", "steps/metrics.py", "steps/survival.py"]
+critical = false
+
+# -- models --------------------------------------------------------------------------------
+# kind = "hazard": discrete-time survival model -> a survival curve per snapshot.
+# kind = "binary": fails within study.label.binary_horizon days? (v2-style baseline)
+# features = "all" | "context" | "smart" (groups in build/feature-schema.json)
+
+[[steps]]
+name = "train_hazard_smart"
+description = "Survival model on SMART + context features (the model under test)"
+function = "model:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/hazard_smart.txt", meta = "build/models/hazard_smart.json" }
+depends_on = ["verify"]
+params = { kind = "hazard", features = "all", seed = 42, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+requires = ["lightgbm>=4.6", "numpy"]
+watch = ["steps/common.py", "steps/survival.py"]
+timeout = 21600
+
+[[steps]]
+name = "train_hazard_nosmart"
+description = "Ablation: same survival model without SMART (model, capacity, time in service)"
+function = "model:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/hazard_nosmart.txt", meta = "build/models/hazard_nosmart.json" }
+depends_on = ["verify"]
+params = { kind = "hazard", features = "context", seed = 42, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 1.0, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+requires = ["lightgbm>=4.6", "numpy"]
+watch = ["steps/common.py", "steps/survival.py"]
+timeout = 21600
+
+[[steps]]
+name = "train_binary_30d"
+description = "Baseline: fails-within-30-days classifier on SMART + context"
+function = "model:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/binary_30d.txt", meta = "build/models/binary_30d.json" }
+depends_on = ["verify"]
+params = { kind = "binary", features = "all", seed = 42, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+requires = ["lightgbm>=4.6", "numpy"]
+watch = ["steps/common.py", "steps/survival.py"]
+timeout = 21600
+
+# -- evaluation ------------------------------------------------------------------------------
+
+[[steps]]
+name = "predict"
+description = "Score validation and test snapshots with every model and the rule baseline"
+function = "predict:predict"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml", model_hazard_smart = "build/models/hazard_smart.txt", meta_hazard_smart = "build/models/hazard_smart.json", model_hazard_nosmart = "build/models/hazard_nosmart.txt", meta_hazard_nosmart = "build/models/hazard_nosmart.json", model_binary_30d = "build/models/binary_30d.txt", meta_binary_30d = "build/models/binary_30d.json" }
+outputs = { predictions = "build/predictions.parquet" }
+requires = ["lightgbm>=4.6", "pandas>=2.2", "pyarrow"]
+watch = ["steps/common.py", "steps/model.py", "steps/survival.py"]
+
+[[steps]]
+name = "evaluate"
+description = "Weighted, censoring-aware metrics with drive-level bootstrap intervals"
+function = "evaluate:evaluate"
+inputs = { predictions = "build/predictions.parquet", study = "config/study.toml" }
+outputs = { metrics = "build/metrics.json", calibration = "build/calibration.csv", detection = "build/detection.csv", life = "build/life.csv" }
+params = { reference = "hazard_smart", concordance_max_rows = 300000 }
+requires = ["numpy", "pandas>=2.2"]
+watch = ["steps/common.py", "steps/metrics.py", "steps/survival.py"]
+
+[[steps]]
+name = "report"
+description = "Plain-language answer with figures: build/report/report.md"
+function = "report:report"
+inputs = { metrics = "build/metrics.json", calibration = "build/calibration.csv", detection = "build/detection.csv", life = "build/life.csv", predictions = "build/predictions.parquet", cohort_summary = "build/cohort-summary.json", verify = "build/verify-report.json", explore = "build/explore", meta_hazard_smart = "build/models/hazard_smart.json" }
+outputs = { dir = "build/report" }
+requires = ["matplotlib", "pandas>=2.2"]
+critical = false
