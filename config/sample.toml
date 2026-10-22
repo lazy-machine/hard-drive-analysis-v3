@@ -11,7 +11,7 @@
 # Changing the scale reruns cohort and everything downstream. drive_index (the
 # full-panel scan) does not read this file, so it stays cached.
 
-scale = "small"
+scale = "medium"
 
 [scales.small]
 # Runs in a few minutes on a 15 GB laptop once drive_index is cached.
@@ -28,10 +28,11 @@ stride_days = 7
 dense_days = 90
 
 [scales.full]
-# Every failing HDD plus a 5% weighted sample of healthy ones. Sized for a 31 GB box
-# (see README "Scales and hardware"). Healthy drives are subsampled even here: the
-# full daily panel expanded into survival rows would need several hundred GB.
+# Every failing HDD plus a 10% weighted sample of healthy ones. Projected from the drive
+# index: ~9.3M train+val snapshots, ~58M survival rows, ~18.5 GB peak while training. Sized
+# for the 31 GB machine in info/. Healthy drives are subsampled even here: the full daily
+# panel expanded into survival rows would need several hundred GB.
 failing_fraction = 1.0
-healthy_fraction = 0.05
-stride_days = 14
+healthy_fraction = 0.1
+stride_days = 7
 dense_days = 90

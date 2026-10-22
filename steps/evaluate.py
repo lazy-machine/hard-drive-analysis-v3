@@ -165,6 +165,26 @@ def calibration(test, models, horizons, groups=10) -> pd.DataFrame:
     return pd.DataFrame(out)
 
 
+def calibration_in_the_large(preds, models, horizons) -> list[dict]:
+    """Mean predicted vs Kaplan-Meier observed risk per split and calendar year.
+
+    Validation drives share the training era; test is 2024+. If validation is calibrated
+    but test years are not, failure rates moved over time (drift), not the model.
+    """
+    rows = []
+    year = pd.to_datetime(preds["date"]).dt.year
+    for (split, yr), g in preds.groupby([preds["split"], year]):
+        d, e, w = (g[c].to_numpy() for c in ("duration_days", "event", "weight"))
+        for name, info in models.items():
+            for H in info["horizons"] if info["kind"] != "rule" else []:
+                if H in horizons:
+                    rows.append({"split": split, "year": int(yr), "model": name, "horizon": H,
+                                 "snapshots": len(g),
+                                 "predicted": float(np.average(g[f"{name}__p{H}"], weights=w)),
+                                 "observed_km": km_failure(d, e, w, H)})
+    return rows
+
+
 def alerting(val, test, models, horizon, rate) -> tuple[list[dict], pd.DataFrame]:
     """Alert threshold from validation false-alarm budget, judged on test."""
     summary, curves = [], []
@@ -310,6 +330,7 @@ def evaluate(ctx):
         "concordance": conc,
         "concordance_rows": len(sample),
         "alerting": alerts,
+        "calibration_in_the_large": calibration_in_the_large(preds, models, label["horizons"]),
         "life": life_summary,
     })
     H = label["binary_horizon"]

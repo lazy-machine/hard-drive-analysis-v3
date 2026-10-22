@@ -19,7 +19,9 @@ something surprises you, and close it with how it was verified.
   (`info/hwspec-archmachine-20261021.md`) but has only been estimated, not run. Training
   checks available memory first and stops with a message naming the knobs to turn
   (`healthy_fraction`, `stride_days`). Run it there with `tail -f build/logs/*.log` and
-  record the timings here.
+  record the timings here. Projection: ~9.3M train+val snapshots, ~58M survival rows,
+  ~18.5 GB peak in training. If `snapshots` runs short of memory, raise `batches` on
+  `extract` in `pipeline.toml` (each batch is processed separately).
 
 ### 2. A single GROUP BY over the whole panel spills tens of GB
 - **Tags:** SLOW, CONFUSE
@@ -60,9 +62,27 @@ something surprises you, and close it with how it was verified.
 - **Detail:** drives that leave the panel without a failure row are censored. If
   Backblaze retires drives *because* they look unhealthy, the model sees fewer
   failures than really happen, and risk is underestimated. The data can't confirm or
-  rule this out.
+  rule this out. If retirement became more aggressive over time, observed failures in
+  later years fall below what a model trained on earlier years expects, which matches
+  the drift in #9.
 
-### 8. The model category list depends on the sampled train drives
+### 8. Full inverse-probability weights starve training
+- **Tags:** CONFUSE
+- **Status:** fixed (`weight_power = 0.5` + per-bin calibration, METHODOLOGY §4)
+- **Detail:** with the true weights the SMART model stopped at iteration 34 and had a
+  *worse* validation loss than the no-SMART model. Its 1-year predictions for the
+  riskiest 1% were ~100% against ~46% observed. Verified on validation drives only
+  (test untouched). If you change the sampling fractions, recheck `weight_power` there.
+
+### 9. Test-period drift: predicted risk too high in 2024-2025
+- **Tags:** LIMIT, OPEN
+- **Detail:** calibration over time (report): validation years miss in both directions
+  with no trend, while test is over-predicted by 1.25x (2024) and 1.8x (2025). The test
+  false-alarm rate is 1.8% against a 1% budget for the same reason. Possible causes:
+  retirement of risky drives (#7), fleet changes. Next step: recalibrate on the most
+  recent pre-test year, or add a rolling-origin evaluation.
+
+### 10. The model category list depends on the sampled train drives
 - **Tags:** FRAGILE
 - **Detail:** the top-30 drive models are counted over *sampled* train drives, so a
   different scale can give a slightly different category list (by design: no test
