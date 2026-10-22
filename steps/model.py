@@ -7,7 +7,14 @@ One pipeline step per model, all calling `train` with different params:
 - kind = "binary": the v2-style "fails within H days?" classifier, trained only on
   snapshots whose status at H is known (a censored snapshot is not a negative).
 
-Early stopping uses the validation *drives* (drive-grouped), never the test split.
+Weights: training uses inverse-probability weights raised to `weight_power`. Full weights
+(power 1) make the effective sample tiny: healthy drive-days weigh ~70x a failure row at
+the small scale, and the model barely moves off the base rate before early stopping.
+Tempering them improves ranking. The probabilities are then put back on the real scale by
+a Platt fit per hazard bin on the validation drives, using the *true* weights. That fit
+also fixes the over-confidence that compounding hazards produce at long horizons.
+
+Early stopping and calibration use the validation *drives* (drive-grouped), never test.
 """
 
 from __future__ import annotations
@@ -19,7 +26,7 @@ import lightgbm as lgb
 import numpy as np
 
 from common import Progress, available_memory, load_snapshots, load_study, write_json
-from survival import ExpandedSequence, expand, known_status
+from survival import ExpandedSequence, expand, fit_platt, known_status
 
 BASE_PARAMS = {
     "objective": "binary",
@@ -51,36 +58,47 @@ def _check_memory(n_rows: int, n_features: int, X_bytes: int, log) -> None:
             "is available. Lower healthy_fraction or raise stride_days in config/sample.toml.")
 
 
-def _datasets(kind, meta_tr, X_tr, meta_va, X_va, features, categorical, study):
+def _rows(kind, meta, X, study):
+    """Training rows for one split: (data, label, true weight, bin per row or None)."""
     edges = study["label"]["bin_edges"]
-    names = list(features)
+    d, e, w = (meta[c].to_numpy() for c in ("duration_days", "event", "weight"))
     if kind == "hazard":
-        names.append("bin_start")
-        built = []
-        for meta, X in ((meta_tr, X_tr), (meta_va, X_va)):
-            idx, bins, y, w = expand(meta["duration_days"].to_numpy(), meta["event"].to_numpy(),
-                                     meta["weight"].to_numpy(), edges)
-            start = np.asarray(edges)[bins]
-            built.append((ExpandedSequence(X, idx, start), y, w))
-    elif kind == "binary":
-        horizon = study["label"]["binary_horizon"]
-        built = []
-        for meta, X in ((meta_tr, X_tr), (meta_va, X_va)):
-            status = known_status(meta["duration_days"].to_numpy(), meta["event"].to_numpy(),
-                                  horizon)
-            keep = status >= 0
-            built.append((X[keep], status[keep], meta["weight"].to_numpy()[keep]))
-    else:
-        raise ValueError(f"unknown model kind '{kind}'")
+        idx, bins, y, w_rows = expand(d, e, w, edges)
+        return ExpandedSequence(X, idx, np.asarray(edges)[bins]), y, w_rows, bins
+    if kind == "binary":
+        status = known_status(d, e, study["label"]["binary_horizon"])
+        keep = status >= 0
+        return X[keep], status[keep], w[keep], None
+    raise ValueError(f"unknown model kind '{kind}'")
 
-    (seq_tr, y_tr, w_tr), (seq_va, y_va, w_va) = built
-    train_ds = lgb.Dataset(seq_tr, label=y_tr, weight=w_tr, feature_name=names,
-                           categorical_feature=categorical, free_raw_data=True)
-    valid_ds = lgb.Dataset(seq_va, label=y_va, weight=w_va, reference=train_ds,
-                           free_raw_data=True)
-    stats = {"train_rows": int(len(y_tr)), "train_events": int(y_tr.sum()),
-             "val_rows": int(len(y_va)), "val_events": int(y_va.sum())}
-    return train_ds, valid_ds, names, stats
+
+def raw_hazard_logits(booster: lgb.Booster, X: np.ndarray, edges: list[int],
+                      chunk: int = 200_000) -> np.ndarray:
+    """Uncalibrated logit of the hazard in every bin, shape (n, bins)."""
+    K = len(edges) - 1
+    z = np.empty((X.shape[0], K))
+    for lo in range(0, X.shape[0], chunk):
+        part = X[lo:lo + chunk]
+        for k in range(K):
+            with_bin = np.hstack([part, np.full((part.shape[0], 1), edges[k], np.float32)])
+            z[lo:lo + chunk, k] = booster.predict(with_bin, raw_score=True)
+    return z
+
+
+def calibrate(booster, kind, meta_va, X_va, study) -> list[list[float]]:
+    """Platt coefficients per hazard bin (or one pair for binary), fitted on validation
+    drives with the true inverse-probability weights."""
+    data, y, w, bins = _rows(kind, meta_va, X_va, study)
+    if kind == "binary":
+        return [fit_platt(booster.predict(data, raw_score=True), y, w)]
+    z = raw_hazard_logits(booster, X_va, study["label"]["bin_edges"])
+    coefs = []
+    for k in range(z.shape[1]):
+        m = bins == k
+        if y[m].sum() == 0:
+            raise ValueError(f"no validation failure in bin {k}: cannot calibrate it")
+        coefs.append(fit_platt(z[data.idx[m], k], y[m], w[m]))
+    return coefs
 
 
 def train(ctx):
@@ -101,8 +119,16 @@ def train(ctx):
     n_bins = len(study["label"]["bin_edges"]) - 1 if p["kind"] == "hazard" else 1
     _check_memory((len(meta_tr) + len(meta_va)) * n_bins, len(features),
                   X_tr.nbytes + X_va.nbytes, log)
-    train_ds, valid_ds, names, stats = _datasets(
-        p["kind"], meta_tr, X_tr, meta_va, X_va, features, categorical, study)
+    names = features + (["bin_start"] if p["kind"] == "hazard" else [])
+    power = p.get("weight_power", 1.0)
+    data_tr, y_tr, w_tr, _ = _rows(p["kind"], meta_tr, X_tr, study)
+    data_va, y_va, w_va, _ = _rows(p["kind"], meta_va, X_va, study)
+    train_ds = lgb.Dataset(data_tr, label=y_tr, weight=w_tr ** power, feature_name=names,
+                           categorical_feature=categorical, free_raw_data=True)
+    valid_ds = lgb.Dataset(data_va, label=y_va, weight=w_va ** power, reference=train_ds,
+                           free_raw_data=True)
+    stats = {"train_rows": int(len(y_tr)), "train_events": int(y_tr.sum()),
+             "val_rows": int(len(y_va)), "val_events": int(y_va.sum())}
     log(stats)
 
     params = {**BASE_PARAMS, **p["lgbm"], "seed": p["seed"],
@@ -118,13 +144,17 @@ def train(ctx):
     log(f"best iteration {best}, val logloss {val_loss:.6g}")
 
     booster.save_model(str(ctx.outputs["model"]), num_iteration=best)
+    booster = lgb.Booster(model_file=str(ctx.outputs["model"]))  # exactly what predict sees
+    calibration = calibrate(booster, p["kind"], meta_va, X_va, study)
+    log(f"calibration (a, b) per bin: {[[round(a, 3), round(b, 3)] for a, b in calibration]}")
     gain = booster.feature_importance("gain", iteration=best)
     write_json(ctx.outputs["meta"], {
         "name": ctx.name, "kind": p["kind"], "feature_set": p["features"],
         "features": features, "model_features": names, "categorical": categorical,
         "bin_edges": study["label"]["bin_edges"],
         "binary_horizon": study["label"]["binary_horizon"],
-        "params": params, "best_iteration": best, "val_logloss": val_loss, **stats,
+        "params": params, "weight_power": power, "calibration": calibration,
+        "best_iteration": best, "val_logloss": val_loss, **stats,
         "importance_gain": {n: float(g) for n, g in sorted(
             zip(names, gain), key=lambda t: -t[1])},
     })
