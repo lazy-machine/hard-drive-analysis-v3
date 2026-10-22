@@ -238,9 +238,18 @@ def report(ctx):
               "Mean predicted failure probability vs the Kaplan-Meier observed share, by "
               "decile of predicted risk. Points on the diagonal mean that a predicted 5% "
               "really fails 5% of the time.", "", "![calibration](calibration.png)", "",
-              "## Which SMART attributes matter", "",
+              "**Calibration over time** (mean predicted vs observed risk of failing within "
+              f"30 days, {_label(ref)}). Validation drives are from the training era, test "
+              "from 2024 on. A gap that appears only in the test years is drift:", "",
+              "| split | year | snapshots | predicted | observed |", "|---|---|---|---|---|"]
+    for r in metrics.get("calibration_in_the_large", []):
+        if r["model"] == ref and r["horizon"] == 30:
+            lines.append(f"| {r['split']} | {r['year']} | {r['snapshots']} | "
+                         f"{_pct(r['predicted'], 3)} | {_pct(r['observed_km'], 3)} |")
+    lines += ["", "## Which SMART attributes matter", "",
               "Single-attribute ROC-AUC on train snapshots (fails within "
-              f"{meta_ref['binary_horizon']} days). 0.5 = no signal.", "",
+              f"{meta_ref['binary_horizon']} days). 0.5 = no signal. Below 0.5 means lower "
+              "values go with failure (normalized values fall as a drive degrades).", "",
               "| feature | ROC-AUC | filled |", "|---|---|---|"]
     for _, r in signal.head(15).iterrows():
         lines.append(f"| {r['feature']} | {_fmt(r['auc'])} | {_pct(r['fill_rate'], 0)} |")

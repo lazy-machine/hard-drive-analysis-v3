@@ -78,10 +78,27 @@ weights** (`cohort`, `snapshots`):
   day in the `dense_days` before a failure (weight 1), so the run-up to a failure is seen
   in full detail.
 
-Training and every metric use these weights, so a "base rate" or a precision in the
-report is the real-world value (about 0.004% of drive-days are a failure day), not the
+Every metric uses these weights, so a "base rate" or a precision in the report is the
+real-world value (about 0.004% of drive-days are a failure day), not the
 enriched sample's. v2's demo used only failing drives, which taught "how close to
 failure" instead of "will it fail" (review §4.5).
+
+### Training weights and calibration
+
+Training with the full weights works badly. At the small scale a healthy drive-day
+weighs ~70x a failure row, the effective sample is tiny, and early stopping fires after
+~30 rounds with the model barely off the base rate. On validation drives, training with
+**weights^0.5** (`weight_power` in `pipeline.toml`) raised 30-day ROC-AUC from 0.85 to
+0.89 and nearly doubled PR-AUC.
+
+Tempered weights distort the probability scale, and every variant was over-confident at
+long horizons: a high-risk snapshot gets a high hazard in every future bin, so its
+survival curve collapses too fast. Both are fixed by **per-bin Platt recalibration**:
+after training, a two-parameter logistic fit `h = sigmoid(a_k + b_k * raw_logit)` per
+bin on the validation drives, with the *true* weights. On held-out validation drives this
+moved the top risk decile's predicted 1-year failure probability from 0.56 to 0.33
+against an observed 0.30, without changing the ranking. Coefficients are stored in each
+model's metadata JSON and applied by `predict`.
 
 ## 5. Features
 
@@ -124,9 +141,15 @@ All on test drives, all weighted:
 - **Early warning**: the threshold is set on *validation* drives for a 1% false-alarm
   rate on healthy drive-days. On test: false alarms, precision, share of failing drives
   alerted in their last 30 days, and detection by days before failure.
-- **Remaining life**: for snapshots of drives that fail within a year, how often the
-  predicted median falls within a year, its error, and whether the actual failure day is
-  inside the predicted 10-90% interval.
+- **Remaining life, timing**: among snapshots whose predicted 10% / 50% / 90% failure
+  day is within a year, the share that actually failed by that day (targets 10/50/90%).
+  This is calibration of the predicted days, with censoring respected.
+- **Remaining life, visibility**: for drives that do fail within a year, how often the
+  predicted median is within a year, by how far away the failure really was. (Coverage
+  of an interval *conditional on failing* is not a calibration measure: a perfect model
+  can't reach 80% on it, so it is not reported.)
+- **Calibration over time**: mean predicted vs observed risk per split and calendar
+  year, to tell drift apart from a fitting error.
 
 ## 8. The verification gate (`verify`)
 
@@ -147,5 +170,7 @@ that the model categories come from train drives only. The report is
   (2024 snapshots). Beyond a year the model says "more than a year" and nothing more.
 - **SMART semantics vary by vendor and model.** The model learns them per model where it
   has enough drives. Rare models fall into "other".
+- **Drift.** Test-period failure rates are lower than the model expects, and the gap
+  grows from 2024 to 2025. Probabilities need recalibration on recent data before use.
 - **Results are for Backblaze's data-centre workload.** A desktop drive's environment
   differs.

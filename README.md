@@ -9,7 +9,48 @@ information against a model that doesn't see it. It rebuilds
 `../hard-drive-analysis-v2` on the [`data-pipeline`](../data-pipeline) runner and
 resolves the v2 project review (see [docs/REVIEW-RESOLUTION.md](docs/REVIEW-RESOLUTION.md)).
 
-<!-- RESULTS -->
+## Results (medium scale, 2026-10-21)
+
+Test set: 1,837 drives never seen in training, observed 2024-2025, of which 359 fail.
+All numbers are weighted back to real prevalence. Brackets are 95% drive-level bootstrap
+intervals. The full tables are in `build/report/report.md`.
+
+**1. Yes, SMART carries real failure information.** Against an identical survival model
+that only knows the drive's model, capacity and time in service, SMART raises ROC-AUC at
+every horizon:
+
+| fails within | no SMART | SMART + context | gain | classic counter rule |
+|---|---|---|---|---|
+| 7 days | 0.595 | **0.898** | +0.303 [0.270, 0.337] | 0.845 |
+| 30 days | 0.597 | **0.857** | +0.260 [0.225, 0.294] | 0.808 |
+| 90 days | 0.588 | **0.808** | +0.220 [0.186, 0.253] | 0.768 |
+| 365 days | 0.564 | **0.733** | +0.168 [0.141, 0.198] | 0.702 |
+
+The model also beats the classic "any reallocated / pending / uncorrectable sector"
+rule at every horizon (+0.053 [0.037, 0.070] at 7 days).
+
+**2. It works as an early warning, not as an oracle.** With the alarm threshold set on
+validation drives for a 1% false-alarm budget, **274 of 359 failing test drives (76%)
+were flagged in their last 30 days**. Alerts are 3.7% precise, about 30x the 0.12% base
+rate. So most alerts are still false: failures are that rare.
+
+**3. "When will it fail?" can only be answered close to the end.** For drives that fail
+within a year, the model already puts the median remaining life inside that year in 40%
+of snapshots taken in the last week, but in only 5% of snapshots 6-12 months out. Most
+failures leave no SMART trace that early. For healthy drives it says "more than a year"
+99.9% of the time. When it does name a day, it is too pessimistic on the test years:
+30% (not 50%) of drives had failed by their predicted median.
+
+**4. The pessimism is drift, not a fitting error.** On validation drives (same era as
+training) the yearly gap between predicted and observed 30-day risk goes both ways with
+no trend. On test, prediction exceeds the observed rate in both years, and the gap
+grows: 1.25x in 2024, 1.8x in 2025. The fleet aged while observed failures
+fell, which fits Backblaze retiring risky drives before they fail (docs/ISSUES.md #7).
+A deployed model would need periodic recalibration on recent data.
+
+**What matters most:** uncorrectable errors (187), reallocated sectors (5), pending
+sectors (197), their 30-day growth, and offline-uncorrectable (198). See
+`build/explore/feature_signal.csv` and the importance figure in the report.
 
 ## Quick start
 
@@ -31,9 +72,9 @@ shared by all scales and stays cached.
 
 | Scale | Drives (failing / healthy kept) | Snapshot stride | Where it runs |
 |---|---|---|---|
-| small | 4% / 0.4% | 7 days | any machine. Minutes once `drive_index` is cached |
-| medium | 20% / 2% | 7 days | 15 GB machine. Tens of minutes |
-| full | 100% / 5% | 14 days | sized for 31 GB (`info/hwspec-archmachine-20261021.md`). **Not run yet** |
+| small | 4% / 0.4% | 7 days | any machine. ~7 min after `drive_index` (~5 min, once) |
+| medium | 20% / 2% | 7 days | 15 GB machine. ~8 min after `drive_index` (3.5 GB peak) |
+| full | 100% / 10% | 7 days | 31 GB machine (`info/hwspec-archmachine-20261021.md`). Projected ~18.5 GB peak. **Not run yet** |
 
 Every scale estimates the same real-world numbers: sampled drives and snapshots carry
 inverse-probability weights. Smaller scales give wider confidence intervals.

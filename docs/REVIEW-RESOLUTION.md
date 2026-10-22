@@ -19,7 +19,7 @@ one exists.
 | Missing values as `NaN` | Kept: features are FLOAT with NULL → NaN for LightGBM |
 | Model list from config | One `train_*` step per model in `pipeline.toml`. `predict` discovers models from its inputs |
 | Verification gate framework | `steps/verify.py`, with checks rewritten (§3.4 below) |
-| Imbalance handling | Replaced by inverse-probability weights, so predicted probabilities are real-world calibrated |
+| Imbalance handling | Replaced by inverse-probability sampling weights (tempered for training) plus per-bin calibration on validation drives, so probabilities are on the real-world scale |
 | Test metric suite, DeLong | Metrics rebuilt around censoring and weights. DeLong replaced by a drive-level bootstrap (§4.3) |
 | Issue-log habit | `docs/ISSUES.md` uses the same format |
 
@@ -117,4 +117,6 @@ is generated from the metrics.
 1-7 and 9 are done as described above. **8 (run full mode on a bigger machine)** is
 prepared but not done: `full` is sized for the 31 GB machine in
 `info/hwspec-archmachine-20261021.md` and fails early with a clear message if memory runs
-short (`model._check_memory`), but it has only run here at the `small` and `medium` scales.
+short (`model._check_memory`), but it has only run here at the `small` and `medium` scales. The memory guard was
+checked against a measured peak (3.45 GiB at medium), and the full setting was projected
+from the drive index (~9.3M snapshots, ~18.5 GB peak).

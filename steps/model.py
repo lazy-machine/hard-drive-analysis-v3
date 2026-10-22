@@ -47,9 +47,10 @@ def model_features(schema: dict, feature_set: str) -> list[str]:
 
 def _check_memory(n_rows: int, n_features: int, X_bytes: int, log) -> None:
     """Fail early with a clear message instead of being OOM-killed mid-training."""
-    # LightGBM bins every value into one byte per feature (row-wise histograms add a
-    # little more); the snapshot matrices stay in memory while the Dataset is built.
-    need = X_bytes + n_rows * (n_features + 1) * 2
+    # Measured at the medium scale: 11M survival rows x 67 features peaked at 3.45 GiB,
+    # about 4 bytes per feature per row (binned data, gradients, batch buffers) on top of
+    # the snapshot matrices, plus interpreter and library overhead.
+    need = X_bytes + n_rows * (n_features + 1) * 4 + 2**29
     avail = available_memory()
     log(f"memory estimate {need / 2**30:.1f} GiB, available {avail / 2**30:.1f} GiB")
     if need > 0.9 * avail:
