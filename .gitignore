@@ -7,6 +7,7 @@ __pycache__/
 # Data and everything the pipeline generates (outputs, checkpoints, logs, spill files)
 dataset/
 build/
+build-arch/
 
 # Another agent's harness state
 .pi-glla/

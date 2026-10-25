@@ -114,9 +114,7 @@ is generated from the metrics.
 
 ## §8 Priorities
 
-1-7 and 9 are done as described above. **8 (run full mode on a bigger machine)** is
-prepared but not done: `full` is sized for the 31 GB machine in
-`info/hwspec-archmachine-20261021.md` and fails early with a clear message if memory runs
-short (`model._check_memory`), but it has only run here at the `small` and `medium` scales. The memory guard was
-checked against a measured peak (3.45 GiB at medium), and the full setting was projected
-from the drive index (~9.3M snapshots, ~18.5 GB peak).
+All nine are done as described above. **8 (run full mode on a bigger machine)** ran on
+2026-10-24 on the 31 GB machine in `info/hwspec-archmachine-20261021.md`: 30 minutes end
+to end, gate 26/26, every failing HDD in the panel included. Timings and the memory
+margin are in `docs/ISSUES.md` #1, and the results are in the README.
