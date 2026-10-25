@@ -13,15 +13,29 @@ something surprises you, and close it with how it was verified.
 
 ---
 
-### 1. Full scale has not been run
-- **Tags:** OPEN
-- **Detail:** `scale = "full"` in `config/sample.toml` is sized for the 31 GB machine
-  (`info/hwspec-archmachine-20261021.md`) but has only been estimated, not run. Training
-  checks available memory first and stops with a message naming the knobs to turn
-  (`healthy_fraction`, `stride_days`). Run it there with `tail -f build/logs/*.log` and
-  record the timings here. Projection: ~9.3M train+val snapshots, ~58M survival rows,
-  ~18.5 GB peak in training. If `snapshots` runs short of memory, raise `batches` on
-  `extract` in `pipeline.toml` (each batch is processed separately).
+### 1. Full scale needs most of the 31 GB machine
+- **Tags:** FRAGILE
+- **Status:** run on 2026-10-24 on the 31 GB machine (`info/hwspec-archmachine-20261021.md`),
+  gate 26/26, with the same code as the repository (only `scale` differed).
+- **Detail:** 30 min end to end from an empty `build/`:
+
+  | step | time | size |
+  |---|---|---|
+  | drive_index | 204 s | 478,464 drives |
+  | extract | 238 s | 58.7M panel rows for 57,309 drives |
+  | snapshots | 56 s | 7.62M train, 1.08M val, 0.83M test |
+  | train_hazard_smart | 609 s | 48.2M survival rows, best iteration 785 |
+  | train_hazard_nosmart | 402 s | best iteration 754 |
+  | train_binary_30d | 114 s | best iteration 992 |
+  | predict, evaluate, rest | 3.5 min | |
+
+  The projection held: 8.7M train+val snapshots (projected 9.3M), 55M survival rows
+  (58M). `train_hazard_smart` estimated **17.8 GiB with 23.0 GiB available**. The guard
+  stops at 90% of available memory (20.7 GiB), so there were only about 3 GiB to spare: a
+  browser or a second job on that machine can trip it. The real peak was not recorded,
+  because the logs only hold the estimate. If the guard fires, close other programs or
+  lower `healthy_fraction` in `config/sample.toml`. If `snapshots` runs short of memory,
+  raise `batches` on `extract` in `pipeline.toml`.
 
 ### 2. A single GROUP BY over the whole panel spills tens of GB
 - **Tags:** SLOW, CONFUSE
@@ -76,11 +90,13 @@ something surprises you, and close it with how it was verified.
 
 ### 9. Test-period drift: predicted risk too high in 2024-2025
 - **Tags:** LIMIT, OPEN
-- **Detail:** calibration over time (report): validation years miss in both directions
-  with no trend, while test is over-predicted by 1.25x (2024) and 1.8x (2025). The test
-  false-alarm rate is 1.8% against a 1% budget for the same reason. Possible causes:
-  retirement of risky drives (#7), fleet changes. Next step: recalibrate on the most
-  recent pre-test year, or add a rolling-origin evaluation.
+- **Detail:** calibration over time (report), predicted / observed 30-day risk. At full
+  scale, validation years range from 0.85x to 1.32x in both directions with no trend.
+  Test is 1.16x in 2024, inside that range, and 2.2x in 2025, well outside it. (Medium
+  scale: 1.25x and 1.8x, with wider noise.) The test false-alarm rate is 1.6% against a
+  1% budget for the same reason. Possible causes: retirement of risky drives (#7), fleet
+  changes. Next step: recalibrate on the most recent pre-test year, or add a
+  rolling-origin evaluation.
 
 ### 10. The model category list depends on the sampled train drives
 - **Tags:** FRAGILE
