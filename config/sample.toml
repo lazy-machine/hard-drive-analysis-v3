@@ -21,17 +21,20 @@ stride_days = 7
 dense_days = 60
 
 [scales.medium]
-# Tens of minutes on a 15 GB box. Roughly 5k failing and 9k healthy drives.
+# ~8 min on a 15 GB box once drive_index is cached. Measured: 4,394 failing and 7,181
+# healthy drives, 1.74M train+val snapshots, 4.0 GiB training estimate.
 failing_fraction = 0.2
 healthy_fraction = 0.02
 stride_days = 7
 dense_days = 90
 
 [scales.full]
-# Every failing HDD plus a 10% weighted sample of healthy ones. Projected from the drive
-# index: ~9.3M train+val snapshots, ~58M survival rows, ~18.5 GB peak while training. Sized
-# for the 31 GB machine in info/. Healthy drives are subsampled even here: the full daily
-# panel expanded into survival rows would need several hundred GB.
+# Every failing HDD plus a 10% weighted sample of healthy ones. Sized for the 31 GB machine
+# in info/. Measured there on 2026-10-24: 22,230 failing and 35,079 healthy drives, 8.7M
+# train+val snapshots, 55M survival rows (48.2M train), 17.8 GiB training estimate with 23 GiB
+# available (about 3 GiB under the memory guard), ~30 min end to end. Healthy drives are
+# subsampled even here: the full daily panel expanded into survival rows would need
+# several hundred GB.
 failing_fraction = 1.0
 healthy_fraction = 0.1
 stride_days = 7
