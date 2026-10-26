@@ -49,7 +49,9 @@ def _check_memory(n_rows: int, n_features: int, X_bytes: int, log) -> None:
     """Fail early with a clear message instead of being OOM-killed mid-training."""
     # Measured at the medium scale: 11M survival rows x 67 features peaked at 3.45 GiB,
     # about 4 bytes per feature per row (binned data, gradients, batch buffers) on top of
-    # the snapshot matrices, plus interpreter and library overhead.
+    # the snapshot matrices, plus interpreter and library overhead. At full scale (48.2M
+    # rows) this estimates 17.8 GiB, about 3 GiB under the guard on the 31 GB machine. The
+    # real full-scale peak was not recorded, so the factor is only checked at medium.
     need = X_bytes + n_rows * (n_features + 1) * 4 + 2**29
     avail = available_memory()
     log(f"memory estimate {need / 2**30:.1f} GiB, available {avail / 2**30:.1f} GiB")
