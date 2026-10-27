@@ -4,7 +4,9 @@ import numpy as np
 import pandas as pd
 
 from explore import feature_signal
-from report import _drift_sentence, _main_alert, est, side, table, top_importance
+from report import (
+    _drift_sentence, _label, _main_alert, _timing_verdict, est, side, table, top_importance,
+)
 
 
 def test_top_importance_orders_by_gain_not_name():
@@ -100,3 +102,26 @@ def test_drift_sentence_names_outside_years():
     row["test_years"] = [{"year": 2024, "outside_band": False}]
     row["last_val_year_outside_earlier_band"] = False
     assert "No test year falls outside" in _drift_sentence(row, "ref")
+
+
+def test_label_falls_back_to_model_name():
+    labels = {"hazard_smart": "survival model, SMART + context"}
+    assert _label("hazard_smart", labels) == "survival model, SMART + context"
+    assert _label("hazard_new", labels) == "hazard_new"
+    assert _label("hazard_smart", {}) == "hazard_smart"
+
+
+def test_timing_verdict_uses_the_given_tolerance():
+    def qc(share_at_median):
+        return {"0.1": {"share_failed_by_predicted_day": 0.1, "target": 0.1, "snapshots": 50},
+                "0.5": {"share_failed_by_predicted_day": share_at_median, "target": 0.5,
+                        "snapshots": 50},
+                "0.9": {"share_failed_by_predicted_day": 0.9, "target": 0.9, "snapshots": 50}}
+
+    # median miss (0.8 - 0.5) / 0.5 = 0.6, mean scaled miss over the three quantiles 0.2
+    assert "about right" in _timing_verdict(qc(0.8), tolerance=0.25)
+    assert "too optimistic" in _timing_verdict(qc(0.8), tolerance=0.15)
+    assert "too pessimistic" in _timing_verdict(qc(0.2), tolerance=0.15)
+    # quantiles with fewer than 30 snapshots do not count
+    few = {q: {**c, "snapshots": 10} for q, c in qc(0.8).items()}
+    assert _timing_verdict(few, tolerance=0.15).startswith("Too few snapshots")

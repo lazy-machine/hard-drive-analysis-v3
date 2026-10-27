@@ -17,17 +17,6 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-LABELS = {
-    "hazard_smart": "survival model, SMART + context",
-    "hazard_nosmart": "survival model, context only (no SMART)",
-    "binary_30d": "30-day yes/no classifier (SMART + context)",
-    "rule_counters": "rule: critical SMART counters (5, 187, 197, 198)",
-    "hazard_nocritical": "survival model, SMART without counters 5/187/188/197/198",
-    "hazard_usage": "survival model, context + usage counters",
-    "hazard_smart_w075": "survival model, SMART + context, weight power 0.75",
-    "hazard_smart_w100": "survival model, SMART + context, weight power 1.0",
-    "hazard_smart_recent": "survival model, SMART + context, recalibrated on the last year",
-}
 CORE = ["hazard_smart", "hazard_nosmart", "binary_30d", "rule_counters"]
 ABLATIONS = ["hazard_nocritical", "hazard_usage", "hazard_smart_w075", "hazard_smart_w100",
              "hazard_smart_recent"]
@@ -107,8 +96,9 @@ def table(header: list[str], rows: list[list]) -> list[str]:
             + ["| " + " | ".join(cell(v) for v in r) + " |" for r in rows])
 
 
-def _label(name):
-    return LABELS.get(name, name)
+def _label(name, labels):
+    """The display name from the step's `labels` param, else the model name."""
+    return labels.get(name, name)
 
 
 def _rank(name):
@@ -147,7 +137,7 @@ def _main_alert(metrics, ref):
                 next((a for a in rows if a["budget"] == main), rows[0] if rows else None))
 
 
-def figures(out, metrics, calib, detection, preds, meta_ref, ref):
+def figures(out, metrics, calib, detection, preds, meta_ref, ref, labels):
     disc = pd.DataFrame(metrics["discrimination"])
     disc = disc[disc["model"].isin(CORE)]
     fig, ax = plt.subplots(figsize=(7.5, 4.5))
@@ -156,10 +146,10 @@ def figures(out, metrics, calib, detection, preds, meta_ref, ref):
     for i, name in enumerate(models):
         d = disc[disc["model"] == name]
         x = np.array([hz.index(h) for h in d["horizon"]]) + (i - (len(models) - 1) / 2) * 0.12
-        ci = [c if _ci_ok(c) else [a, a] for c, a in zip(d["auc_ci"], d["auc"])]
+        ci = [c if _ci_ok(c) else [a, a] for c, a in zip(d["auc_ci"], d["auc"], strict=True)]
         lo = d["auc"].to_numpy() - np.array([c[0] for c in ci])
         hi = np.array([c[1] for c in ci]) - d["auc"].to_numpy()
-        ax.errorbar(x, d["auc"], yerr=[lo, hi], fmt="o", capsize=3, label=_label(name))
+        ax.errorbar(x, d["auc"], yerr=[lo, hi], fmt="o", capsize=3, label=_label(name, labels))
     ax.set_xticks(range(len(hz)), [f"{h} d" for h in hz])
     ax.set_xlabel("horizon: fails within")
     ax.set_ylabel("ROC-AUC (95% drive bootstrap)")
@@ -195,7 +185,7 @@ def figures(out, metrics, calib, detection, preds, meta_ref, ref):
     if not shown.empty and main:
         fig, ax = plt.subplots(figsize=(7, 4.2))
         for name, g in shown.groupby("model", sort=False):
-            ax.plot(g["days_before_failure"], g["alerted"], "o-", label=_label(name))
+            ax.plot(g["days_before_failure"], g["alerted"], "o-", label=_label(name, labels))
         ax.set_xlabel("days before failure")
         ax.set_ylabel("share of failing-drive snapshots alerted")
         ax.set_ylim(0, 1)
@@ -285,8 +275,9 @@ def report(ctx):
     life_table = pd.read_csv(ctx.inputs["life"])
     preds = pd.read_parquet(ctx.inputs["predictions"])
     ref = metrics["reference"]
+    labels = ctx.params.get("labels", {})
     meta_ref = json.loads(ctx.inputs[f"meta_{ref}"].read_text())
-    figures(out, metrics, calib, detection, preds, meta_ref, ref)
+    figures(out, metrics, calib, detection, preds, meta_ref, ref, labels)
 
     disc = pd.DataFrame(metrics["discrimination"])
     gains = pd.DataFrame(metrics["reference_gain"])
@@ -305,15 +296,15 @@ def report(ctx):
         "## Answer",
         "",
     ]
-    lines += _answer(disc, gains, metrics, ref)
-    lines += _discrimination(metrics, preds)
-    lines += _ablations(metrics, ref)
-    lines += _slices(metrics, ref)
-    lines += _concordance(metrics)
-    lines += _life(metrics, life_table, ref)
-    lines += _alerting(metrics, ref)
-    lines += _calibration(metrics, ref)
-    lines += _retirement(metrics, ref)
+    lines += _answer(disc, gains, metrics, ref, labels, ctx.params["timing_tolerance"])
+    lines += _discrimination(metrics, preds, labels)
+    lines += _ablations(metrics, ref, labels)
+    lines += _slices(metrics, ref, labels)
+    lines += _concordance(metrics, labels)
+    lines += _life(metrics, life_table, ref, labels)
+    lines += _alerting(metrics, ref, labels)
+    lines += _calibration(metrics, ref, labels)
+    lines += _retirement(metrics, ref, labels)
     lines += ["", "## Which SMART attributes matter", "",
               "Single-attribute ROC-AUC on train snapshots (fails within "
               f"{meta_ref['binary_horizon']} days), computed only on the drive-days where "
@@ -329,7 +320,7 @@ def report(ctx):
     return {"lines": len(lines)}
 
 
-def _discrimination(metrics, preds) -> list[str]:
+def _discrimination(metrics, preds, labels) -> list[str]:
     rows = _sorted([r for r in metrics["discrimination"] if r["model"] in CORE], "horizon")
     pos_drives = sorted({r["positive_drives"] for r in rows})
     if len(pos_drives) == 1:
@@ -346,7 +337,7 @@ def _discrimination(metrics, preds) -> list[str]:
              f"drive-days that fail within the horizon. {drives_note}", ""]
     lines += table(["horizon", "model", "ROC-AUC", "PR-AUC", "Brier", "base rate",
                     "positive snapshots"],
-                   [[f"{r['horizon']} d", _label(r["model"]), est(r["auc"], r["auc_ci"]),
+                   [[f"{r['horizon']} d", _label(r["model"], labels), est(r["auc"], r["auc_ci"]),
                      est(r["ap"], r["ap_ci"], 4), _fmt(r["brier"], 5),
                      _pct(r["base_rate"], 3), r["positive_snapshots"]] for r in rows])
     for H, why in metrics.get("skipped_horizons", {}).items():
@@ -361,7 +352,7 @@ def _discrimination(metrics, preds) -> list[str]:
               "the base rate; above 0 beats that constant.", ""]
     lines += table(["horizon", "model", "ROC-AUC, IPCW (per drive-day)",
                     "PR-AUC, IPCW (per drive-day)", "ROC-AUC (per drive)", "Brier skill"],
-                   [[f"{r['horizon']} d", _label(r["model"]),
+                   [[f"{r['horizon']} d", _label(r["model"], labels),
                      est(r.get("auc_ipcw"), r.get("auc_ipcw_ci")),
                      est(r.get("ap_ipcw"), r.get("ap_ipcw_ci"), 4),
                      est(r.get("auc_drive"), r.get("auc_drive_ci")),
@@ -370,29 +361,29 @@ def _discrimination(metrics, preds) -> list[str]:
     return lines
 
 
-def _ablations(metrics, ref) -> list[str]:
+def _ablations(metrics, ref, labels) -> list[str]:
     disc = {(r["horizon"], r["model"]): r for r in metrics["discrimination"]}
     gain = {(g["horizon"], g["other"]): g for g in metrics["reference_gain"]}
     present = [m for m in ABLATIONS if m in metrics.get("models", {})]
     if not present:
         return []
     lines = ["", "## Ablations and sensitivity", "",
-             f"Each variant against the reference ({_label(ref)}). Gain = reference minus "
+             f"Each variant against the reference ({_label(ref, labels)}). Gain = reference minus "
              "variant, paired on the same bootstrap rounds; \"not better\" = share of rounds "
              "where the reference's ROC-AUC is not higher.", ""]
-    lines += [f"- **{_label(m)}**: {WHY[m]}" for m in present]
+    lines += [f"- **{_label(m, labels)}**: {WHY[m]}" for m in present]
     lines.append("")
     rows = []
     for H in sorted({h for h, _ in disc}):
         r = disc.get((H, ref))
         if r:
-            rows.append([f"{H} d", f"{_label(ref)} (reference)", est(r["auc"], r["auc_ci"]),
+            rows.append([f"{H} d", f"{_label(ref, labels)} (reference)", est(r["auc"], r["auc_ci"]),
                          "", "", ""])
         for m in present:
             r, g = disc.get((H, m)), gain.get((H, m))
             if not r:
                 continue
-            rows.append([f"{H} d", _label(m), est(r["auc"], r["auc_ci"]),
+            rows.append([f"{H} d", _label(m, labels), est(r["auc"], r["auc_ci"]),
                          est(g["auc_gain"], g["auc_gain_ci"], sign=True) if g else "n/a",
                          est(g["ap_gain"], g["ap_gain_ci"], 4, sign=True) if g else "n/a",
                          _pct(g["share_of_rounds_reference_not_better"], 0) if g else "n/a"])
@@ -401,7 +392,7 @@ def _ablations(metrics, ref) -> list[str]:
     return lines
 
 
-def _slices(metrics, ref) -> list[str]:
+def _slices(metrics, ref, labels) -> list[str]:
     rows = metrics.get("slices", [])
     if not rows:
         return []
@@ -423,7 +414,7 @@ def _slices(metrics, ref) -> list[str]:
                 (x for x in rows if x["slice"] == name and x["horizon"] == H
                  and x["model"] == m), None)
             if r:
-                body.append([name, _label(m), est(r["auc"], r["auc_ci"]),
+                body.append([name, _label(m, labels), est(r["auc"], r["auc_ci"]),
                              est(r["ap"], r["ap_ci"], 4), _pct(r["base_rate"], 3),
                              r["positive_drives"]])
     lines += table(["slice", "model", "ROC-AUC", "PR-AUC", "base rate", "positive drives"],
@@ -438,13 +429,13 @@ def _slices(metrics, ref) -> list[str]:
                          est(r["ap"], r["ap_ci"], 4), _pct(r["base_rate"], 3),
                          r["positive_drives"]])
     if body:
-        lines += ["", f"The same two slices for {_label(ref)} across horizons:", ""]
+        lines += ["", f"The same two slices for {_label(ref, labels)} across horizons:", ""]
         lines += table(["slice", "horizon", "ROC-AUC", "PR-AUC", "base rate",
                         "positive drives"], body)
     return lines
 
 
-def _concordance(metrics) -> list[str]:
+def _concordance(metrics, labels) -> list[str]:
     rows = sorted(metrics["concordance"], key=lambda r: _rank(r["model"]))
     lines = ["", "## Ranking over the whole future (concordance)", "",
              "Concordance between each model's risk score and the actual time to failure; "
@@ -460,12 +451,12 @@ def _concordance(metrics) -> list[str]:
              "classifier on the same kind of score. Intervals only on each model's main "
              "score.", ""]
     lines += table(["model", "score", "Harrell's C", "Uno's C"],
-                   [[_label(r["model"]), r["score"], est(r["harrell"], r.get("harrell_ci")),
+                   [[_label(r["model"], labels), r["score"], est(r["harrell"], r.get("harrell_ci")),
                      est(r["uno"], r.get("uno_ci"))] for r in rows])
     return lines
 
 
-def _life(metrics, life_table, ref) -> list[str]:
+def _life(metrics, life_table, ref, labels) -> list[str]:
     life = sorted(metrics["life"], key=lambda r: _rank(r["model"]))
     lines = ["", "## When will it fail? Remaining-life estimates", "",
              "From each snapshot the survival model gives a curve: the day by which the "
@@ -474,14 +465,14 @@ def _life(metrics, life_table, ref) -> list[str]:
     r_ref = next((r for r in life if r["model"] == ref), None)
     if r_ref and r_ref.get("share_finite_median_all") is not None:
         lines[-1] += (f" For {_pct(r_ref['share_finite_median_all'])} of all test snapshots "
-                      f"the predicted median of {_label(ref)} is within a year; otherwise the "
-                      "answer is \"more than a year\".")
+                      f"the predicted median of {_label(ref, labels)} is within a year; "
+                      "otherwise the answer is \"more than a year\".")
     lines += ["", "**Are the predicted days right?** Among snapshots whose predicted day falls "
               "within a year, the share that actually failed by that day should be close to "
               "the target:", ""]
     body = []
     for r in life:
-        cells = [_label(r["model"])]
+        cells = [_label(r["model"], labels)]
         for q in ("0.1", "0.5", "0.9"):
             c = r["quantile_calibration"][q]
             cells.append(f"{_pct(c['share_failed_by_predicted_day'])} (target "
@@ -497,15 +488,15 @@ def _life(metrics, life_table, ref) -> list[str]:
     lines += table(["model", "failing snapshots: median within a year",
                     "abs. error of median (days)", "all test snapshots: median within a year",
                     "healthy snapshots: median beyond a year"],
-                   [[_label(r["model"]), _pct(r["share_median_within_horizon"]),
+                   [[_label(r["model"], labels), _pct(r["share_median_within_horizon"]),
                      f"{_fmt(r['median_abs_error_days'], 0)} "
                      f"({r.get('median_abs_error_snapshots', 'n/a')} snapshots)",
                      _pct(r.get("share_finite_median_all")),
                      _pct(r["healthy_share_median_beyond_horizon"])] for r in life])
     ref_life = life_table[life_table["model"] == ref]
     if not ref_life.empty:
-        lines += ["", f"By actual time to failure ({_label(ref)}). Shares are of the failing "
-                  "drives' snapshots in each bucket:", ""]
+        lines += ["", f"By actual time to failure ({_label(ref, labels)}). Shares are of the "
+                  "failing drives' snapshots in each bucket:", ""]
         lines += table(["actual days to failure", "snapshots", "median predicted within a year",
                         "median of predicted median (days)"],
                        [[r["actual_days_to_failure"], r["snapshots"],
@@ -516,7 +507,7 @@ def _life(metrics, life_table, ref) -> list[str]:
     return lines
 
 
-def _alerting(metrics, ref) -> list[str]:
+def _alerting(metrics, ref, labels) -> list[str]:
     main = _main_alert(metrics, ref)
     if not main:
         return []
@@ -528,7 +519,7 @@ def _alerting(metrics, ref) -> list[str]:
              "Each alert threshold is set on validation drives so that a given share of "
              f"healthy drive-days raises an alert (the budget). At the main budget of "
              f"{_pct(main['budget'], 1)}, {_pct(main['false_alarm_rate_val'], 2)} of "
-             f"validation drive-days alert for {_label(main['model'])}"
+             f"validation drive-days alert for {_label(main['model'], labels)}"
              + (f"; budgets of {', '.join(others)} are shown too" if others else "")
              + ". Test results: false alarms and precision are per drive-day; precision "
              f"counts alerts whose outcome at {main['horizon']} days is known, and the alerts "
@@ -540,7 +531,7 @@ def _alerting(metrics, ref) -> list[str]:
          "precision (per alerted drive-day)", "alerts with unknown outcome",
          "precision, unknown as false", "failing drives alerted (drives)",
          f"alerted >= {main['early_days']} days before failure (drives)"],
-        [[_pct(a["budget"], 1), _label(a["model"]),
+        [[_pct(a["budget"], 1), _label(a["model"], labels),
           est(a["false_alarm_rate_test"], a.get("false_alarm_rate_test_ci"), 2, pct=True),
           est(a["precision_test"], a.get("precision_test_ci"), 2, pct=True),
           _pct(a.get("unknown_alert_share"), 1),
@@ -556,7 +547,7 @@ def _alerting(metrics, ref) -> list[str]:
     if over:
         lines += ["", "At the main budget the test false-alarm rate is above the budget, with "
                   "an interval that excludes it, for "
-                  + ", ".join(_label(a["model"]) for a in over)
+                  + ", ".join(_label(a["model"], labels) for a in over)
                   + ": healthy test drives score higher than the validation drives the "
                   "threshold was set on. This is the same shift over time that Calibration "
                   "over time shows (drift)."]
@@ -568,7 +559,7 @@ def _alerting(metrics, ref) -> list[str]:
     return lines
 
 
-def _calibration(metrics, ref) -> list[str]:
+def _calibration(metrics, ref, labels) -> list[str]:
     recent = f"{ref}_recent"
     shown = [m for m in (ref, recent) if m in metrics.get("models", {})]
     H = _binary_horizon(metrics)
@@ -582,8 +573,8 @@ def _calibration(metrics, ref) -> list[str]:
              f"{H} days; ratio = predicted / observed with a 95% drive bootstrap). Validation "
              "drives are from the training era, test from 2024 on. A gap that appears only in "
              "the test years is drift. \"Outside band\" = the test year's ratio is outside the "
-             f"range of the validation-year ratios. Reference = {_label(ref)}; recalibrated = "
-             f"{_label(recent)}.", ""]
+             f"range of the validation-year ratios. Reference = {_label(ref, labels)}; "
+             f"recalibrated = {_label(recent, labels)}.", ""]
     short = {ref: "reference", recent: "recalibrated"}
     header = ["split", "year", "snapshots", "observed"]
     for m in shown:
@@ -612,14 +603,14 @@ def _calibration(metrics, ref) -> list[str]:
     lines.append("")
     for m in shown:
         if m in drift:
-            lines.append(_drift_sentence(drift[m], _label(m)))
+            lines.append(_drift_sentence(drift[m], _label(m, labels)))
         else:
-            lines.append(f"- {_label(m)}: fewer than three validation years with an observed "
-                         "failure, so there is no validation band to compare with.")
+            lines.append(f"- {_label(m, labels)}: fewer than three validation years with an "
+                         "observed failure, so there is no validation band to compare with.")
     return lines
 
 
-def _retirement(metrics, ref) -> list[str]:
+def _retirement(metrics, ref, labels) -> list[str]:
     rows = sorted((r for r in metrics.get("retirement", []) if r["model"] == ref),
                   key=lambda r: (r["split"] != "val", r["year"]))
     if not rows:
@@ -635,7 +626,7 @@ def _retirement(metrics, ref) -> list[str]:
              "means the drives that leave already looked riskier beforehand: censoring is "
              "probably informative (drives are retired before they can fail), and the "
              "observed failure risk is underestimated. The alert threshold is the main-budget "
-             f"threshold of {_label(ref)}.", ""]
+             f"threshold of {_label(ref, labels)}.", ""]
     lines += table(["split", "year", "drives left", "drives stayed",
                     f"mean predicted {H}-day risk, left", f"mean predicted {H}-day risk, stayed",
                     "ratio left/stayed", "above alert threshold, left",
@@ -650,8 +641,13 @@ def _retirement(metrics, ref) -> list[str]:
     return lines
 
 
-def _timing_verdict(qc: dict) -> str:
-    """One sentence on whether predicted failure days are early, late or about right."""
+def _timing_verdict(qc: dict, tolerance: float) -> str:
+    """One sentence on whether predicted failure days are early, late or about right.
+
+    Each quantile's miss (share failed by the predicted day minus its target) is scaled
+    by the largest miss possible for that target; "about right" means the mean scaled miss
+    is within `tolerance`.
+    """
     off = []
     for c in qc.values():
         share, target = c["share_failed_by_predicted_day"], c["target"]
@@ -660,7 +656,7 @@ def _timing_verdict(qc: dict) -> str:
     if not off:
         return "Too few snapshots with a predicted day within a year to judge timing."
     mean = float(np.mean(off))
-    if abs(mean) <= 0.15:
+    if abs(mean) <= tolerance:
         return "When the model names a day within the next year, it is about right on average:"
     if mean < 0:
         return ("When the model names a day within the next year, it is too pessimistic "
@@ -678,7 +674,7 @@ def _gain_row(gains, other, horizon=None):
     return g.sort_values("horizon").iloc[0] if not g.empty else None
 
 
-def _answer(disc, gains, metrics, ref) -> list[str]:
+def _answer(disc, gains, metrics, ref, labels, tolerance) -> list[str]:
     out = []
     H = _binary_horizon(metrics)
     nosmart = "hazard_nosmart"
@@ -686,7 +682,7 @@ def _answer(disc, gains, metrics, ref) -> list[str]:
     if not g.empty:
         clear = g[g["auc_gain_ci"].map(lambda c: side(c) > 0)]
         out.append(
-            f"- **Do SMART metrics carry failure information?** "
+            "- **Do SMART metrics carry failure information?** "
             + ("Yes. " if len(clear) == len(g) else
                "Partly. " if len(clear) else "Not clearly at this scale. ")
             + f"Adding SMART to what is known without it (drive model, capacity, time in "
@@ -746,14 +742,14 @@ def _answer(disc, gains, metrics, ref) -> list[str]:
                 f"- **Silent failures** (no critical counter above zero in any test "
                 f"snapshot): {metrics['test']['silent_failing_drives']} of the "
                 f"{metrics['test']['failing_drives']} failing test drives. On them the "
-                f"{H}-day ROC-AUC of {_label(ref)} is "
+                f"{H}-day ROC-AUC of {_label(ref, labels)} is "
                 f"{est(s['auc'], s['auc_ci'])} against {est(o['auc'], o['auc_ci'])} overall: "
                 f"{verdict}.")
     life = next((r for r in metrics["life"] if r["model"] == ref), None)
     if life:
         qc = life["quantile_calibration"]
         out.append(
-            f"- **When will it probably fail?** {_timing_verdict(qc)} "
+            f"- **When will it probably fail?** {_timing_verdict(qc, tolerance)} "
             f"{_pct(qc['0.1']['share_failed_by_predicted_day'])} of drives failed by their "
             f"predicted 10% day, {_pct(qc['0.5']['share_failed_by_predicted_day'])} by the "
             f"predicted median and {_pct(qc['0.9']['share_failed_by_predicted_day'])} by the "
