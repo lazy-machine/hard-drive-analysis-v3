@@ -104,6 +104,15 @@ def stable_bucket(serial: str) -> int:
     return int(stable_unit(serial, "split") * 100)
 
 
+def left_truncated(first_date):
+    """1 for drives whose first row is the cohort's first panel day: they were already in
+    service when the panel starts, so days_in_service understates their age."""
+    import pandas as pd
+
+    first = pd.to_datetime(pd.Series(first_date))
+    return (first <= first.min()).astype(int).to_numpy()
+
+
 # -- SQL helpers -----------------------------------------------------------------------
 
 def q(path: Path | str) -> str:

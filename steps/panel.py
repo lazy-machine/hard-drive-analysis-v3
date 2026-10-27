@@ -9,11 +9,15 @@ import pandas as pd
 import pyarrow as pa
 
 from common import (
-    ID_COLUMNS, LABEL_COLUMNS, Progress, connect, load_sample, load_study, month_chunks, q,
-    scalar, smart_columns, stable_unit, trend_columns, write_json,
+    ID_COLUMNS, LABEL_COLUMNS, Progress, connect, left_truncated, load_sample, load_study,
+    month_chunks, q, scalar, smart_columns, stable_unit, trend_columns, write_json,
 )
 
-CONTEXT_FEATURES = ["days_in_service", "capacity_tb", "model_code", "vendor_code"]
+# days_in_service counts from the drive's first row in the panel, which starts in 2016.
+# left_truncated = 1 when that first row is the panel's first day, so the drive's real age is
+# unknown (about 1 in 6 train drives, 1 in 50 test drives).
+CONTEXT_FEATURES = ["days_in_service", "left_truncated", "capacity_tb", "model_code",
+                    "vendor_code"]
 VENDORS = ["HGST", "Seagate", "Toshiba", "WDC", "other"]
 
 
@@ -35,7 +39,11 @@ def extract(ctx):
     - nothing after a drive's first failure (a re-deployed serial is not the same
       at-risk drive);
     - train/val drives stop at train_end. Test drives start max(trend window) days before
-      test_start, so trend features on the first test day have history.
+      test_start, so trend features on the first test day have history;
+    - raw values listed in features.raw_low_bits keep only their low bits (vendor packing).
+
+    TRY_CAST turns strings that are not numbers into NULL. Those are counted per column
+    and returned, so an upstream format change shows up in the step result.
 
     Written as a directory partitioned by drive batch, so later steps can work on one
     batch at a time with bounded memory.
@@ -56,19 +64,35 @@ def extract(ctx):
     _register_cohort(con, cohort, batches, stride=1)
 
     cols = smart_columns(study)
-    available = {r[0] for r in con.sql(f"DESCRIBE SELECT * FROM read_parquet({q(src)})").fetchall()}
-    missing = [c for c in cols if c not in available]
+    types = dict(con.sql(f"SELECT column_name, column_type FROM "
+                         f"(DESCRIBE SELECT * FROM read_parquet({q(src)}))").fetchall())
+    missing = [c for c in cols if c not in types]
     if missing:
         raise ValueError(f"panel is missing feature columns {missing}")
     max_window = max(study["features"]["trend_windows"])
     train_end = study["split"]["train_end"]
     test_from = date.fromisoformat(study["split"]["test_start"]) - timedelta(days=max_window)
-    casts = ", ".join(f'TRY_CAST(p."{c}" AS DOUBLE) AS "{c}"' for c in cols)
+    low_bits = study["features"].get("raw_low_bits", {})
+    unknown = sorted(set(low_bits) - set(cols))
+    if unknown:
+        raise ValueError(f"features.raw_low_bits names columns that are not features: {unknown}")
+
+    def cast(c):
+        x = f'TRY_CAST(p."{c}" AS DOUBLE)'
+        return f"fmod({x}, {float(2 ** low_bits[c])})" if c in low_bits else x
+
+    casts = ", ".join(f'{cast(c)} AS "{c}"' for c in cols)
+    # 1 when a non-NULL string did not parse as a number (only VARCHAR columns can fail)
+    text_cols = [c for c in cols if types[c] == "VARCHAR"]
+    bad = [f"bad_{i}" for i in range(len(text_cols))]
+    bad_casts = "".join(f', (p."{c}" IS NOT NULL AND TRY_CAST(p."{c}" AS DOUBLE) IS NULL)::INT AS {b}'
+                        for c, b in zip(text_cols, bad))
     completeness = " + ".join(f'(p."{c}" IS NOT NULL)::INT' for c in cols)
-    col_list = ", ".join(f'"{c}"' for c in cols)
+    col_list = ", ".join(f'"{c}"' for c in cols) + "".join(f", {b}" for b in bad)
 
     con.sql(f"""CREATE TABLE rows AS SELECT 0 AS batch, ''::VARCHAR AS serial_number,
                 DATE '2000-01-01' AS date, {', '.join(f'0::DOUBLE AS "{c}"' for c in cols)}
+                {''.join(f', 0::INT AS {b}' for b in bad)}
                 LIMIT 0""")
     lo, hi = con.sql(f"SELECT min(date), max(date) FROM read_parquet({q(src)})").fetchall()[0]
     chunks = month_chunks(lo, hi, ctx.params.get("chunk_months", 1))
@@ -76,7 +100,7 @@ def extract(ctx):
         con.sql(f"""
             INSERT INTO rows
             SELECT batch, serial_number, date, {col_list} FROM (
-                SELECT c.batch, p.serial_number, p.date, {casts},
+                SELECT c.batch, p.serial_number, p.date, {casts}{bad_casts},
                        row_number() OVER (PARTITION BY p.serial_number, p.date
                                           ORDER BY {completeness} DESC, p.filename) AS rn
                 FROM read_parquet({q(src)}) p
@@ -91,12 +115,20 @@ def extract(ctx):
 
     n_rows = scalar(con, "SELECT count(*) FROM rows")
     n_drives = scalar(con, "SELECT count(DISTINCT serial_number) FROM rows")
+    cast_failures = {}
+    if bad:
+        sums = con.sql("SELECT " + ", ".join(f"sum({b})" for b in bad) + " FROM rows").fetchall()[0]
+        cast_failures = {c: int(v or 0) for c, v in zip(text_cols, sums)}
+        log(f"strings that are not numbers (now NULL): {cast_failures}")
+        for b in bad:
+            con.sql(f"ALTER TABLE rows DROP COLUMN {b}")
     con.sql(f"""COPY (SELECT * FROM rows ORDER BY batch, serial_number, date)
                 TO {q(out)} (FORMAT PARQUET, COMPRESSION ZSTD, PARTITION_BY (batch))""")
     con.close()
     db.unlink(missing_ok=True)
     log(f"wrote {n_rows} rows for {n_drives} drives")
-    return {"rows": n_rows, "drives": n_drives, "cohort_drives": len(cohort)}
+    return {"rows": n_rows, "drives": n_drives, "cohort_drives": len(cohort),
+            "cast_failures": cast_failures}
 
 
 def model_levels(cohort: pd.DataFrame, top: int) -> list[str]:
@@ -128,8 +160,10 @@ def snapshots(ctx):
     "healthy" label.
 
     Sampling: within the split's time window, a snapshot every stride_days (drive-specific
-    offset, weight stride_days) plus every day in the dense_days before a failure
-    (weight 1), times the drive's inverse sampling weight.
+    offset, weight stride_days) plus every day in the dense_days before a failure that is
+    visible in the split (weight 1), times the drive's inverse sampling weight. A train
+    drive failing after train_end gets no dense days, so its sampling does not depend on
+    what happens after the cutoff.
     """
     log = Progress(ctx)
     study = load_study(ctx.inputs["study"])
@@ -143,6 +177,7 @@ def snapshots(ctx):
     levels = model_levels(cohort, study["features"]["top_models"])
     schema = feature_schema(study, levels)
     cohort = cohort.assign(
+        left_truncated=left_truncated(cohort["first_date"]),
         model_code=[levels.index(m) if m in levels else len(levels) for m in cohort["model"]],
         vendor_code=[VENDORS.index(v) for v in cohort["vendor"]],
     )
@@ -178,13 +213,14 @@ def snapshots(ctx):
         ), labelled AS (
             SELECT f.*, c.split, c.drive_weight, c.failure_date, c.stride_offset,
                    date_diff('day', c.first_date, f.date) AS days_in_service,
-                   c.capacity_bytes / 1e12 AS capacity_tb, c.model_code, c.vendor_code,
+                   c.left_truncated, c.capacity_bytes / 1e12 AS capacity_tb, c.model_code,
+                   c.vendor_code,
                    CASE WHEN c.split = 'test' THEN c.last_date
                         ELSE least(c.last_date, DATE '{split['train_end']}') END AS censor_date
             FROM f JOIN cohort c USING (serial_number)
         ), sampled AS (
             SELECT *,
-                   failure_date IS NOT NULL
+                   failure_date IS NOT NULL AND failure_date <= censor_date
                        AND date_diff('day', date, failure_date) < {dense} AS in_dense,
                    (date_diff('day', DATE '2000-01-01', date) + stride_offset) % {stride} = 0
                        AS on_stride,

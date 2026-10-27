@@ -110,3 +110,23 @@ def test_smart_signal_is_found(pipeline_run):
     assert auc[("hazard_smart", 30)] > auc[("hazard_nosmart", 30)] + 0.1
     predictions = pd.read_parquet(project / "build" / "predictions.parquet")
     assert {"serial_number", "date"} <= set(predictions.columns)
+
+
+def test_vendor_packed_raw_values_are_decoded(pipeline_run):
+    """Seagate's 240 carries milliseconds above bit 32; only the hours (low 32 bits) stay."""
+    project, _ = pipeline_run
+    con = duckdb.connect()
+    raw = con.sql(f"""SELECT max(smart_240_raw) FROM
+        read_parquet('{project}/dataset/dataset.parquet')""").fetchall()[0][0]
+    assert raw >= 2**32, "synthetic data should contain packed 240 values"
+    panel = f"read_parquet('{project}/build/panel/*/*.parquet', hive_partitioning = true)"
+    assert con.sql(f"SELECT max(smart_240_raw) FROM {panel}").fetchall()[0][0] < 2**32
+    cols = [r[0] for r in con.sql(f"DESCRIBE SELECT * FROM {panel}").fetchall()]
+    assert "smart_188_raw" not in cols and "smart_188_normalized" in cols
+
+
+def test_unparseable_strings_are_counted(pipeline_run):
+    project, _ = pipeline_run
+    log = (project / "build" / "logs" / "extract.log").read_text()
+    line = next(x for x in log.splitlines() if "strings that are not numbers" in x)
+    assert "'smart_18_raw': 0" not in line
