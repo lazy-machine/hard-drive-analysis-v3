@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import hashlib
+import os
+
 import numpy as np
 import pandas as pd
 import pyarrow as pa
@@ -22,6 +25,8 @@ def drive_index(ctx):
     """
     log = Progress(ctx)
     src = ctx.inputs["panel"]
+    if expected := ctx.params.get("sha256"):
+        _check_sha256(src, expected, log)
     con = connect(ctx.workdir, ctx.name)
     lo, hi = con.sql(f"SELECT min(date), max(date) FROM read_parquet({q(src)})").fetchall()[0]
     chunks = month_chunks(lo, hi, ctx.params.get("chunk_months", 1))
@@ -66,6 +71,23 @@ def drive_index(ctx):
     rows = scalar(con, f"SELECT sum(n_rows) FROM read_parquet({out})")
     log(f"{n} drives, {failed} with a failure, {rows} rows")
     return {"drives": n, "failed": failed, "rows": rows}
+
+
+def _check_sha256(path, expected: str, log, chunk: int = 8 * 2**20) -> None:
+    """Refuse to index a panel file that is not the one pipeline.toml names."""
+    size = os.path.getsize(path)
+    h = hashlib.sha256()
+    done = 0
+    with open(path, "rb") as fh:
+        while block := fh.read(chunk):
+            h.update(block)
+            done += len(block)
+            if done % 2**32 == 0:  # a line every 4 GiB
+                log(f"sha256 {done / 2**30:.0f}/{size / 2**30:.0f} GiB")
+    actual = h.hexdigest()
+    if actual != expected.lower():
+        raise ValueError(f"{path}: sha256 is {actual}, pipeline.toml expects {expected}")
+    log(f"sha256 ok ({actual})")
 
 
 def assign_split(bucket: int, split_cfg: dict) -> str:
@@ -121,7 +143,8 @@ def select_cohort(drives: pd.DataFrame, study: dict, scale: dict) -> tuple[pd.Da
     d["n_post_failure_days"] = np.where(
         d["failure_date"].notna(), (d["last_date"] - d["failure_date"]).dt.days, 0)
     cols = ["serial_number", "split", "bucket", "stratum", "drive_weight", "model", "vendor",
-            "capacity_bytes", "first_date", "last_date", "failure_date", "n_post_failure_days"]
+            "n_models_per_month", "capacity_bytes", "first_date", "last_date", "failure_date",
+            "n_post_failure_days"]
     cohort = d[cols].sort_values("serial_number").reset_index(drop=True)
     for col in ("first_date", "last_date", "failure_date"):
         cohort[col] = cohort[col].dt.date
@@ -130,6 +153,8 @@ def select_cohort(drives: pd.DataFrame, study: dict, scale: dict) -> tuple[pd.Da
     counts["by_split_stratum"] = {
         f"{s}/{t}": int(n) for (s, t), n in cohort.groupby(["split", "stratum"]).size().items()}
     counts["drives_reporting_after_failure"] = int((cohort["n_post_failure_days"] > 0).sum())
+    # A serial reported under two model strings in one month is likely two drives.
+    counts["drives_with_several_models"] = int((cohort["n_models_per_month"] > 1).sum())
     return cohort, counts
 
 

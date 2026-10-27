@@ -18,7 +18,7 @@ SCALE = {"failing_fraction": 1.0, "healthy_fraction": 1.0, "stride_days": 7, "de
 def drives_frame(rows):
     cols = ["serial_number", "model", "first_date", "last_date", "first_failure",
             "capacity_bytes"]
-    return pd.DataFrame(rows, columns=cols)
+    return pd.DataFrame(rows, columns=cols).assign(n_models_per_month=1)
 
 
 def test_stable_hashes_are_stable():

@@ -20,7 +20,7 @@ description = "One row per drive: model, capacity, observed span, first failure 
 function = "drives:drive_index"
 inputs = { panel = "dataset/dataset.parquet" }
 outputs = { drives = "build/drives.parquet" }
-params = { chunk_months = 1 }
+params = { chunk_months = 1, sha256 = "d43984e8200893ebdd1bc739cabff8e05dc759aeb572dc2adb5aaad29e40b556" }
 requires = ["duckdb>=2.0"]
 watch = ["steps/common.py"]
 
@@ -88,7 +88,7 @@ inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema
 outputs = { model = "build/models/hazard_smart.txt", meta = "build/models/hazard_smart.json" }
 depends_on = ["verify"]
 params = { kind = "hazard", features = "all", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
-requires = ["lightgbm>=4.6", "numpy"]
+requires = ["lightgbm>=4.6", "numpy", "scipy"]
 watch = ["steps/common.py", "steps/survival.py"]
 timeout = 21600
 
@@ -100,7 +100,7 @@ inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema
 outputs = { model = "build/models/hazard_nosmart.txt", meta = "build/models/hazard_nosmart.json" }
 depends_on = ["verify"]
 params = { kind = "hazard", features = "context", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 1.0, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
-requires = ["lightgbm>=4.6", "numpy"]
+requires = ["lightgbm>=4.6", "numpy", "scipy"]
 watch = ["steps/common.py", "steps/survival.py"]
 timeout = 21600
 
@@ -112,7 +112,7 @@ inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema
 outputs = { model = "build/models/binary_30d.txt", meta = "build/models/binary_30d.json" }
 depends_on = ["verify"]
 params = { kind = "binary", features = "all", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
-requires = ["lightgbm>=4.6", "numpy"]
+requires = ["lightgbm>=4.6", "numpy", "scipy"]
 watch = ["steps/common.py", "steps/survival.py"]
 timeout = 21600
 

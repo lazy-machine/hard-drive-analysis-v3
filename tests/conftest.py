@@ -41,6 +41,8 @@ def project(tmp_path_factory) -> Path:
     pipeline = (ROOT / "pipeline.toml").read_text()
     pipeline = pipeline.replace("batches = 8", "batches = 3")
     pipeline = pipeline.replace("min_child_samples = 200", "min_child_samples = 20")
+    # the synthetic panel is not the real dataset, so skip its checksum
+    pipeline = re.sub(r'sha256 = "[0-9a-fA-F]*"', 'sha256 = ""', pipeline)
     (work / "pipeline.toml").write_text(pipeline)
 
     cols = smart_columns(load_study(work / "config" / "study.toml"))
