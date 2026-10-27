@@ -49,6 +49,17 @@ def _label(name):
     return LABELS.get(name, name)
 
 
+def top_importance(gain: dict, n: int = 20) -> pd.Series:
+    """The n features with the most gain, largest first, as shares of the total gain.
+
+    The meta JSON is written with sorted keys, so the stored order is alphabetical and
+    the ranking has to be redone here.
+    """
+    s = pd.Series(gain, dtype=float)
+    total = s.sum()
+    return (s / (total if total > 0 else 1.0)).sort_values(ascending=False).head(n)
+
+
 def figures(out, metrics, calib, detection, preds, meta_ref, ref):
     disc = pd.DataFrame(metrics["discrimination"])
     fig, ax = plt.subplots(figsize=(7.5, 4.5))
@@ -104,9 +115,9 @@ def figures(out, metrics, calib, detection, preds, meta_ref, ref):
         fig.savefig(out / "detection.png", dpi=120)
         plt.close(fig)
 
-    imp = pd.Series(meta_ref["importance_gain"]).head(20)[::-1]
+    imp = top_importance(meta_ref["importance_gain"])[::-1]
     fig, ax = plt.subplots(figsize=(6.5, 5.5))
-    ax.barh(imp.index, imp / imp.sum())
+    ax.barh(imp.index, imp)
     ax.set_xlabel("share of total gain (top 20)")
     ax.set_title(f"What the {ref} model uses")
     fig.tight_layout()
@@ -166,18 +177,26 @@ def report(ctx):
         "",
     ]
     lines += _answer(disc, gains, metrics, ref)
+    pos_drives = sorted({r["positive_drives"] for r in metrics["discrimination"]})
+    if len(pos_drives) == 1:
+        drives_note = (f"All {pos_drives[0]} failing test drives are positive at every "
+                       "horizon (each has snapshots close to its failure day), so the last "
+                       "column counts positive snapshots instead.")
+    else:
+        drives_note = (f"Failing test drives with a positive snapshot: {pos_drives[0]} to "
+                       f"{pos_drives[-1]}, depending on the horizon.")
     lines += ["", "## Discrimination by horizon", "",
               "ROC-AUC and PR-AUC on test snapshots whose status at the horizon is known, "
               "weighted to real prevalence. Brackets: 95% drive-level bootstrap "
               f"({metrics['bootstrap_rounds']} rounds). Base rate = real share of "
-              "drive-days that fail within the horizon.", "",
-              "| horizon | model | ROC-AUC | PR-AUC | Brier | base rate | failing drives |",
+              f"drive-days that fail within the horizon. {drives_note}", "",
+              "| horizon | model | ROC-AUC | PR-AUC | Brier | base rate | positive snapshots |",
               "|---|---|---|---|---|---|---|"]
     for r in metrics["discrimination"]:
         lines.append(
             f"| {r['horizon']} d | {_label(r['model'])} | {_fmt(r['auc'])} {_ci(r['auc_ci'])} | "
             f"{_fmt(r['ap'], 4)} {_ci(r['ap_ci'], 4)} | {_fmt(r['brier'], 5)} | "
-            f"{_pct(r['base_rate'], 3)} | {r['positive_drives']} |")
+            f"{_pct(r['base_rate'], 3)} | {r['positive_snapshots']} |")
     for H, why in metrics.get("skipped_horizons", {}).items():
         lines.append(f"\n{H}-day horizon not estimable on this test set: {why}.")
     lines += ["", "![AUC by horizon](auc_by_horizon.png)", "",
@@ -248,8 +267,10 @@ def report(ctx):
                          f"{_pct(r['predicted'], 3)} | {_pct(r['observed_km'], 3)} |")
     lines += ["", "## Which SMART attributes matter", "",
               "Single-attribute ROC-AUC on train snapshots (fails within "
-              f"{meta_ref['binary_horizon']} days). 0.5 = no signal. Below 0.5 means lower "
-              "values go with failure (normalized values fall as a drive degrades).", "",
+              f"{meta_ref['binary_horizon']} days), computed only on the drive-days where "
+              "the attribute is reported; \"filled\" is that share. 0.5 = no signal. Below "
+              "0.5 means lower values go with failure (normalized values fall as a drive "
+              "degrades).", "",
               "| feature | ROC-AUC | filled |", "|---|---|---|"]
     for _, r in signal.head(15).iterrows():
         lines.append(f"| {r['feature']} | {_fmt(r['auc'])} | {_pct(r['fill_rate'], 0)} |")
