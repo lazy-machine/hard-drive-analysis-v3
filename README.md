@@ -278,3 +278,7 @@ Conventions, kept from v2 and enforced by `data-pipeline`:
 - [docs/AUDIT-RESOLUTION.md](docs/AUDIT-RESOLUTION.md): every finding of the 2026-10
   audit (`audit/`) and the commit that addresses it.
 - [docs/ISSUES.md](docs/ISSUES.md): the issue log.
+
+## Licence
+
+MIT, see [LICENSE](LICENSE).
