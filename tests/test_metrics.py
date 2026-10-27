@@ -7,7 +7,8 @@ import pytest
 from sklearn.metrics import average_precision_score, roc_auc_score
 
 from metrics import (
-    bootstrap_counts, concordance, km_failure, weighted_auc, weighted_average_precision,
+    bootstrap_counts, bootstrap_drive_counts, censoring_survival, concordance, ipcw_weights,
+    km_failure, one_per_drive, uno_concordance, weighted_auc, weighted_average_precision,
     weighted_quantile_threshold,
 )
 
@@ -93,3 +94,76 @@ def test_quantile_calibration_counts_only_known_outcomes():
     # row 1 failed after day 10 -> survived past it. row 4 has no finite prediction.
     share, n = quantile_calibration(d, e, np.ones(5), t)
     assert n == 3 and np.isclose(share, 1 / 3)
+
+
+@pytest.fixture
+def survival_data():
+    rng = np.random.default_rng(3)
+    n = 60
+    d = rng.integers(0, 12, n)
+    e = rng.random(n) < 0.4
+    w = rng.choice([1.0, 3.0], n)
+    risk = np.round(rng.normal(-d, 3))
+    return risk, d, e, w
+
+
+def brute_censoring_survival(d, e, w, t):
+    """P(C >= t): product over days before t, failures leave the risk set before censoring."""
+    s = 1.0
+    for day in range(t):
+        at_risk = w[(d > day) | ((d == day) & ~e)].sum()
+        if at_risk > 0:
+            s *= 1 - w[~e & (d == day)].sum() / at_risk
+    return s
+
+
+def test_censoring_survival_matches_brute_force(survival_data):
+    _, d, e, w = survival_data
+    G = censoring_survival(d, e, w)
+    for t in range(14):
+        assert np.isclose(G(t), brute_censoring_survival(d, e, w, t))
+
+
+def test_ipcw_weights_reweight_known_rows(survival_data):
+    _, d, e, w = survival_data
+    H = 6
+    iw = ipcw_weights(d, e, w, H)
+    failed = e & (d < H)
+    alive = (e & (d >= H)) | (~e & (d >= H - 1))
+    assert np.all(iw[~(failed | alive)] == 0)
+    for i in np.flatnonzero(failed):
+        assert np.isclose(iw[i], w[i] / brute_censoring_survival(d, e, w, d[i]))
+    for i in np.flatnonzero(alive):
+        assert np.isclose(iw[i], w[i] / brute_censoring_survival(d, e, w, H - 1))
+    # without censoring before the horizon, IPCW changes nothing
+    full = np.full(d.size, 20)
+    assert np.allclose(ipcw_weights(full, np.zeros(d.size, bool), w, H), w)
+
+
+def test_uno_concordance_matches_brute_force(survival_data):
+    risk, d, e, w = survival_data
+    tau = 8
+    num = den = 0.0
+    for i, j in itertools.permutations(range(len(d)), 2):
+        if e[i] and d[i] < tau and (d[j] > d[i] or (d[j] == d[i] and not e[j])):
+            pw = w[i] / brute_censoring_survival(d, e, w, d[i]) ** 2 * w[j]
+            den += pw
+            num += pw * (1.0 if risk[i] > risk[j] else 0.5 if risk[i] == risk[j] else 0.0)
+    assert np.isclose(uno_concordance(risk, d, e, w, tau), num / den)
+
+
+def test_stratified_bootstrap_keeps_stratum_sizes():
+    strata = np.array(["failing"] * 3 + ["healthy"] * 7)
+    for counts in bootstrap_drive_counts(10, rounds=30, seed=1, strata=strata):
+        assert counts[:3].sum() == 3 and counts[3:].sum() == 7
+
+
+def test_one_per_drive_picks_each_drive_once():
+    drive = np.array([2, 0, 0, 1, 2, 2, 0])
+    rng = np.random.default_rng(0)
+    seen = set()
+    for _ in range(50):
+        pick = one_per_drive(drive, rng)
+        assert sorted(drive[pick]) == [0, 1, 2]
+        seen |= set(pick[drive[pick] == 0])
+    assert seen == {1, 2, 6}        # every row of drive 0 gets drawn sometimes
