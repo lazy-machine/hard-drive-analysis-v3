@@ -75,63 +75,131 @@ def km_failure(duration: np.ndarray, event: np.ndarray, w: np.ndarray, horizon: 
     return float(1.0 - surv)
 
 
+def _fenwick_add(tree: np.ndarray, pos: np.ndarray, v: np.ndarray) -> None:
+    """Add v at 1-based positions pos, all at once."""
+    pos, v = pos.copy(), v.copy()
+    while pos.size:
+        np.add.at(tree, pos, v)
+        pos = pos + (pos & -pos)
+        keep = pos < tree.size
+        pos, v = pos[keep], v[keep]
+
+
+def _fenwick_prefix(tree: np.ndarray, pos: np.ndarray) -> np.ndarray:
+    """Sum over 1-based positions 1..pos, for every pos at once."""
+    out = np.zeros(pos.size)
+    pos = pos.copy()
+    live = pos > 0
+    while live.any():
+        out[live] += tree[pos[live]]
+        pos[live] -= pos[live] & -pos[live]
+        live = pos > 0
+    return out
+
+
 def concordance(risk: np.ndarray, duration: np.ndarray, event: np.ndarray,
-                w: np.ndarray) -> float:
+                w: np.ndarray, event_weight: np.ndarray | None = None) -> float:
     """Weighted Harrell's C: P(higher risk fails first) over comparable pairs.
 
     A pair (i, j) is comparable when i fails (event) and j is known alive longer: j's
     duration is greater, or equal with j censored. Pair weight w_i * w_j; risk ties count
-    one half. O(n log n) with a Fenwick tree over risk ranks.
+    one half. O(n log n) with a Fenwick tree over risk ranks, processed one duration at a
+    time (durations are whole days, so there are few distinct values).
+
+    `event_weight` replaces w_i for the failing member of a pair (Uno's C passes
+    w_i / G(T_i)^2 there, and 0 for failures past its truncation time).
     """
     risk = np.asarray(risk, dtype=float)
     duration = np.asarray(duration)
     event = np.asarray(event, dtype=bool)
-    ranks = np.unique(risk, return_inverse=True)[1]
-    m = ranks.max() + 1 if ranks.size else 0
+    w = np.asarray(w, dtype=float)
+    ew = w if event_weight is None else np.asarray(event_weight, dtype=float)
+    ranks = np.unique(risk, return_inverse=True)[1] + 1      # 1-based for the tree
+    m = int(ranks.max()) if ranks.size else 0
     tree = np.zeros(m + 1)
-
-    def add(i: int, v: float) -> None:
-        i += 1
-        while i <= m:
-            tree[i] += v
-            i += i & -i
-
-    def prefix(i: int) -> float:  # sum of ranks < i
-        s = 0.0
-        while i > 0:
-            s += tree[i]
-            i -= i & -i
-        return s
-
-    total_added = 0.0
-    conc = disc = tie = 0.0
-    order = np.lexsort((event, -duration))  # by duration desc, censored before events
-    i = 0
-    n = order.size
-    while i < n:
-        j = i
-        d = duration[order[i]]
-        while j < n and duration[order[j]] == d:
-            j += 1
-        group = order[i:j]
-        cens = group[~event[group]]
-        evs = group[event[group]]
-        for c in cens:
-            add(ranks[c], w[c])
-            total_added += w[c]
-        for e in evs:
-            r = ranks[e]
-            less = prefix(r)
-            leq = prefix(r + 1)
-            conc += w[e] * less
-            tie += w[e] * (leq - less)
-            disc += w[e] * (total_added - leq)
-        for e in evs:
-            add(ranks[e], w[e])
-            total_added += w[e]
-        i = j
+    order = np.argsort(-duration, kind="stable")             # longest durations first
+    d_sorted = duration[order]
+    starts = np.flatnonzero(np.r_[True, d_sorted[1:] != d_sorted[:-1]])
+    ends = np.r_[starts[1:], order.size]
+    total_added = conc = disc = tie = 0.0
+    for a, b in zip(starts, ends):
+        group = order[a:b]
+        is_ev = event[group]
+        cens, evs = group[~is_ev], group[is_ev]
+        if cens.size:                                        # alive at least this long
+            _fenwick_add(tree, ranks[cens], w[cens])
+            total_added += w[cens].sum()
+        if evs.size:
+            r = ranks[evs]
+            less = _fenwick_prefix(tree, r - 1)
+            leq = _fenwick_prefix(tree, r)
+            conc += np.sum(ew[evs] * less)
+            tie += np.sum(ew[evs] * (leq - less))
+            disc += np.sum(ew[evs] * (total_added - leq))
+            _fenwick_add(tree, r, w[evs])
+            total_added += w[evs].sum()
     denom = conc + disc + tie
     return float((conc + 0.5 * tie) / denom) if denom > 0 else float("nan")
+
+
+def censoring_survival(duration: np.ndarray, event: np.ndarray, w: np.ndarray):
+    """Weighted Kaplan-Meier of the censoring time: a function t -> P(C >= t).
+
+    Same day conventions as the labels: a censored row at d is observed alive through day
+    d, a failure on day d is seen when C >= d. At a tie, failures come before censoring,
+    so a row failing on day d is not at risk of being censored on day d.
+    """
+    duration = np.asarray(duration)
+    event = np.asarray(event, dtype=bool)
+    w = np.asarray(w, dtype=float)
+    days = np.unique(duration[~event])
+    order = np.argsort(duration)
+    d_sorted, w_sorted = duration[order], w[order]
+    below = np.r_[0.0, np.cumsum(w_sorted)]
+    at_risk = w.sum() - below[np.searchsorted(d_sorted, days, side="left")]
+    ev_at = np.bincount(np.searchsorted(days, duration[event & np.isin(duration, days)]),
+                        w[event & np.isin(duration, days)], minlength=days.size)
+    cens_w = np.bincount(np.searchsorted(days, duration[~event]), w[~event], minlength=days.size)
+    G_after = np.cumprod(1.0 - cens_w / np.maximum(at_risk - ev_at, 1e-300))  # P(C > day)
+
+    def G(t):
+        """P(C >= t) = P(C > t - 1) on whole days."""
+        k = np.searchsorted(days, np.asarray(t) - 1, side="right") - 1
+        return np.where(k >= 0, G_after[np.maximum(k, 0)], 1.0)
+
+    return G
+
+
+def ipcw_weights(duration: np.ndarray, event: np.ndarray, w: np.ndarray, horizon: int,
+                 G=None) -> np.ndarray:
+    """Inverse-probability-of-censoring weights for "fails within horizon".
+
+    Dropping rows whose status at the horizon is unknown is unbiased only if censoring is
+    unrelated to risk and to follow-up length. IPCW reweights the known rows instead: a
+    failure on day d by 1 / P(C >= d), a row known alive through day horizon-1 by
+    1 / P(C >= horizon-1), an unknown row by 0 (Uno et al. 2011, Vock et al. 2016).
+    """
+    duration = np.asarray(duration)
+    event = np.asarray(event, dtype=bool)
+    G = censoring_survival(duration, event, w) if G is None else G
+    out = np.zeros(duration.shape, dtype=float)
+    failed = event & (duration < horizon)
+    alive = (event & (duration >= horizon)) | (~event & (duration >= horizon - 1))
+    out[failed] = w[failed] / np.maximum(G(duration[failed]), 1e-12)
+    out[alive] = w[alive] / max(float(G(horizon - 1)), 1e-12)
+    return out
+
+
+def uno_concordance(risk, duration, event, w, tau: int, G=None) -> float:
+    """Uno's C truncated at tau: Harrell's pairs, each failure weighted by 1 / G(T)^2, so
+    the estimate does not depend on the censoring pattern (Uno et al. 2011)."""
+    duration = np.asarray(duration)
+    event = np.asarray(event, dtype=bool)
+    w = np.asarray(w, dtype=float)
+    G = censoring_survival(duration, event, w) if G is None else G
+    g = np.maximum(G(duration), 1e-12)
+    ew = np.where(event & (duration < tau), w / g**2, 0.0)
+    return concordance(risk, duration, event, w, event_weight=ew)
 
 
 def weighted_quantile_threshold(score: np.ndarray, w: np.ndarray, rate: float) -> float:
@@ -146,13 +214,36 @@ def weighted_quantile_threshold(score: np.ndarray, w: np.ndarray, rate: float) -
     return float(s[ok[-1]])
 
 
-def bootstrap_counts(drive_index: np.ndarray, n_drives: int, rounds: int, seed: int):
+def bootstrap_drive_counts(n_drives: int, rounds: int, seed: int, strata=None):
+    """Yield, per round, how often each drive is drawn in a drive-level bootstrap.
+
+    With `strata` (one label per drive), drives are resampled within each stratum, which
+    keeps the stratified sample's failing/healthy mix fixed like the sampling design did.
+    """
+    rng = np.random.default_rng(seed)
+    groups = ([np.arange(n_drives)] if strata is None else
+              [np.flatnonzero(strata == s) for s in np.unique(strata)])
+    for _ in range(rounds):
+        counts = np.zeros(n_drives, dtype=np.int64)
+        for g in groups:
+            if g.size:
+                counts[g] = rng.multinomial(g.size, np.full(g.size, 1.0 / g.size))
+        yield counts
+
+
+def bootstrap_counts(drive_index: np.ndarray, n_drives: int, rounds: int, seed: int,
+                     strata=None):
     """Yield, per round, the multiplicity of each row under a drive-level bootstrap.
 
     Snapshots of one drive are resampled together, because they are strongly correlated
     and treating them as independent makes intervals far too narrow.
     """
-    rng = np.random.default_rng(seed)
-    p = np.full(n_drives, 1.0 / n_drives)
-    for _ in range(rounds):
-        yield rng.multinomial(n_drives, p)[drive_index]
+    for counts in bootstrap_drive_counts(n_drives, rounds, seed, strata):
+        yield counts[drive_index]
+
+
+def one_per_drive(drive_index: np.ndarray, rng) -> np.ndarray:
+    """Row indices of one random row per drive (for drive-level metrics)."""
+    order = np.lexsort((rng.random(drive_index.size), drive_index))
+    d = drive_index[order]
+    return order[np.r_[True, d[1:] != d[:-1]]]
