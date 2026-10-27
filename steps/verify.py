@@ -16,7 +16,7 @@ import pandas as pd
 
 from common import (
     ID_COLUMNS, LABEL_COLUMNS, LEAK_COLUMNS, connect, load_sample, load_study, q, scalar,
-    stable_bucket,
+    stable_bucket, stable_unit,
 )
 from drives import assign_split
 from panel import model_levels
@@ -52,6 +52,12 @@ def run_checks(con, cohort: pd.DataFrame, schema: dict, study: dict, scale: dict
     bad_w = int((cohort["drive_weight"] - cohort["stratum"].map(lambda s: 1 / frac[s])).abs()
                 .gt(1e-9).sum())
     add("cohort_weights_match_sampling", bad_w == 0, f"{bad_w} drives with a wrong weight")
+    if "n_models_per_month" in cohort.columns:
+        several = int((cohort["n_models_per_month"] > 1).sum())
+        add("one_model_per_drive", several == 0,
+            f"{several} drives report more than one model in a month", "warn")
+    else:
+        add("one_model_per_drive", True, "column not present", "warn")
 
     # -- snapshot table shape ----------------------------------------------------------
     cols = [r[0] for r in con.sql("DESCRIBE SELECT * FROM snap").fetchall()]
@@ -125,12 +131,54 @@ def run_checks(con, cohort: pd.DataFrame, schema: dict, study: dict, scale: dict
         WHERE NOT (abs(s.weight - c.drive_weight) < 1e-6
                    OR abs(s.weight - c.drive_weight * {stride}) < 1e-6)""")
     add("snapshot_weights_valid", bad_sw == 0, f"{bad_sw} rows")
+    dense = scale["dense_days"]
+    if stride == 1:
+        same = "stride_days = 1: dense and stride weights coincide, rows cannot be told apart"
+        add("stride_rows_on_stride_days", True, same)
+        add("dense_rows_before_visible_failure", True, same)
+    else:
+        # The same per-drive offset as panel._register_cohort.
+        offsets = pd.DataFrame({
+            "serial_number": cohort["serial_number"],
+            "stride_offset": [int(stable_unit(s, "stride") * stride) for s in cohort["serial_number"]],
+        })
+        con.register("verify_stride_offsets", offsets)
+        off_stride = scalar(con, f"""SELECT count(*) FROM snap s JOIN cohort c USING (serial_number)
+            JOIN verify_stride_offsets o USING (serial_number)
+            WHERE abs(s.weight - c.drive_weight * {stride}) < 1e-6
+              AND (date_diff('day', DATE '2000-01-01', s.date) + o.stride_offset) % {stride} <> 0""")
+        con.unregister("verify_stride_offsets")
+        add("stride_rows_on_stride_days", off_stride == 0,
+            f"{off_stride} rows with weight drive_weight * {stride} off the drive's stride day")
+        stray = scalar(con, f"""SELECT count(*) FROM snap s JOIN cohort c USING (serial_number)
+            WHERE abs(s.weight - c.drive_weight) < 1e-6
+              AND NOT coalesce(c.failure_date IS NOT NULL
+                  AND date_diff('day', s.date, c.failure_date) < {dense}
+                  AND c.failure_date <= CASE WHEN s.split = 'test' THEN c.last_date
+                      ELSE least(c.last_date, DATE '{split['train_end']}') END, false)""")
+        add("dense_rows_before_visible_failure", stray == 0,
+            f"{stray} rows with weight drive_weight not within {dense} days before a failure "
+            "visible in their split")
+
+    # -- coverage ----------------------------------------------------------------------
+    # A drive with fewer than stride_days rows in its split window can miss every stride
+    # day. Legitimate: the offset is random, so the weights stay unbiased.
+    missing = con.sql("""SELECT c.split, count(*) FROM cohort c
+                         WHERE c.serial_number NOT IN (SELECT DISTINCT serial_number FROM snap)
+                         GROUP BY c.split ORDER BY c.split""").fetchall()
+    n_missing = sum(n for _, n in missing)
+    by_split = ", ".join(f"{s}={n}" for s, n in missing) or "none"
+    add("cohort_drives_have_snapshots", n_missing == 0,
+        f"{n_missing} cohort drives without a snapshot ({by_split}); expected only for drives "
+        f"with fewer than {stride} rows in their split window", "warn")
 
     # -- events and features -----------------------------------------------------------
+    min_fail = study["evaluation"]["min_failing_drives"]
     for s in ("train", "val", "test"):
         n_ev = scalar(con, f"SELECT count(DISTINCT serial_number) FROM snap WHERE split = '{s}' AND event = 1")
         add(f"failures_present_{s}", n_ev > 0, f"{n_ev} failing drives")
-        add(f"enough_failures_{s}", n_ev >= 30, f"{n_ev} failing drives (< 30 is noisy)", "warn")
+        add(f"enough_failures_{s}", n_ev >= min_fail,
+            f"{n_ev} failing drives (< {min_fail} is noisy)", "warn")
     fill = con.sql("SELECT " + ", ".join(f'count("{f}")::DOUBLE / count(*)' for f in schema["features"])
                    + " FROM snap WHERE split = 'train'").fetchall()[0]
     empty = [f for f, v in zip(schema["features"], fill) if v == 0]

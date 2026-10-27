@@ -60,3 +60,6 @@ alert_false_alarm_rate = 0.01
 # Drive-level (cluster) bootstrap for confidence intervals.
 bootstrap_rounds = 200
 bootstrap_seed = 20261021
+# Fewer failing drives than this in a split makes its metrics too noisy to trust (the
+# gate warns). At 30 failures a 30-day ROC-AUC interval is already about +-0.1 wide.
+min_failing_drives = 30
