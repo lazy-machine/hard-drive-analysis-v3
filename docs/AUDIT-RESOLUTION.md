@@ -21,6 +21,7 @@ The fixes are on branch `audit-fixes`:
 | report params | Model labels and the timing tolerance moved to the `report` step's params |
 | critical steps | `explore` and `report` made critical |
 | lint/CI | ruff config and fixes, GitHub Actions workflow |
+| licence | MIT `LICENSE`, `license = "MIT"` in `pyproject.toml` |
 
 The fixed code has run at medium scale (2026-10-26). The full-scale numbers in the
 README still come from `398f421`. The full rerun needs the 31 GB machine
@@ -80,6 +81,7 @@ README still come from `398f421`. The full rerun needs the 31 GB machine
 | A25 | `report.py` hardcodes the model labels and a ±0.15 timing tolerance (flint F3, rest) | Both are params of the `report` step in `pipeline.toml` (`labels`, `timing_tolerance`). A model without a label shows under its own name. Unit tests for `_label` and `_timing_verdict`. Rendered from the medium-scale `build/`, the report is byte-identical to the one the old code wrote | report params |
 | A26 | `explore` and `report` are `critical = false`, so a report can fail without stopping the run (flint F5) | Both are critical now. The report is the study's deliverable, and it reads `build/explore/feature_signal.csv` | critical steps |
 | A27 | No CI, no linter (gwen §3.8) | ruff in the dev group, configured in `pyproject.toml` (`uv run ruff check steps tests`). Its 42 findings are fixed: long lines wrapped, `zip(..., strict=True)` where both sides have the same length, loop variables bound explicitly in a closure, one f-string without placeholders. `.github/workflows/test.yml` runs ruff and pytest on every push and pull request. It needs the repository variable `DATA_PIPELINE_REPO` (docs/ISSUES.md #16). No type checker | lint/CI |
+| A28 | No LICENSE (gwen §3.8) | MIT licence, the owner's choice (2026-10-26) | licence |
 
 ### Reproducibility and packaging
 
@@ -129,12 +131,11 @@ No change was made for these:
 
 ## Not done
 
-These need the 31 GB machine or a decision by the owner:
+These need the 31 GB machine or a remote for `data-pipeline` (owner decisions of 2026-10-26):
 
 - **Full-scale rerun with the fixed code.** The README's full-scale numbers are from
-  `398f421` (docs/ISSUES.md #15).
-- **LICENSE, publishing or pinning `data-pipeline`.** The licence is the owner's choice.
-  CI checks the runner out next to the project, but only once the repository variable
+  `398f421`. The owner will run it on the 31 GB machine (docs/ISSUES.md #15).
+- **Publishing or pinning `data-pipeline`.** It has no remote yet. CI checks the runner out next to the project, but only once the repository variable
   `DATA_PIPELINE_REPO` names its remote (docs/ISSUES.md #16).
 - **Rolling-origin evaluation** (docs/ISSUES.md #9), **"leaves the panel" as an event**
   (deepseek D3, docs/ISSUES.md #7) and a **pod-level bootstrap** (opus D7).

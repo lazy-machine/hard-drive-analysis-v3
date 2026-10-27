@@ -173,24 +173,27 @@ something surprises you, and close it with how it was verified.
 
 ### 15. The full-scale rerun with the fixed code is pending
 - **Tags:** OPEN
+- **Status:** the owner will run it on the 31 GB machine (decided 2026-10-26). This
+  machine has about 13 GiB available, below the 17.8 GiB training estimate.
 - **Detail:** the full-scale numbers in the README come from the run of 2026-10-24 at
   `398f421` (`results/full-2026-10-24/`), before the audit fixes. The fixed code has run
   only at medium scale. A full rerun needs the 31 GB machine (#1). It has seven train
   steps instead of three, and `evaluate` is slower (#14). After the rerun, copy its small artifacts into a new
   `results/` folder and update the README.
 
-### 16. No LICENSE, `data-pipeline` is an editable sibling path
+### 16. `data-pipeline` is an editable sibling path
 - **Tags:** OPEN
 - **Status:** CI and a linter added on 2026-10-26. `.github/workflows/test.yml` runs
   `uv run ruff check steps tests` and `uv run pytest -q` on every push and pull request.
-  The linter also runs locally (config in `pyproject.toml`).
+  The linter also runs locally (config in `pyproject.toml`). MIT licence added on
+  2026-10-26 (`LICENSE`), the owner's choice.
 - **Detail:** `pyproject.toml` takes `data-pipeline` from `../data-pipeline` as an
   editable path, so a fresh clone can't `uv sync` without that sibling checkout. The
   workflow works around it: it checks the orchestrator out into `data-pipeline/` next to
   this repository, from the repository variable `DATA_PIPELINE_REPO` (optional
   `DATA_PIPELINE_REF`, and the secret `DATA_PIPELINE_TOKEN` if the orchestrator is
-  private). The orchestrator has no remote yet. Until it has one and the variable is
-  set, the job stops at its first step. The licence is the owner's choice. Publishing
+  private). The orchestrator has no remote yet (confirmed by the owner on 2026-10-26).
+  Until it has one and the variable is set, the job stops at its first step. Publishing
   `data-pipeline`, or pinning it to a git URL with a commit, would let a fresh clone
   `uv sync` on its own.
 

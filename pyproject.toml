@@ -3,6 +3,7 @@ name = "hard-drive-analysis"
 version = "3.0.0"
 description = "Can smartctl (SMART) metrics predict how much life a hard drive has left?"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.13"
 dependencies = [
     "data-pipeline",
