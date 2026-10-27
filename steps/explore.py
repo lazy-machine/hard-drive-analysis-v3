@@ -1,4 +1,5 @@
-"""Exploratory tables and figures. Non-critical: nothing downstream depends on them.
+"""Exploratory tables and figures. `report` reads feature_signal.csv, so a failure here
+stops the run.
 
 Reads the drive index and the snapshot table, never the raw panel, so it is cheap at
 every scale.
@@ -79,7 +80,8 @@ def explore(ctx):
     # Spearman correlation on at most 200k rows, sampled by drive
     serials = meta["serial_number"].unique()
     rng = np.random.default_rng(0)
-    keep_drives = set(rng.permutation(serials)[: max(1, int(len(serials) * min(1, 200_000 / len(meta))))])
+    share = min(1, 200_000 / len(meta))
+    keep_drives = set(rng.permutation(serials)[: max(1, int(len(serials) * share))])
     sample = pd.DataFrame(X[meta["serial_number"].isin(keep_drives).to_numpy()], columns=features)
     sample = sample.loc[:, sample.notna().mean() > 0.05]
     corr = sample.rank().corr()
@@ -98,7 +100,8 @@ def explore(ctx):
     flagged = (np.nan_to_num(tX, nan=0) > 0).any(axis=1)
     days = np.arange(0, study["label"]["bin_edges"][-1] + 1, 5)
     fig, ax = plt.subplots(figsize=(7, 4.5))
-    for label, m in (("any critical counter > 0", flagged), ("all critical counters = 0", ~flagged)):
+    groups = (("any critical counter > 0", flagged), ("all critical counters = 0", ~flagged))
+    for label, m in groups:
         if m.any():
             d, e, w = (tmeta[c].to_numpy()[m] for c in ("duration_days", "event", "weight"))
             ax.plot(days, [1 - km_failure(d, e, w, t) for t in days],

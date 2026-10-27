@@ -70,7 +70,6 @@ outputs = { dir = "build/explore" }
 depends_on = ["verify"]
 requires = ["matplotlib", "pandas>=2.2"]
 watch = ["steps/common.py", "steps/metrics.py", "steps/survival.py"]
-critical = false
 
 # -- models --------------------------------------------------------------------------------
 # kind = "hazard": discrete-time survival model -> a survival curve per snapshot.
@@ -200,7 +199,6 @@ function = "report:report"
 inputs = { metrics = "build/metrics.json", calibration = "build/calibration.csv", detection = "build/detection.csv", life = "build/life.csv", predictions = "build/predictions.parquet", cohort_summary = "build/cohort-summary.json", verify = "build/verify-report.json", explore = "build/explore", meta_hazard_smart = "build/models/hazard_smart.json" }
 outputs = { dir = "build/report" }
 requires = ["matplotlib", "pandas>=2.2"]
-critical = false
 
 [steps.params]
 timing_tolerance = 0.15
