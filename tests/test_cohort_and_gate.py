@@ -46,7 +46,7 @@ def test_cohort_rules():
     assert late not in set(cohort["serial_number"])
     assert counts["excluded_ssd"] == 1 and counts["excluded_outside_window"] == 2
     expected = {"train": range(0, 70), "val": range(70, 80), "test": range(80, 100)}
-    for s, split in zip(cohort["serial_number"], cohort["split"]):
+    for s, split in zip(cohort["serial_number"], cohort["split"], strict=True):
         assert stable_bucket(s) in expected[split]
 
 

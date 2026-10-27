@@ -52,11 +52,13 @@ def test_features_do_not_see_the_future(pipeline_run, tmp_path):
 
     full = _build(project, full_panel, tmp_path / "full")
     cut = _build(project, cut_panel, tmp_path / "cut")
-    features = json.loads((tmp_path / "full" / "build" / "feature-schema.json").read_text())["features"]
+    schema_path = tmp_path / "full" / "build" / "feature-schema.json"
+    features = json.loads(schema_path.read_text())["features"]
 
     both = (f"read_parquet('{cut}') a JOIN read_parquet('{full}') b USING (serial_number, date) "
             f"WHERE date <= DATE '{CUTOFF}'")
-    n_cut = con.sql(f"SELECT count(*) FROM read_parquet('{cut}') WHERE date <= DATE '{CUTOFF}'").fetchall()[0][0]
+    n_cut = con.sql(f"SELECT count(*) FROM read_parquet('{cut}') "
+                    f"WHERE date <= DATE '{CUTOFF}'").fetchall()[0][0]
     n_both, n_test = con.sql(f"SELECT count(*), count(*) FILTER (WHERE a.split = 'test') "
                              f"FROM {both}").fetchall()[0]
     assert n_both == n_cut > 1000, "row selection depends on the cohort only, not on later rows"
@@ -64,5 +66,5 @@ def test_features_do_not_see_the_future(pipeline_run, tmp_path):
     diffs = con.sql("SELECT " + ", ".join(
         f'count(*) FILTER (WHERE a."{f}" IS DISTINCT FROM b."{f}")' for f in features)
         + f" FROM {both}").fetchall()[0]
-    changed = {f: n for f, n in zip(features, diffs) if n}
+    changed = {f: n for f, n in zip(features, diffs, strict=True) if n}
     assert not changed, f"features changed when later rows were removed: {changed}"

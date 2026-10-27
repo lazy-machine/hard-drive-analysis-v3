@@ -31,7 +31,7 @@ def expand(duration: np.ndarray, event: np.ndarray, weight: np.ndarray,
     if (duration < 0).any():
         raise ValueError("negative duration")
     idx, bins, labels, weights = [], [], [], []
-    for k, (a, b) in enumerate(zip(edges[:-1], edges[1:])):
+    for k, (a, b) in enumerate(zip(edges[:-1], edges[1:], strict=True)):
         at_risk = np.flatnonzero(duration >= a)
         d, e = duration[at_risk], event[at_risk]
         failed_here = e & (d < b)

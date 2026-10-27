@@ -179,13 +179,20 @@ something surprises you, and close it with how it was verified.
   steps instead of three, and `evaluate` is slower (#14). After the rerun, copy its small artifacts into a new
   `results/` folder and update the README.
 
-### 16. No LICENSE, no CI, `data-pipeline` is an editable sibling path
+### 16. No LICENSE, `data-pipeline` is an editable sibling path
 - **Tags:** OPEN
-- **Detail:** the repository has no licence file and no CI. `pyproject.toml` takes
-  `data-pipeline` from `../data-pipeline` as an editable path, so a fresh clone can't
-  `uv sync` without that sibling checkout. Both need the owner: the licence is the
-  owner's choice, and CI can't install the runner until `data-pipeline` is published or
-  pinned to a fetchable source (for example a git URL with a commit).
+- **Status:** CI and a linter added on 2026-10-26. `.github/workflows/test.yml` runs
+  `uv run ruff check steps tests` and `uv run pytest -q` on every push and pull request.
+  The linter also runs locally (config in `pyproject.toml`).
+- **Detail:** `pyproject.toml` takes `data-pipeline` from `../data-pipeline` as an
+  editable path, so a fresh clone can't `uv sync` without that sibling checkout. The
+  workflow works around it: it checks the orchestrator out into `data-pipeline/` next to
+  this repository, from the repository variable `DATA_PIPELINE_REPO` (optional
+  `DATA_PIPELINE_REF`, and the secret `DATA_PIPELINE_TOKEN` if the orchestrator is
+  private). The orchestrator has no remote yet. Until it has one and the variable is
+  set, the job stops at its first step. The licence is the owner's choice. Publishing
+  `data-pipeline`, or pinning it to a git URL with a commit, would let a fresh clone
+  `uv sync` on its own.
 
 ### 17. The article is not started
 - **Tags:** OPEN

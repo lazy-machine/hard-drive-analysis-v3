@@ -18,6 +18,9 @@ The fixes are on branch `audit-fixes`:
 | `3de2e4b` | Models: separate validation roles, Platt slope guard, recent recalibration, ablations |
 | `e0b1554` | Evaluation and report: IPCW, Uno's C, drive-level AUC, slices, alert budgets, drift, retirement |
 | this commit | Documentation (README, METHODOLOGY, ISSUES, this file) |
+| report params | Model labels and the timing tolerance moved to the `report` step's params |
+| critical steps | `explore` and `report` made critical |
+| lint/CI | ruff config and fixes, GitHub Actions workflow |
 
 The fixed code has run at medium scale (2026-10-26). The full-scale numbers in the
 README still come from `398f421`. The full rerun needs the 31 GB machine
@@ -73,7 +76,10 @@ README still come from `398f421`. The full rerun needs the 31 GB machine
 |---|---|---|---|
 | A18 | Gate gaps (deepseek W7, opus R11) | Four new checks (26 -> 30), including realised stride density and the dense-day rule. Test that features do not depend on the future | `df47ad7` |
 | A20 | The synthetic panel lacks real-data quirks; no unit tests for alerting, life, report (opus R10) | Synthetic quirks (packed 188/240, NULL 187/188 on other vendors, a non-numeric string, silent failures). Tests for `top_importance`, `feature_signal`, IPCW, Uno's C, the censoring Kaplan-Meier, the stratified bootstrap, the fixed-slope Platt fit, feature include/exclude, the memory guard, report helpers | `9d0ba01`, `7eb0c9a`, `6a117c3`, `3de2e4b`, `e0b1554` |
-| A21 | Small code items | `DURATION_BUCKETS` replaced by `label.bin_edges` (flint F3, `e0b1554`). `duckdb>=2.0` in `pyproject.toml` (flint F4, `9d0ba01`). The constant "failing drives" column replaced by positive snapshots (`7eb0c9a`). Dead `np.where` removed (`e0b1554`). `n_models_per_month` carried to the cohort and checked by the gate (`9d0ba01`, `df47ad7`). `TRY_CAST` failures counted (`6a117c3`). `explore` single-attribute AUC on filled rows only (`7eb0c9a`). `in_dense` only for failures visible in the split (`6a117c3`). `min_failing_drives` in config (`df47ad7`) | several |
+| A21 | Small code items | `DURATION_BUCKETS` replaced by `label.bin_edges` (flint F3, `e0b1554`; the rest of F3 is A25). `duckdb>=2.0` in `pyproject.toml` (flint F4, `9d0ba01`). The constant "failing drives" column replaced by positive snapshots (`7eb0c9a`). Dead `np.where` removed (`e0b1554`). `n_models_per_month` carried to the cohort and checked by the gate (`9d0ba01`, `df47ad7`). `TRY_CAST` failures counted (`6a117c3`). `explore` single-attribute AUC on filled rows only (`7eb0c9a`). `in_dense` only for failures visible in the split (`6a117c3`). `min_failing_drives` in config (`df47ad7`) | several |
+| A25 | `report.py` hardcodes the model labels and a ±0.15 timing tolerance (flint F3, rest) | Both are params of the `report` step in `pipeline.toml` (`labels`, `timing_tolerance`). A model without a label shows under its own name. Unit tests for `_label` and `_timing_verdict`. Rendered from the medium-scale `build/`, the report is byte-identical to the one the old code wrote | report params |
+| A26 | `explore` and `report` are `critical = false`, so a report can fail without stopping the run (flint F5) | Both are critical now. The report is the study's deliverable, and it reads `build/explore/feature_signal.csv` | critical steps |
+| A27 | No CI, no linter (gwen §3.8) | ruff in the dev group, configured in `pyproject.toml` (`uv run ruff check steps tests`). Its 42 findings are fixed: long lines wrapped, `zip(..., strict=True)` where both sides have the same length, loop variables bound explicitly in a closure, one f-string without placeholders. `.github/workflows/test.yml` runs ruff and pytest on every push and pull request. It needs the repository variable `DATA_PIPELINE_REPO` (docs/ISSUES.md #16). No type checker | lint/CI |
 
 ### Reproducibility and packaging
 
@@ -127,12 +133,9 @@ These need the 31 GB machine or a decision by the owner:
 
 - **Full-scale rerun with the fixed code.** The README's full-scale numbers are from
   `398f421` (docs/ISSUES.md #15).
-- **LICENSE, CI, publishing or pinning `data-pipeline`.** The licence is the owner's
-  choice, and CI can't install the runner while it is a sibling path
-  (docs/ISSUES.md #16).
+- **LICENSE, publishing or pinning `data-pipeline`.** The licence is the owner's choice.
+  CI checks the runner out next to the project, but only once the repository variable
+  `DATA_PIPELINE_REPO` names its remote (docs/ISSUES.md #16).
 - **Rolling-origin evaluation** (docs/ISSUES.md #9), **"leaves the panel" as an event**
   (deepseek D3, docs/ISSUES.md #7) and a **pod-level bootstrap** (opus D7).
 - **The article** (docs/ISSUES.md #17).
-- **Not addressed in this round:** the rest of flint F3 (`report.py` still hardcodes the
-  model labels and the ±0.15 timing tolerance) and flint F5 (`explore` and `report` stay
-  `critical = false`).

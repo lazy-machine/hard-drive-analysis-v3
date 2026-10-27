@@ -13,7 +13,7 @@ EDGES = [0, 7, 14, 30]
 
 def rows_of(i, idx, bins, y, w):
     m = idx == i
-    return list(zip(bins[m].tolist(), y[m].tolist(), np.round(w[m], 6).tolist()))
+    return list(zip(bins[m].tolist(), y[m].tolist(), np.round(w[m], 6).tolist(), strict=True))
 
 
 def test_expand_event_in_second_bin():
@@ -100,7 +100,8 @@ def test_model_features_include_exclude():
     schema = {"features": ["days_in_service", "capacity_tb", "smart_5_raw", "smart_5_raw_d7",
                            "smart_9_raw", "smart_197_raw"],
               "groups": {"context": ["days_in_service", "capacity_tb"],
-                         "smart": ["smart_5_raw", "smart_5_raw_d7", "smart_9_raw", "smart_197_raw"]}}
+                         "smart": ["smart_5_raw", "smart_5_raw_d7", "smart_9_raw",
+                                   "smart_197_raw"]}}
     assert model_features(schema, "all", exclude=["smart_5_*"]) == [
         "days_in_service", "capacity_tb", "smart_9_raw", "smart_197_raw"]
     assert model_features(schema, "context", include=["smart_9_raw"]) == [

@@ -368,7 +368,8 @@ def retirement(preds, models, horizon, thresholds) -> list[dict]:
     date = pd.to_datetime(preds["date"])
     never = preds["failure_date"].isna().to_numpy()
     last = pd.to_datetime(preds["last_date"])
-    for (split, yr), idx in preds[never].groupby([preds["split"][never], date[never].dt.year]).groups.items():
+    groups = preds[never].groupby([preds["split"][never], date[never].dt.year]).groups
+    for (split, yr), idx in groups.items():
         horizon_end = min(pd.Timestamp(year=int(yr) + 1, month=12, day=31), panel_end)
         if pd.Timestamp(year=int(yr) + 1, month=1, day=1) > panel_end:
             continue                                    # no following year to leave in
@@ -386,7 +387,8 @@ def retirement(preds, models, horizon, thresholds) -> list[dict]:
             for key, m in (("left", left), ("stayed", ~left)):
                 row[f"mean_p_{key}"] = float(np.average(pcol[m], weights=w[m])) if m.any() else None
                 row[f"share_above_threshold_{key}"] = (
-                    float(np.sum(w[m] * (pcol[m] >= t)) / np.sum(w[m])) if m.any() and t is not None else None)
+                    float(np.sum(w[m] * (pcol[m] >= t)) / np.sum(w[m]))
+                    if m.any() and t is not None else None)
             row["risk_ratio"] = (row["mean_p_left"] / row["mean_p_stayed"]
                                  if row["mean_p_left"] and row["mean_p_stayed"] else None)
             out.append(row)
@@ -422,7 +424,8 @@ def alerting(val, test, D, models, horizon, rates, main_rate, lead, edges, round
             early_alert = np.zeros(D.n, dtype=bool)
             np.logical_or.at(early_alert, D.codes[early], alert[early])
 
-            def stats(w, drive_counts):
+            def stats(w, drive_counts, alert=alert, any_alert=any_alert,
+                      early_alert=early_alert):
                 tp, fp = np.sum(w[alert & positive]), np.sum(w[alert & healthy])
                 unk = np.sum(w[alert & unknown])
                 f = drive_counts[failing_drives]
@@ -431,9 +434,11 @@ def alerting(val, test, D, models, horizon, rates, main_rate, lead, edges, round
                     "precision_test": float(tp / (tp + fp)) if tp + fp > 0 else None,
                     "precision_unknown_as_false": float(tp / (tp + fp + unk))
                     if tp + fp + unk > 0 else None,
-                    "unknown_alert_share": float(unk / (tp + fp + unk)) if tp + fp + unk > 0 else None,
+                    "unknown_alert_share": float(unk / (tp + fp + unk))
+                    if tp + fp + unk > 0 else None,
                     "recall_snapshots_test": float(tp / np.sum(w[positive])),
-                    "share_failing_drives_alerted": float(np.sum(f * any_alert[failing_drives]) / f.sum()),
+                    "share_failing_drives_alerted":
+                        float(np.sum(f * any_alert[failing_drives]) / f.sum()),
                     "share_failing_drives_alerted_early":
                         float(np.sum(f * early_alert[failing_drives]) / f.sum()),
                 }
@@ -441,8 +446,9 @@ def alerting(val, test, D, models, horizon, rates, main_rate, lead, edges, round
             point = stats(D.w, np.ones(D.n))
             boot = [stats(D.w * c[D.codes], c) for c in counts_list]
             row = {"model": name, "horizon": horizon, "budget": rate, "threshold": float(threshold),
-                   "false_alarm_rate_val": float(np.sum(w_val[healthy_val] * (s_val[healthy_val] >= threshold))
-                                                 / np.sum(w_val[healthy_val])),
+                   "false_alarm_rate_val":
+                       float(np.sum(w_val[healthy_val] * (s_val[healthy_val] >= threshold))
+                             / np.sum(w_val[healthy_val])),
                    "failing_drives": int(failing_drives.size),
                    "failing_drives_alerted": int(any_alert[failing_drives].sum()),
                    "failing_drives_alerted_early": int(early_alert[failing_drives].sum()),
@@ -452,7 +458,7 @@ def alerting(val, test, D, models, horizon, rates, main_rate, lead, edges, round
             summary.append(row)
             if rate != main_rate:
                 continue
-            for lo, hi in zip(edges[:-1], edges[1:]):
+            for lo, hi in zip(edges[:-1], edges[1:], strict=True):
                 m = (D.e == 1) & (D.d >= lo) & (D.d < hi)
                 if m.any():
                     curves.append({"model": name, "days_before_failure": f"{lo}-{hi - 1}",
@@ -549,7 +555,7 @@ def life(test, models, edges) -> tuple[list[dict], pd.DataFrame]:
             "mean_rmst_failing": wmean(test[f"{name}__rmst_days"].to_numpy(), fails),
             "mean_rmst_healthy": wmean(test[f"{name}__rmst_days"].to_numpy(), status == 0),
         })
-        for lo, hi in zip(edges[:-1], edges[1:]):
+        for lo, hi in zip(edges[:-1], edges[1:], strict=True):
             m = fails & (d >= lo) & (d < hi)
             if m.any():
                 table.append({

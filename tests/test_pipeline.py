@@ -43,7 +43,8 @@ def test_extract_dedups_and_cuts_at_failure(pipeline_run):
     project, _ = pipeline_run
     con = duckdb.connect()
     panel = f"read_parquet('{project}/build/panel/*/*.parquet', hive_partitioning = true)"
-    dup = con.sql(f"SELECT count(*) - count(DISTINCT (serial_number, date)) FROM {panel}").fetchall()[0][0]
+    dup = con.sql("SELECT count(*) - count(DISTINCT (serial_number, date)) "
+                  f"FROM {panel}").fetchall()[0][0]
     assert dup == 0
     after = con.sql(f"""SELECT count(*) FROM {panel} p
         JOIN read_parquet('{project}/build/cohort.parquet') c USING (serial_number)

@@ -61,7 +61,8 @@ def run_checks(con, cohort: pd.DataFrame, schema: dict, study: dict, scale: dict
 
     # -- snapshot table shape ----------------------------------------------------------
     cols = [r[0] for r in con.sql("DESCRIBE SELECT * FROM snap").fetchall()]
-    types = dict(con.sql("SELECT column_name, column_type FROM (DESCRIBE SELECT * FROM snap)").fetchall())
+    types = dict(con.sql("SELECT column_name, column_type FROM (DESCRIBE SELECT * FROM snap)")
+                 .fetchall())
     add("snapshot_columns_match_schema", cols == ID_COLUMNS + LABEL_COLUMNS + schema["features"],
         f"{len(cols)} columns")
     leaks = sorted(set(schema["features"]) & set(LEAK_COLUMNS))
@@ -102,7 +103,8 @@ def run_checks(con, cohort: pd.DataFrame, schema: dict, study: dict, scale: dict
         )
         SELECT
             count(*) FILTER (WHERE event <> ev) AS event_wrong,
-            count(*) FILTER (WHERE event = 1 AND duration_days <> date_diff('day', date, failure_date))
+            count(*) FILTER (WHERE event = 1
+                             AND duration_days <> date_diff('day', date, failure_date))
                 AS failure_duration_wrong,
             count(*) FILTER (WHERE event = 0 AND duration_days <> date_diff('day', date, censor))
                 AS censor_duration_wrong,
@@ -112,7 +114,7 @@ def run_checks(con, cohort: pd.DataFrame, schema: dict, study: dict, scale: dict
     names = ["event_wrong", "failure_duration_wrong", "censor_duration_wrong",
              "missed_failures", "negative"]
     add("labels_match_cohort", sum(wrong_label) == 0,
-        ", ".join(f"{n}={v}" for n, v in zip(names, wrong_label)))
+        ", ".join(f"{n}={v}" for n, v in zip(names, wrong_label, strict=True)))
     leak = scalar(con, f"""SELECT count(*) FROM snap s JOIN cohort c USING (serial_number)
                           WHERE s.split IN ('train', 'val') AND s.event = 1
                             AND c.failure_date > DATE '{split['train_end']}'""")
@@ -140,13 +142,15 @@ def run_checks(con, cohort: pd.DataFrame, schema: dict, study: dict, scale: dict
         # The same per-drive offset as panel._register_cohort.
         offsets = pd.DataFrame({
             "serial_number": cohort["serial_number"],
-            "stride_offset": [int(stable_unit(s, "stride") * stride) for s in cohort["serial_number"]],
+            "stride_offset": [int(stable_unit(s, "stride") * stride)
+                              for s in cohort["serial_number"]],
         })
         con.register("verify_stride_offsets", offsets)
         off_stride = scalar(con, f"""SELECT count(*) FROM snap s JOIN cohort c USING (serial_number)
             JOIN verify_stride_offsets o USING (serial_number)
             WHERE abs(s.weight - c.drive_weight * {stride}) < 1e-6
-              AND (date_diff('day', DATE '2000-01-01', s.date) + o.stride_offset) % {stride} <> 0""")
+              AND (date_diff('day', DATE '2000-01-01', s.date) + o.stride_offset)
+                  % {stride} <> 0""")
         con.unregister("verify_stride_offsets")
         add("stride_rows_on_stride_days", off_stride == 0,
             f"{off_stride} rows with weight drive_weight * {stride} off the drive's stride day")
@@ -175,14 +179,16 @@ def run_checks(con, cohort: pd.DataFrame, schema: dict, study: dict, scale: dict
     # -- events and features -----------------------------------------------------------
     min_fail = study["evaluation"]["min_failing_drives"]
     for s in ("train", "val", "test"):
-        n_ev = scalar(con, f"SELECT count(DISTINCT serial_number) FROM snap WHERE split = '{s}' AND event = 1")
+        n_ev = scalar(con, "SELECT count(DISTINCT serial_number) FROM snap "
+                           f"WHERE split = '{s}' AND event = 1")
         add(f"failures_present_{s}", n_ev > 0, f"{n_ev} failing drives")
         add(f"enough_failures_{s}", n_ev >= min_fail,
             f"{n_ev} failing drives (< {min_fail} is noisy)", "warn")
-    fill = con.sql("SELECT " + ", ".join(f'count("{f}")::DOUBLE / count(*)' for f in schema["features"])
+    fill = con.sql("SELECT "
+                   + ", ".join(f'count("{f}")::DOUBLE / count(*)' for f in schema["features"])
                    + " FROM snap WHERE split = 'train'").fetchall()[0]
-    empty = [f for f, v in zip(schema["features"], fill) if v == 0]
-    sparse = [f for f, v in zip(schema["features"], fill) if 0 < v < 0.01]
+    empty = [f for f, v in zip(schema["features"], fill, strict=True) if v == 0]
+    sparse = [f for f, v in zip(schema["features"], fill, strict=True) if 0 < v < 0.01]
     add("no_empty_features", not empty, f"empty in train: {empty}", "warn")
     add("few_sparse_features", len(sparse) <= len(schema["features"]) // 4,
         f"< 1% filled in train: {sparse}", "warn")
@@ -209,5 +215,6 @@ def verify(ctx):
     for c in checks:
         ctx.log(("PASS" if c.ok else c.severity.upper()).ljust(5), c.name, "-", c.detail)
     if errors:
-        raise GateFailed("verification failed: " + "; ".join(f"{c.name} ({c.detail})" for c in errors))
+        raise GateFailed("verification failed: "
+                         + "; ".join(f"{c.name} ({c.detail})" for c in errors))
     return {"checks": len(checks), "warnings": len(warnings)}
