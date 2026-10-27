@@ -14,10 +14,17 @@ ssd_model_pattern = 'SSD|^CT\d+MX|DELLBOSS|WDS\d|SA510|ZA\d+(?:CM|NM|GM)|MTFD|SS
 # more than one split. On top of that the split is temporal: train/val rows stop at
 # train_end, and test snapshots start at test_start.
 train_buckets = [0, 70]   # [lo, hi)
-val_buckets = [70, 80]    # early stopping and alert-threshold selection
+val_buckets = [70, 80]    # early stopping, calibration and alert-threshold selection
 test_buckets = [80, 100]
 train_end = "2023-12-31"
 test_start = "2024-01-01"
+# Validation drives are split again by a stable hash: this share calibrates the
+# probabilities and sets the alert threshold, the rest only drives early stopping, so the
+# calibration is not fitted on the rows that chose the number of trees.
+calibration_share = 0.5
+# The *_recent calibration is refitted on validation snapshots from the last this many
+# days before train_end, to test whether recent failure rates explain the test-year drift.
+recent_days = 365
 
 [label]
 # Discrete-time survival: the future after each snapshot is cut into these bins (days).

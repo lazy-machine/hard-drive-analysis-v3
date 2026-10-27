@@ -113,6 +113,14 @@ def left_truncated(first_date):
     return (first <= first.min()).astype(int).to_numpy()
 
 
+def val_roles(serials, share: float):
+    """True for validation drives that calibrate (and set the alert threshold), False for
+    those that only drive early stopping. A stable hash, independent of the split hash."""
+    import numpy as np
+
+    return np.array([stable_unit(s, "val_role") < share for s in serials], dtype=bool)
+
+
 # -- SQL helpers -----------------------------------------------------------------------
 
 def q(path: Path | str) -> str:

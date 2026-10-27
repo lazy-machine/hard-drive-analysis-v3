@@ -82,3 +82,28 @@ def test_platt_recovers_known_coefficients():
     y = (rng.random(z.size) < apply_platt(z, [-0.7, 1.4])).astype(int)
     a, b = fit_platt(z, y, np.ones(z.size))
     assert abs(a + 0.7) < 0.08 and abs(b - 1.4) < 0.05
+
+
+def test_platt_with_fixed_slope_fits_only_the_level():
+    from survival import apply_platt, fit_platt
+
+    rng = np.random.default_rng(4)
+    z = rng.normal(0, 1, 20_000)
+    y = (rng.random(z.size) < apply_platt(z, [-2.0, 1.0])).astype(int)
+    a, b = fit_platt(z, y, np.ones(z.size), slope=1.0)
+    assert b == 1.0 and abs(a + 2.0) < 0.1
+
+
+def test_model_features_include_exclude():
+    from model import model_features
+
+    schema = {"features": ["days_in_service", "capacity_tb", "smart_5_raw", "smart_5_raw_d7",
+                           "smart_9_raw", "smart_197_raw"],
+              "groups": {"context": ["days_in_service", "capacity_tb"],
+                         "smart": ["smart_5_raw", "smart_5_raw_d7", "smart_9_raw", "smart_197_raw"]}}
+    assert model_features(schema, "all", exclude=["smart_5_*"]) == [
+        "days_in_service", "capacity_tb", "smart_9_raw", "smart_197_raw"]
+    assert model_features(schema, "context", include=["smart_9_raw"]) == [
+        "days_in_service", "capacity_tb", "smart_9_raw"]
+    with pytest.raises(ValueError, match="matches no feature"):
+        model_features(schema, "all", exclude=["smart_188_*"])
