@@ -1,0 +1,185 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "cohort_serials_unique",
+      "ok": true,
+      "severity": "error",
+      "detail": "57309 drives"
+    },
+    {
+      "name": "cohort_split_matches_stable_bucket",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 drives in the wrong split"
+    },
+    {
+      "name": "cohort_weights_match_sampling",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 drives with a wrong weight"
+    },
+    {
+      "name": "one_model_per_drive",
+      "ok": true,
+      "severity": "warn",
+      "detail": "0 drives report more than one model in a month"
+    },
+    {
+      "name": "snapshot_columns_match_schema",
+      "ok": true,
+      "severity": "error",
+      "detail": "71 columns"
+    },
+    {
+      "name": "no_leak_columns_in_features",
+      "ok": true,
+      "severity": "error",
+      "detail": "none"
+    },
+    {
+      "name": "features_are_float",
+      "ok": true,
+      "severity": "error",
+      "detail": "non-FLOAT: []"
+    },
+    {
+      "name": "date_is_date_type",
+      "ok": true,
+      "severity": "error",
+      "detail": "date is DATE"
+    },
+    {
+      "name": "one_snapshot_per_drive_day",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 duplicates"
+    },
+    {
+      "name": "each_drive_in_one_split",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 drives in several splits"
+    },
+    {
+      "name": "snapshot_split_matches_cohort",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 rows"
+    },
+    {
+      "name": "train_val_before_train_end",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 rows after 2023-12-31"
+    },
+    {
+      "name": "test_from_test_start",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 rows before 2024-01-01"
+    },
+    {
+      "name": "no_snapshot_after_failure",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 rows"
+    },
+    {
+      "name": "labels_match_cohort",
+      "ok": true,
+      "severity": "error",
+      "detail": "event_wrong=0, failure_duration_wrong=0, censor_duration_wrong=0, missed_failures=0, negative=0"
+    },
+    {
+      "name": "train_labels_do_not_see_test_period",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 rows"
+    },
+    {
+      "name": "no_visible_failure_labelled_censored",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 rows within 30 days of a visible failure have event = 0"
+    },
+    {
+      "name": "snapshot_weights_valid",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 rows"
+    },
+    {
+      "name": "stride_rows_on_stride_days",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 rows with weight drive_weight * 7 off the drive's stride day"
+    },
+    {
+      "name": "dense_rows_before_visible_failure",
+      "ok": true,
+      "severity": "error",
+      "detail": "0 rows with weight drive_weight not within 90 days before a failure visible in their split"
+    },
+    {
+      "name": "cohort_drives_have_snapshots",
+      "ok": false,
+      "severity": "warn",
+      "detail": "16 cohort drives without a snapshot (test=1, train=14, val=1); expected only for drives with fewer than 7 rows in their split window"
+    },
+    {
+      "name": "failures_present_train",
+      "ok": true,
+      "severity": "error",
+      "detail": "12220 failing drives"
+    },
+    {
+      "name": "enough_failures_train",
+      "ok": true,
+      "severity": "warn",
+      "detail": "12220 failing drives (< 30 is noisy)"
+    },
+    {
+      "name": "failures_present_val",
+      "ok": true,
+      "severity": "error",
+      "detail": "1772 failing drives"
+    },
+    {
+      "name": "enough_failures_val",
+      "ok": true,
+      "severity": "warn",
+      "detail": "1772 failing drives (< 30 is noisy)"
+    },
+    {
+      "name": "failures_present_test",
+      "ok": true,
+      "severity": "error",
+      "detail": "1784 failing drives"
+    },
+    {
+      "name": "enough_failures_test",
+      "ok": true,
+      "severity": "warn",
+      "detail": "1784 failing drives (< 30 is noisy)"
+    },
+    {
+      "name": "no_empty_features",
+      "ok": true,
+      "severity": "warn",
+      "detail": "empty in train: []"
+    },
+    {
+      "name": "few_sparse_features",
+      "ok": true,
+      "severity": "warn",
+      "detail": "< 1% filled in train: []"
+    },
+    {
+      "name": "model_levels_from_train_only",
+      "ok": true,
+      "severity": "error",
+      "detail": "30 levels"
+    }
+  ]
+}

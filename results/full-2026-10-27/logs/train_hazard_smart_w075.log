@@ -1,0 +1,5 @@
+[     9.1s] hazard / all: 65 features, 7597961 train, 543346 early-stopping and 534083 calibration snapshots
+[     9.1s] memory estimate 16.6 GiB, available 21.7 GiB
+[    10.4s] {'train_rows': 48083205, 'train_events': 1440968, 'val_rows': 3435318, 'val_events': 105110}
+[   256.9s] best iteration 194, val logloss 0.0196172
+[   260.3s] calibration (a, b) per bin: [[0.491, 1.254], [0.26, 1.192], [0.058, 1.178], [-0.209, 1.14], [-0.257, 1.13], [0.161, 1.122], [0.151, 1.134]]

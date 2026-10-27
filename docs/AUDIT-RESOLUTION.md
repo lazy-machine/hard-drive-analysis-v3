@@ -22,10 +22,11 @@ The fixes are on branch `audit-fixes`:
 | critical steps | `explore` and `report` made critical |
 | lint/CI | ruff config and fixes, GitHub Actions workflow |
 | licence | MIT `LICENSE`, `license = "MIT"` in `pyproject.toml` |
+| full rerun | Full-scale results with the fixes in `results/full-2026-10-27/`, quoted by the README |
 
-The fixed code has run at medium scale (2026-10-26). The full-scale numbers in the
-README still come from `398f421`. The full rerun needs the 31 GB machine
-(docs/ISSUES.md #15).
+The fixed code has run at medium scale (2026-10-26) and, on the owner's 31 GB machine, at
+full scale (2026-10-26/27). The README quotes the full-scale run, committed in
+`results/full-2026-10-27/` (docs/ISSUES.md #15).
 
 ## Confirmed findings
 
@@ -34,8 +35,8 @@ README still come from `398f421`. The full rerun needs the 31 GB machine
 | # | Finding (sources) | Resolution | Commit |
 |---|---|---|---|
 | A1 | The importance figure lists features alphabetically and uses the wrong denominator (opus R1, glm W2) | `report.top_importance` sorts by gain and divides by the total gain over all features. Unit test | `7eb0c9a` |
-| A4 | The README points at the medium report for full-scale results (flint F1, glm W1) | README points at `results/full-2026-10-24/report/report.md` for the full run and calls `build/report/report.md` the last local run | this commit |
-| A14 | The binary-vs-hazard sentence relies on overlapping intervals (deepseek W4) | The report uses the paired bootstrap difference. README, full run: -0.0043 [-0.0083, +0.0003], binary ahead in 97% of rounds | `e0b1554`, this commit |
+| A4 | The README points at the medium report for full-scale results (flint F1, glm W1) | README points at `results/full-2026-10-24/report/report.md` for the full run and calls `build/report/report.md` the last local run. Since the full rerun it points at `results/full-2026-10-27/report/report.md` | this commit, full rerun |
+| A14 | The binary-vs-hazard sentence relies on overlapping intervals (deepseek W4) | The report uses the paired bootstrap difference. README, full run before the fixes: -0.0043 [-0.0083, +0.0003], binary ahead in 97% of rounds; full rerun: -0.001 [-0.004, +0.002] | `e0b1554`, this commit |
 | A22 | Documentation nits | METHODOLOGY: the "664 drives report after a failure" row replaced by a measurement (710 drives, 694 HDDs and 16 boot SSDs, report after their first failure row; 46 have two failure rows; 561 are in the full cohort); the 365-day caveat; units; dense days trimmed at `test_start` (by design); Brier skill; the AUC-and-prevalence clause. README layout lists every step module | this commit |
 
 ### Data and features
@@ -87,7 +88,7 @@ README still come from `398f421`. The full rerun needs the 31 GB machine
 
 | # | Finding (sources) | Resolution | Commit |
 |---|---|---|---|
-| A12 | Results are not reproducible from git (gwen §3.1) | `results/full-2026-10-24/` committed. `drive_index` checks the dataset's sha256. `data-pipeline` is still an editable sibling path (needs the owner to publish or pin it) | `9d0ba01` |
+| A12 | Results are not reproducible from git (gwen §3.1) | `results/full-2026-10-24/` and, after the rerun, `results/full-2026-10-27/` committed. `drive_index` checks the dataset's sha256. `data-pipeline` is still an editable sibling path (needs the owner to publish or pin it) | `9d0ba01` |
 | A15 | scipy is used but not declared (opus R9, glm W5) | Declared in `pyproject.toml` and in the train steps' `requires` | `9d0ba01` |
 
 ### Judged and left as is
@@ -131,10 +132,9 @@ No change was made for these:
 
 ## Not done
 
-These need the 31 GB machine or a remote for `data-pipeline` (owner decisions of 2026-10-26):
+These need a remote for `data-pipeline` (owner decision of 2026-10-26) or are new work
+beyond the reviews:
 
-- **Full-scale rerun with the fixed code.** The README's full-scale numbers are from
-  `398f421`. The owner will run it on the 31 GB machine (docs/ISSUES.md #15).
 - **Publishing or pinning `data-pipeline`.** It has no remote yet. CI checks the runner out next to the project, but only once the repository variable
   `DATA_PIPELINE_REPO` names its remote (docs/ISSUES.md #16).
 - **Rolling-origin evaluation** (docs/ISSUES.md #9), **"leaves the panel" as an event**

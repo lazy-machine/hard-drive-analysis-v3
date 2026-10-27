@@ -1,0 +1,12 @@
+[    23.4s] chunk 12/120 (2016-12-01) rows so far 3373972
+[    43.5s] chunk 24/120 (2017-12-01) rows so far 7586386
+[    64.0s] chunk 36/120 (2018-12-01) rows so far 12800230
+[    84.8s] chunk 48/120 (2019-12-01) rows so far 18436893
+[   107.5s] chunk 60/120 (2020-12-01) rows so far 25504439
+[   131.2s] chunk 72/120 (2021-12-01) rows so far 34302598
+[   155.0s] chunk 84/120 (2022-12-01) rows so far 43857723
+[   179.5s] chunk 96/120 (2023-12-01) rows so far 53775039
+[   200.8s] chunk 108/120 (2024-12-01) rows so far 56237091
+[   221.7s] chunk 120/120 (2025-12-01) rows so far 58678959
+[   221.9s] strings that are not numbers (now NULL): {'smart_18_raw': 0, 'smart_22_raw': 0, 'smart_23_raw': 0, 'smart_24_raw': 0}
+[   260.7s] wrote 58678959 rows for 57309 drives
