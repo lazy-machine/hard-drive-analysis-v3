@@ -79,6 +79,8 @@ critical = false
 # weight_power: training weights are the sampling weights to this power (0.5 ranks much
 # better than 1 on validation drives). Probabilities are recalibrated per bin on validation
 # drives with the true weights, so this changes ranking quality, not the probability scale.
+# include / exclude: glob patterns added to or removed from the feature group (ablations).
+# recalibrate_recent: also emit <model>_recent, calibrated on the last validation year only.
 
 [[steps]]
 name = "train_hazard_smart"
@@ -87,7 +89,7 @@ function = "model:train"
 inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
 outputs = { model = "build/models/hazard_smart.txt", meta = "build/models/hazard_smart.json" }
 depends_on = ["verify"]
-params = { kind = "hazard", features = "all", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+params = { kind = "hazard", features = "all", seed = 42, weight_power = 0.5, recalibrate_recent = true, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
 requires = ["lightgbm>=4.6", "numpy", "scipy"]
 watch = ["steps/common.py", "steps/survival.py"]
 timeout = 21600
@@ -116,13 +118,61 @@ requires = ["lightgbm>=4.6", "numpy", "scipy"]
 watch = ["steps/common.py", "steps/survival.py"]
 timeout = 21600
 
+[[steps]]
+name = "train_hazard_nocritical"
+description = "Ablation: SMART + context without the counters behind Backblaze's replacement policy (5, 187, 188, 197, 198, raw, normalized and trends)"
+function = "model:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/hazard_nocritical.txt", meta = "build/models/hazard_nocritical.json" }
+depends_on = ["verify"]
+params = { kind = "hazard", seed = 42, features = "all", weight_power = 0.5, exclude = ["smart_5_*", "smart_187_*", "smart_188_*", "smart_197_*", "smart_198_*"], num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+requires = ["lightgbm>=4.6", "numpy", "scipy"]
+watch = ["steps/common.py", "steps/survival.py"]
+timeout = 21600
+
+[[steps]]
+name = "train_hazard_usage"
+description = "Ablation: context + usage counters only (power-on hours, power cycles, start/stop, load cycles, head flying hours, LBAs)"
+function = "model:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/hazard_usage.txt", meta = "build/models/hazard_usage.json" }
+depends_on = ["verify"]
+params = { kind = "hazard", seed = 42, features = "context", weight_power = 0.5, include = ["smart_4_raw", "smart_9_raw", "smart_12_raw", "smart_193_raw", "smart_240_raw", "smart_241_raw", "smart_242_raw"], num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+requires = ["lightgbm>=4.6", "numpy", "scipy"]
+watch = ["steps/common.py", "steps/survival.py"]
+timeout = 21600
+
+[[steps]]
+name = "train_hazard_smart_w075"
+description = "Sensitivity: the SMART model with training weights to the power 0.75"
+function = "model:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/hazard_smart_w075.txt", meta = "build/models/hazard_smart_w075.json" }
+depends_on = ["verify"]
+params = { kind = "hazard", seed = 42, features = "all", weight_power = 0.75, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+requires = ["lightgbm>=4.6", "numpy", "scipy"]
+watch = ["steps/common.py", "steps/survival.py"]
+timeout = 21600
+
+[[steps]]
+name = "train_hazard_smart_w100"
+description = "Sensitivity: the SMART model with the full inverse-probability training weights"
+function = "model:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/hazard_smart_w100.txt", meta = "build/models/hazard_smart_w100.json" }
+depends_on = ["verify"]
+params = { kind = "hazard", seed = 42, features = "all", weight_power = 1.0, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+requires = ["lightgbm>=4.6", "numpy", "scipy"]
+watch = ["steps/common.py", "steps/survival.py"]
+timeout = 21600
+
 # -- evaluation ------------------------------------------------------------------------------
 
 [[steps]]
 name = "predict"
 description = "Score validation and test snapshots with every model and the rule baseline"
 function = "predict:predict"
-inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml", model_hazard_smart = "build/models/hazard_smart.txt", meta_hazard_smart = "build/models/hazard_smart.json", model_hazard_nosmart = "build/models/hazard_nosmart.txt", meta_hazard_nosmart = "build/models/hazard_nosmart.json", model_binary_30d = "build/models/binary_30d.txt", meta_binary_30d = "build/models/binary_30d.json" }
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml", model_hazard_smart = "build/models/hazard_smart.txt", meta_hazard_smart = "build/models/hazard_smart.json", model_hazard_nosmart = "build/models/hazard_nosmart.txt", meta_hazard_nosmart = "build/models/hazard_nosmart.json", model_binary_30d = "build/models/binary_30d.txt", meta_binary_30d = "build/models/binary_30d.json", model_hazard_nocritical = "build/models/hazard_nocritical.txt", meta_hazard_nocritical = "build/models/hazard_nocritical.json", model_hazard_usage = "build/models/hazard_usage.txt", meta_hazard_usage = "build/models/hazard_usage.json", model_hazard_smart_w075 = "build/models/hazard_smart_w075.txt", meta_hazard_smart_w075 = "build/models/hazard_smart_w075.json", model_hazard_smart_w100 = "build/models/hazard_smart_w100.txt", meta_hazard_smart_w100 = "build/models/hazard_smart_w100.json" }
 outputs = { predictions = "build/predictions.parquet" }
 requires = ["lightgbm>=4.6", "pandas>=2.2", "pyarrow"]
 watch = ["steps/common.py", "steps/model.py", "steps/survival.py"]

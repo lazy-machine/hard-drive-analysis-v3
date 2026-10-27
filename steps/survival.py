@@ -77,11 +77,13 @@ class ExpandedSequence(lgb.Sequence):
         return np.hstack([rows, self.bin_start[key][:, None]])
 
 
-def fit_platt(z: np.ndarray, y: np.ndarray, w: np.ndarray) -> list[float]:
+def fit_platt(z: np.ndarray, y: np.ndarray, w: np.ndarray,
+              slope: float | None = None) -> list[float]:
     """Weighted logistic fit of y on raw logit z: returns (a, b), p = sigmoid(a + b z).
 
     Used to recalibrate a model trained with tempered weights back to true
     (inverse-probability weighted) probabilities. Rank order is unchanged when b > 0.
+    With `slope` given, b is fixed and only the intercept a is fitted.
     """
     from scipy.optimize import minimize
 
@@ -95,6 +97,15 @@ def fit_platt(z: np.ndarray, y: np.ndarray, w: np.ndarray) -> list[float]:
         return np.sum(w * (np.logaddexp(0.0, t) - y * t)), np.array(
             [np.sum(w * (s - y)), np.sum(w * (s - y) * z)])
 
+    if slope is not None:
+        def nll_a(c):
+            f, g = nll([c[0], slope])
+            return f, g[:1]
+
+        res = minimize(nll_a, [0.0], jac=True, method="L-BFGS-B")
+        if not res.success:
+            raise RuntimeError(f"calibration fit failed: {res.message}")
+        return [float(res.x[0]), float(slope)]
     res = minimize(nll, [0.0, 1.0], jac=True, method="L-BFGS-B")
     if not res.success:
         raise RuntimeError(f"calibration fit failed: {res.message}")

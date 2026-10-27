@@ -9,6 +9,11 @@ Output columns per model, named `<model>__<quantity>`:
   the last bin edge) and rmst_days (expected days alive within the last bin edge);
 - binary models: p<H> for their single horizon;
 - rule_counters: a score (no probabilities), log-sum of the critical SMART counters.
+
+A hazard model trained with `recalibrate_recent` also appears as `<model>_recent`: the
+same trees with the calibration refitted on the last validation year before train_end.
+`critical_nonzero` flags snapshots where any critical counter is above zero (evaluate
+uses it for the silent-failure slice).
 """
 
 from __future__ import annotations
@@ -69,6 +74,9 @@ def predict(ctx):
                 raise ValueError(f"{name} was trained with bins {info['bin_edges']}, "
                                  f"study has {edges}")
             out.update(_hazard_columns(booster, info["calibration"], Xm, edges, horizons, name))
+            if "calibration_recent" in info:
+                out.update(_hazard_columns(booster, info["calibration_recent"], Xm, edges,
+                                           horizons, f"{name}_recent"))
         else:
             H = info["binary_horizon"]
             z = np.concatenate([booster.predict(Xm[lo:lo + CHUNK], raw_score=True)
@@ -77,7 +85,9 @@ def predict(ctx):
         log(f"scored {name}")
 
     counters = study["features"]["critical_counters"]
-    out[f"{RULE}__score"] = rule_score(X[:, [position[c] for c in counters]])
+    Xc = X[:, [position[c] for c in counters]]
+    out[f"{RULE}__score"] = rule_score(Xc)
+    out["critical_nonzero"] = (np.nan_to_num(Xc, nan=0.0) > 0).any(axis=1)
 
     table = pa.Table.from_pandas(pd.DataFrame(out), preserve_index=False)
     pq.write_table(table, ctx.outputs["predictions"], compression="zstd")
