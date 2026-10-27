@@ -72,7 +72,7 @@ def test_contract_validation(tmp_path):
         load_sample(tmp_path / "sample.toml")
 
 
-def _gate(project, tamper_sql=None):
+def _checks(project, tamper_sql=None):
     import json
 
     from verify import run_checks
@@ -88,7 +88,12 @@ def _gate(project, tamper_sql=None):
                         json.loads((build / "feature-schema.json").read_text()),
                         load_study(project / "config" / "study.toml"),
                         load_sample(project / "config" / "sample.toml"))
-    return {c.name for c in checks if not c.ok and c.severity == "error"}
+    return {c.name: c for c in checks}
+
+
+def _gate(project, tamper_sql=None):
+    checks = _checks(project, tamper_sql)
+    return {c.name for c in checks.values() if not c.ok and c.severity == "error"}
 
 
 def test_gate_passes_clean_data(pipeline_run):
@@ -117,3 +122,36 @@ def test_gate_catches_train_rows_in_test_period(pipeline_run):
                                WHERE split = 'train' AND date = (SELECT max(date) FROM snap
                                                                  WHERE split = 'train')""")
     assert "train_val_before_train_end" in failed
+
+
+def test_gate_catches_stride_rows_off_stride_days(pipeline_run):
+    """Stride rows moved off the drive's stride day keep their weight but not the density."""
+    project, _ = pipeline_run
+    stride = load_sample(project / "config" / "sample.toml")["stride_days"]
+    failed = _gate(project, f"""UPDATE snap SET date = snap.date + 1 FROM cohort c
+                               WHERE snap.serial_number = c.serial_number
+                                 AND abs(snap.weight - c.drive_weight * {stride}) < 1e-6""")
+    assert "stride_rows_on_stride_days" in failed
+
+
+def test_gate_catches_dense_weight_far_from_failure(pipeline_run):
+    project, _ = pipeline_run
+    failed = _gate(project, """UPDATE snap SET weight = c.drive_weight FROM cohort c
+                               WHERE snap.serial_number = c.serial_number
+                                 AND (snap.serial_number, snap.date) =
+                                     (SELECT (s.serial_number, s.date) FROM snap s
+                                      JOIN cohort c2 USING (serial_number)
+                                      WHERE c2.failure_date IS NULL
+                                      ORDER BY s.serial_number, s.date LIMIT 1)""")
+    assert "dense_rows_before_visible_failure" in failed
+    assert "snapshot_weights_valid" not in failed  # the weight itself is a valid value
+
+
+def test_gate_warns_on_cohort_drive_without_snapshots(pipeline_run):
+    project, _ = pipeline_run
+    before = _checks(project)["cohort_drives_have_snapshots"]
+    after = _checks(project, """DELETE FROM snap WHERE serial_number =
+                                (SELECT min(serial_number) FROM snap)""")[
+        "cohort_drives_have_snapshots"]
+    assert not after.ok and after.severity == "warn"
+    assert int(after.detail.split()[0]) == int(before.detail.split()[0]) + 1
