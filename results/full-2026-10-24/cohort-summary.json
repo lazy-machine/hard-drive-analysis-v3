@@ -1,0 +1,22 @@
+{
+  "by_split_stratum": {
+    "test/failing": 1784,
+    "test/healthy": 7198,
+    "train/failing": 17880,
+    "train/healthy": 24450,
+    "val/failing": 2566,
+    "val/healthy": 3431
+  },
+  "cohort_drives": 57309,
+  "drives_reporting_after_failure": 561,
+  "excluded_outside_window": 100065,
+  "excluded_ssd": 3898,
+  "panel_drives": 478464,
+  "scale": {
+    "dense_days": 90,
+    "failing_fraction": 1.0,
+    "healthy_fraction": 0.1,
+    "scale": "full",
+    "stride_days": 7
+  }
+}

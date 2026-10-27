@@ -1,0 +1,94 @@
+{
+  "best_iteration": 754,
+  "bin_edges": [
+    0,
+    7,
+    14,
+    30,
+    60,
+    90,
+    180,
+    365
+  ],
+  "binary_horizon": 30,
+  "calibration": [
+    [
+      -0.6313504924470915,
+      1.2099193400308412
+    ],
+    [
+      -0.562761021260025,
+      1.2205333968557266
+    ],
+    [
+      -0.9056973688025887,
+      1.189323777827187
+    ],
+    [
+      -1.386675612090397,
+      1.1082119893691262
+    ],
+    [
+      -1.3323101577851415,
+      1.125329725042133
+    ],
+    [
+      -0.48727664704877516,
+      1.0963360092437218
+    ],
+    [
+      -0.6115209699678883,
+      1.0801875463740387
+    ]
+  ],
+  "categorical": [
+    "model_code",
+    "vendor_code"
+  ],
+  "feature_set": "context",
+  "features": [
+    "days_in_service",
+    "capacity_tb",
+    "model_code",
+    "vendor_code"
+  ],
+  "importance_gain": {
+    "bin_start": 16720496.720463514,
+    "capacity_tb": 9589013.46857953,
+    "days_in_service": 6521234.027133465,
+    "model_code": 12638969.3063097,
+    "vendor_code": 1162819.7050199509
+  },
+  "kind": "hazard",
+  "model_features": [
+    "days_in_service",
+    "capacity_tb",
+    "model_code",
+    "vendor_code",
+    "bin_start"
+  ],
+  "name": "train_hazard_nosmart",
+  "params": {
+    "bagging_fraction": 0.8,
+    "bagging_freq": 1,
+    "cat_smooth": 20,
+    "deterministic": true,
+    "feature_fraction": 1.0,
+    "force_row_wise": true,
+    "lambda_l2": 5.0,
+    "learning_rate": 0.03,
+    "metric": "binary_logloss",
+    "min_child_samples": 200,
+    "num_leaves": 31,
+    "num_threads": 0,
+    "objective": "binary",
+    "seed": 42,
+    "verbosity": -1
+  },
+  "train_events": 1440968,
+  "train_rows": 48166147,
+  "val_events": 211643,
+  "val_logloss": 0.041555839744793086,
+  "val_rows": 6815039,
+  "weight_power": 0.5
+}
