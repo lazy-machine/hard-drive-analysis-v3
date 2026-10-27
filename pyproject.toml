@@ -17,7 +17,10 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8"]
+dev = [
+    "pytest>=8",
+    "ruff>=0.17.3",
+]
 
 [tool.uv]
 package = false
@@ -28,3 +31,12 @@ data-pipeline = { path = "../data-pipeline", editable = true }
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["steps"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+# No "I" (isort): the imports are sorted and grouped, but ruff's isort would rewrite every
+# wrapped multi-name import as one name per line.
+select = ["E", "F", "W", "B", "UP"]

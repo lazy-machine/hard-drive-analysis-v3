@@ -122,7 +122,7 @@ def concordance(risk: np.ndarray, duration: np.ndarray, event: np.ndarray,
     starts = np.flatnonzero(np.r_[True, d_sorted[1:] != d_sorted[:-1]])
     ends = np.r_[starts[1:], order.size]
     total_added = conc = disc = tie = 0.0
-    for a, b in zip(starts, ends):
+    for a, b in zip(starts, ends, strict=True):
         group = order[a:b]
         is_ev = event[group]
         cens, evs = group[~is_ev], group[is_ev]

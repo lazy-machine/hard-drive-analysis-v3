@@ -179,12 +179,17 @@ day, 27.4% by the median and 50.4% by the 90% day.
 ```bash
 uv sync                          # Python 3.13, deps from uv.lock (data-pipeline is ../data-pipeline, editable)
 uv run pytest                    # unit + end-to-end tests on a synthetic panel (~40 s)
+uv run ruff check steps tests    # lint (config in pyproject.toml)
 uv run data-pipeline -n          # what would run, and why
 uv run data-pipeline             # run everything that is out of date
 ```
 
 The panel goes in `dataset/dataset.parquet` (21.8 GB, not in git). Results land in
 `build/report/report.md`. Long steps log progress to `build/logs/<step>.log`.
+
+CI (`.github/workflows/test.yml`) runs the linter and the tests on every push and pull
+request. It checks out `data-pipeline` next to this repository from the repository
+variable `DATA_PIPELINE_REPO`, which has to be set first (docs/ISSUES.md #16).
 
 ## Scales and hardware
 

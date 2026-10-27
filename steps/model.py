@@ -52,7 +52,8 @@ def model_features(schema: dict, feature_set: str, include=(), exclude=()) -> li
     elif feature_set in schema["groups"]:
         chosen = set(schema["groups"][feature_set])
     else:
-        raise ValueError(f"unknown feature set '{feature_set}' (all, {', '.join(schema['groups'])})")
+        known = ", ".join(schema["groups"])
+        raise ValueError(f"unknown feature set '{feature_set}' (all, {known})")
     for pattern in list(include) + list(exclude):
         if not fnmatch.filter(schema["features"], pattern):
             raise ValueError(f"feature pattern '{pattern}' matches no feature")
@@ -225,7 +226,7 @@ def train(ctx):
         "calibration_snapshots": int(len(meta_cal)), "calibration_notes": notes,
         "best_iteration": best, "val_logloss": val_loss, **stats,
         "importance_gain": {n: float(g) for n, g in sorted(
-            zip(names, gain), key=lambda t: -t[1])},
+            zip(names, gain, strict=True), key=lambda t: -t[1])},
     })
     return {"best_iter": best, "val_logloss": val_loss, **stats}
 

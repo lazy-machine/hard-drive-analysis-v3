@@ -1,0 +1,59 @@
+# Lint and test on every push and pull request.
+#
+# pyproject.toml installs the orchestrator from a sibling directory:
+#   data-pipeline = { path = "../data-pipeline", editable = true }
+# so the job checks out this repository into hard-drive-analysis-v3/ and the orchestrator
+# into data-pipeline/ next to it. Three settings in this repository control the second
+# checkout (Settings > Secrets and variables > Actions):
+#
+#   DATA_PIPELINE_REPO   (variable, required) owner/name of the orchestrator repository.
+#                        The job fails at the first step while it is unset.
+#   DATA_PIPELINE_REF    (variable, optional) branch, tag or commit to check out; the
+#                        orchestrator's default branch when unset.
+#   DATA_PIPELINE_TOKEN  (secret, optional) a token that can read the orchestrator
+#                        repository, needed only if it is private; the job's own token
+#                        is used otherwise.
+
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Require DATA_PIPELINE_REPO
+        if: ${{ vars.DATA_PIPELINE_REPO == '' }}
+        run: |
+          echo "::error::Set the repository variable DATA_PIPELINE_REPO (owner/name of the data-pipeline repository)."
+          exit 1
+
+      - uses: actions/checkout@v5
+        with:
+          path: hard-drive-analysis-v3
+
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ vars.DATA_PIPELINE_REPO }}
+          ref: ${{ vars.DATA_PIPELINE_REF }}
+          token: ${{ secrets.DATA_PIPELINE_TOKEN || github.token }}
+          path: data-pipeline
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install
+        working-directory: hard-drive-analysis-v3
+        run: uv sync --frozen
+
+      - name: Lint
+        working-directory: hard-drive-analysis-v3
+        run: uv run ruff check steps tests
+
+      - name: Test
+        working-directory: hard-drive-analysis-v3
+        run: uv run pytest -q

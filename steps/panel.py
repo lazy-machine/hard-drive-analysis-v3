@@ -85,8 +85,8 @@ def extract(ctx):
     # 1 when a non-NULL string did not parse as a number (only VARCHAR columns can fail)
     text_cols = [c for c in cols if types[c] == "VARCHAR"]
     bad = [f"bad_{i}" for i in range(len(text_cols))]
-    bad_casts = "".join(f', (p."{c}" IS NOT NULL AND TRY_CAST(p."{c}" AS DOUBLE) IS NULL)::INT AS {b}'
-                        for c, b in zip(text_cols, bad))
+    bad_casts = "".join(f', (p."{c}" IS NOT NULL AND TRY_CAST(p."{c}" AS DOUBLE) IS NULL)::INT'
+                        f' AS {b}' for c, b in zip(text_cols, bad, strict=True))
     completeness = " + ".join(f'(p."{c}" IS NOT NULL)::INT' for c in cols)
     col_list = ", ".join(f'"{c}"' for c in cols) + "".join(f", {b}" for b in bad)
 
@@ -111,14 +111,15 @@ def extract(ctx):
                            ELSE p.date <= DATE '{train_end}' END
             ) WHERE rn = 1""")
         if i % 12 == 0 or i == len(chunks):
-            log(f"chunk {i}/{len(chunks)} ({a}) rows so far {scalar(con, 'SELECT count(*) FROM rows')}")
+            n_rows = scalar(con, "SELECT count(*) FROM rows")
+            log(f"chunk {i}/{len(chunks)} ({a}) rows so far {n_rows}")
 
     n_rows = scalar(con, "SELECT count(*) FROM rows")
     n_drives = scalar(con, "SELECT count(DISTINCT serial_number) FROM rows")
     cast_failures = {}
     if bad:
         sums = con.sql("SELECT " + ", ".join(f"sum({b})" for b in bad) + " FROM rows").fetchall()[0]
-        cast_failures = {c: int(v or 0) for c, v in zip(text_cols, sums)}
+        cast_failures = {c: int(v or 0) for c, v in zip(text_cols, sums, strict=True)}
         log(f"strings that are not numbers (now NULL): {cast_failures}")
         for b in bad:
             con.sql(f"ALTER TABLE rows DROP COLUMN {b}")

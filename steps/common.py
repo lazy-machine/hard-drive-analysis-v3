@@ -188,7 +188,8 @@ def load_snapshots(path: Path, splits: list[str], features: list[str]):
     import numpy as np
     import pandas as pd
 
-    con = duckdb.connect(config={"threads": int(os.environ.get("HDA_THREADS", os.cpu_count() or 4))})
+    threads = int(os.environ.get("HDA_THREADS", os.cpu_count() or 4))
+    con = duckdb.connect(config={"threads": threads})
     where = "split IN (" + ", ".join(q(s) for s in splits) + ")"
     cols = ", ".join(f'"{c}"' for c in ID_COLUMNS + LABEL_COLUMNS + features)
     table = con.sql(f"SELECT {cols} FROM read_parquet({q(path)}) WHERE {where} "
