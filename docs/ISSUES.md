@@ -15,9 +15,10 @@ something surprises you, and close it with how it was verified.
 
 ### 1. Full scale needs most of the 31 GB machine
 - **Tags:** FRAGILE
-- **Status:** run on 2026-10-24 on the 31 GB machine (`info/hwspec-archmachine-20261021.md`),
-  gate 26/26, with the same code as the repository (only `scale` differed).
-- **Detail:** 30 min end to end from an empty `build/`:
+- **Status:** run on the 31 GB machine (`info/hwspec-archmachine-20261021.md`) on
+  2026-10-24 (`398f421`, three models) and on 2026-10-26/27 with the audit fixes (seven
+  train steps, gate 30 checks with one warning; `results/full-2026-10-27/`).
+- **Detail:** the first run took 30 min end to end from an empty `build/`:
 
   | step | time | size |
   |---|---|---|
@@ -36,6 +37,11 @@ something surprises you, and close it with how it was verified.
   because the logs only hold the estimate. If the guard fires, close other programs or
   lower `healthy_fraction` in `config/sample.toml`. If `snapshots` runs short of memory,
   raise `batches` on `extract` in `pipeline.toml`.
+
+  The run with the fixes took about 85 min of step time after `drive_index` (391 s):
+  `extract` 261 s, `snapshots` 55 s, the seven train steps 115-502 s each (2,352 s in
+  all), `predict` 179 s and `evaluate` 2,196 s. The largest training estimate was
+  16.6 GiB with 22.4 GiB available.
 
 ### 2. A single GROUP BY over the whole panel spills tens of GB
 - **Tags:** SLOW, CONFUSE
@@ -76,13 +82,16 @@ something surprises you, and close it with how it was verified.
 
 ### 7. Retirement is informative censoring
 - **Tags:** LIMIT
-- **Status:** measured (`evaluate` retirement section, medium scale 2026-10-26)
+- **Status:** measured (`evaluate` retirement section; medium scale 2026-10-26, full
+  scale 2026-10-27)
 - **Detail:** drives that leave the panel without a failure row are censored, which
   assumes leaving is unrelated to health. `evaluate` compares, per split and year, the
   mean predicted 30-day risk of never-failing drives that leave by the end of the next
   year with those that stay. At medium scale the drives that leave carry 2.2-9.0x the
   risk in every validation year from 2016 to 2023 except 2019 (1.06), and 3.3x in test
-  year 2024 (94 left, 1,196 stayed). So the censoring is informative: Backblaze retires
+  year 2024 (94 left, 1,196 stayed). At full scale the ratio is 1.2-6.5x in every
+  validation year and 2.25x in test year 2024 (509 left, 5,809 stayed). So the censoring
+  is informative: Backblaze retires
   drives that look unhealthy, the model sees fewer failures than really happen, and risk
   is underestimated. If retirement became more aggressive over time, observed failures in
   later years fall below what a model trained on earlier years expects, which matches
@@ -99,8 +108,12 @@ something surprises you, and close it with how it was verified.
   (test untouched). Since `3de2e4b` two steps report other powers on test:
   `hazard_smart_w075` ranks like 0.5 (30-day ROC-AUC 0.859 vs 0.860, difference +0.001
   [-0.004, 0.008]), and `hazard_smart_w100` is worse (0.835, difference +0.025 [0.014,
-  0.039]) and stops at iteration 11, against 149 for 0.5 and 117 for 0.75. If you change
-  the sampling fractions, recheck `weight_power` there.
+  0.039]) and stops at iteration 11, against 149 for 0.5 and 117 for 0.75. At full scale
+  (2026-10-27) the starvation is gone: power 1.0 stops at iteration 237 (0.5: 595, 0.75:
+  194) and ranks like 0.5 (30-day ROC-AUC 0.878 vs 0.876), while 0.5 keeps the higher
+  PR-AUC (by 0.008-0.031, interval above zero at 4 of 5 horizons). The starvation
+  depends on how many failing drives the sample has. If you change the sampling
+  fractions, recheck `weight_power` there.
 
 ### 9. Test-period drift: predicted risk too high in 2024-2025
 - **Tags:** LIMIT, OPEN
@@ -116,7 +129,12 @@ something surprises you, and close it with how it was verified.
   validation year already leaves the band of the earlier ones (it doesn't). Recalibrating
   on 2023 (`hazard_smart_recent`) gives 1.49 and 2.04, so it does not remove the drift.
   The models without SMART drift less (no SMART 1.22 / 1.55, usage counters 1.07 / 1.39).
-  Possible causes: retirement of risky drives (#7), fleet changes. Next step: a
+  At full scale with the fixed code (2026-10-27) the validation band is 0.89-1.44, 2023
+  is 0.92, and test is 1.21 [1.11, 1.30] in 2024 (inside the band) and 2.28 [1.97, 2.67]
+  in 2025. The 2023 recalibration makes it worse (1.36 / 2.55). Only the model without
+  SMART drifts clearly less (1.10 / 1.73); the usage-counter model drifts like the SMART
+  model (1.32 / 2.46), so the medium-scale hint that usage counters drift less did not
+  hold. Every test false-alarm rate is above its budget (1.55% at 1%). Possible causes: retirement of risky drives (#7), fleet changes. Next step: a
   rolling-origin evaluation (train up to year Y, test on Y+1), not done yet.
 
 ### 10. The model category list depends on the sampled train drives
@@ -141,7 +159,8 @@ something surprises you, and close it with how it was verified.
 
 ### 12. Label circularity and silent failures
 - **Tags:** LIMIT
-- **Status:** measured (`hazard_nocritical`, silent-failure slice; medium scale 2026-10-26)
+- **Status:** measured (`hazard_nocritical`, silent-failure slice; medium scale 2026-10-26,
+  full scale 2026-10-27)
 - **Detail:** Backblaze replaces drives when counters 5, 187, 188, 197 or 198 rise, and a
   replaced drive is recorded as failed, so these counters partly define the label.
   `hazard_nocritical` drops them (raw, normalized and trends). At 30 days it scores
@@ -150,36 +169,40 @@ something surprises you, and close it with how it was verified.
   bound on what SMART adds beyond the replacement policy. 72 of the 359 failing test drives
   are silent (no critical counter above zero in any test snapshot). On them the SMART
   model's 30-day ROC-AUC is 0.608 [0.554, 0.668] (no SMART 0.529, rule 0.472), against
-  0.924 on the other failing drives. In the full run of 2026-10-24, 349 of 1,784 failing
-  test drives are silent and the SMART model scores 0.627 on them.
+  0.924 on the other failing drives. At full scale `hazard_nocritical` scores 0.772
+  [0.760, 0.786] against 0.876 and 0.604 (62% of the gain, 0.168 of 0.273, remains), and
+  368 of 1,784 failing test drives are silent: the SMART model scores 0.639 [0.608,
+  0.666] on them (no SMART 0.549, rule 0.473) against 0.938 on the others. The 349
+  silent drives measured during the audit on the run of 2026-10-24 counted 188 as a
+  critical counter; without it that run has 368 too.
 
 ### 13. Capacity covariate shift
 - **Tags:** LIMIT
 - **Detail:** drives of 16 TB and more are about 10% of train weight but about 50% of
   test weight: the fleet moved to large drives after the training era. At medium scale
   the SMART model's 30-day ROC-AUC is 0.830 on them and 0.884 below 16 TB (rule 0.733 vs
-  0.845). `evaluate` reports both sides (`evaluation.capacity_split_tb`). State it when
+  0.845). At full scale: 0.815 and 0.901 (rule 0.754 vs 0.850). `evaluate` reports both
+  sides (`evaluation.capacity_split_tb`). State it when
   quoting a single test number.
 
 ### 14. `evaluate` is slow
 - **Tags:** SLOW
-- **Status:** measured at medium scale (2026-10-26)
+- **Status:** measured at medium scale (2026-10-26) and full scale (2026-10-27)
 - **Detail:** with eight probability models, the slices and the bootstrap, `evaluate`
   took 664 s at medium scale: discrimination 130 s, slices 290 s, concordance 233 s. The
   rest of the medium run after `drive_index` took about 10 minutes (each hazard model
   trains in 30-53 s). Concordance runs a vectorised Fenwick tree per bootstrap round on
   at most `concordance_max_rows` (300,000) rows; the other sections grow with the number
-  of test snapshots, about 5x more at full scale. Expect about 45 minutes there.
+  of test snapshots, about 5x more at full scale. At full scale it took 2,196 s:
+  discrimination 623 s, slices 1,328 s, concordance 215 s.
 
-### 15. The full-scale rerun with the fixed code is pending
-- **Tags:** OPEN
-- **Status:** the owner will run it on the 31 GB machine (decided 2026-10-26). This
-  machine has about 13 GiB available, below the 17.8 GiB training estimate.
-- **Detail:** the full-scale numbers in the README come from the run of 2026-10-24 at
-  `398f421` (`results/full-2026-10-24/`), before the audit fixes. The fixed code has run
-  only at medium scale. A full rerun needs the 31 GB machine (#1). It has seven train
-  steps instead of three, and `evaluate` is slower (#14). After the rerun, copy its small artifacts into a new
-  `results/` folder and update the README.
+### 15. The full-scale rerun with the fixed code
+- **Status:** closed. Run by the owner on the 31 GB machine on 2026-10-26/27, with the step code
+  of `9b77159` (the step code hashes in `.pipeline/state.json` match those of the medium
+  run on this branch). Gate: 30 checks passed, one warning.
+- **Detail:** the small artifacts are in `results/full-2026-10-27/`, and the README's
+  results section quotes them. The run before the fixes stays in
+  `results/full-2026-10-24/` for comparison.
 
 ### 16. `data-pipeline` is an editable sibling path
 - **Tags:** OPEN
@@ -200,5 +223,5 @@ something surprises you, and close it with how it was verified.
 ### 17. The article is not started
 - **Tags:** OPEN
 - **Detail:** `article/main-article.md` holds only "to do". The reference papers are in
-  `article/research/`. Write it after the full-scale rerun (#15), so it quotes the
-  fixed numbers.
+  `article/research/`. Quote the full-scale numbers with the fixes
+  (`results/full-2026-10-27/`).
