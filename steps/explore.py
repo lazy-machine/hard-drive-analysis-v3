@@ -5,7 +5,9 @@ every scale.
 - models.csv: per drive model, drives, failures, drive-years, annualized failure rate.
 - feature_signal.csv: per feature, fill rate and univariate weighted ROC-AUC for
   "fails within the binary horizon" on train snapshots (how much a single SMART
-  attribute separates failing from healthy drive-days).
+  attribute separates failing from healthy drive-days). `auc` uses only the drive-days
+  where the attribute is reported; `auc_missing_low` ranks missing values lowest, which
+  for attributes absent on whole vendors partly measures the vendor.
 - correlation.png: Spearman correlation between features (train, sample of drives).
 - km_by_counters.png: Kaplan-Meier survival of test snapshots with vs without any
   non-zero critical counter, the classic SMART warning sign.
@@ -47,10 +49,12 @@ def feature_signal(meta: pd.DataFrame, X: np.ndarray, features: list[str],
     for j, f in enumerate(features):
         x = X[known, j]
         filled = ~np.isnan(x)
-        # missing goes to the bottom of the ranking; orientation-free (max of AUC, 1-AUC)
-        auc = weighted_auc(np.where(filled, x, -np.inf), y, w)
-        rows.append({"feature": f, "fill_rate": float(filled.mean()),
-                     "auc": auc, "separation": abs(auc - 0.5) * 2 if np.isfinite(auc) else 0.0,
+        # filled rows only: 187/188 are NULL on whole vendors, so ranking missing values
+        # lowest would partly score "is this a Seagate". NaN if one class is left.
+        auc = weighted_auc(x[filled], y[filled], w[filled]) if filled.any() else float("nan")
+        rows.append({"feature": f, "fill_rate": float(filled.mean()), "auc": auc,
+                     "auc_missing_low": weighted_auc(np.where(filled, x, -np.inf), y, w),
+                     "separation": abs(auc - 0.5) * 2 if np.isfinite(auc) else 0.0,
                      "higher_means_risk": bool(auc >= 0.5)})
     return pd.DataFrame(rows).sort_values("separation", ascending=False)
 
