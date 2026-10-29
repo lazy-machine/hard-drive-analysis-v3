@@ -47,8 +47,8 @@ BASE_PARAMS = {
 # - "col" (default): split across features. Lowest memory; slow with few features,
 #   because only one thread works per feature.
 # - "row": split across rows. About 1.6x faster per round, but keeps a second, row-major
-#   copy of the binned data (about 3 GiB for the 66-feature models at full scale), so use
-#   it for the models with few features.
+#   copy of the binned data. At full scale on a 15 GiB machine it fits for up to 49
+#   features (hazard_nocritical, 10.6 GiB peak), not for the 66-feature models (12 GiB).
 # Both give the same trees up to floating-point rounding.
 HISTOGRAM = {"col": {"force_col_wise": True}, "row": {"force_row_wise": True}}
 
@@ -82,26 +82,42 @@ def process_memory() -> int:
     return 0
 
 
-def _check_memory(n_rows: int, n_features: int, X_bytes: int, log,
-                  histogram: str = "col") -> None:
-    """Fail early with a clear message instead of being OOM-killed mid-training."""
+def _memory_need(n_rows: int, n_features: int, X_bytes: int, histogram: str) -> int:
+    """Estimated peak memory of a training step, in bytes."""
     # Measured at full scale (2026-10-28, build-arch snapshots, train_hazard_smart): 57M
     # counted rows x 66 columns peaked at 8.78 GiB RSS, about 1.8 bytes per feature per
     # row (binned data, gradients, batch buffers) on top of the snapshot matrices, plus
     # interpreter and library overhead. 2 bytes keeps a margin: the estimate is 9.6 GiB.
-    # Row-wise histograms add a row-major copy of the binned data: 11.93 GiB peak for the
-    # same model, about 0.9 more bytes per feature per row; 1 byte keeps a margin.
-    per_cell = 2 + (1 if histogram == "row" else 0)
-    need = X_bytes + n_rows * (n_features + 1) * per_cell + 2**29
-    # `need` includes the snapshot matrices, which this process already holds, so they
-    # count as available too (otherwise they are subtracted twice).
-    avail = available_memory() + process_memory()
+    # Row-wise histograms add a row-major copy of the binned data. Measured at full scale:
+    # 2.6 bytes per feature per row in all (hazard_smart, 11.99 GiB peak) and 3.2
+    # (hazard_nocritical, 10.63 GiB); 3.5 keeps a margin.
+    per_cell = 3.5 if histogram == "row" else 2
+    return X_bytes + int(n_rows * (n_features + 1) * per_cell) + 2**29
+
+
+def _check_memory(n_rows: int, n_features: int, X_bytes: int, log,
+                  histogram: str = "col") -> str:
+    """The histogram mode to train with: `histogram`, or "col" when "row" does not fit.
+
+    Fails early with a clear message instead of being OOM-killed mid-training.
+    """
+    # The estimate includes the snapshot matrices, which this process already holds, so
+    # they count as available too (otherwise they are subtracted twice).
+    budget = 0.9 * (available_memory() + process_memory())
+    need = _memory_need(n_rows, n_features, X_bytes, histogram)
+    if histogram == "row" and need > budget:
+        log(f"row-wise histograms need about {need / 2**30:.1f} GiB, over the "
+            f"{budget / 2**30:.1f} GiB budget: falling back to column-wise")
+        histogram = "col"
+        need = _memory_need(n_rows, n_features, X_bytes, histogram)
     log(f"memory estimate {need / 2**30:.1f} GiB ({histogram}-wise histograms), "
-        f"available {avail / 2**30:.1f} GiB")
-    if need > 0.9 * avail:
+        f"budget {budget / 2**30:.1f} GiB")
+    if need > budget:
         raise MemoryError(
-            f"training needs about {need / 2**30:.1f} GiB but only {avail / 2**30:.1f} GiB "
-            "is available. Lower healthy_fraction or raise stride_days in config/sample.toml.")
+            f"training needs about {need / 2**30:.1f} GiB but the budget is only "
+            f"{budget / 2**30:.1f} GiB (90% of what is available). Lower healthy_fraction "
+            "or raise stride_days in config/sample.toml.")
+    return histogram
 
 
 def _rows(kind, meta, X, study):
@@ -202,8 +218,8 @@ def train(ctx):
     if histogram not in HISTOGRAM:
         raise ValueError(f"histogram must be one of {sorted(HISTOGRAM)}, got '{histogram}'")
     n_bins = len(study["label"]["bin_edges"]) - 1 if p["kind"] == "hazard" else 1
-    _check_memory((len(meta_tr) + len(meta_va)) * n_bins, len(features),
-                  X_tr.nbytes + X_va.nbytes + X_cal.nbytes, log, histogram)
+    histogram = _check_memory((len(meta_tr) + len(meta_va)) * n_bins, len(features),
+                              X_tr.nbytes + X_va.nbytes + X_cal.nbytes, log, histogram)
     names = features + (["bin_start"] if p["kind"] == "hazard" else [])
     power = p.get("weight_power", 1.0)
     data_tr, y_tr, w_tr, _ = _rows(p["kind"], meta_tr, X_tr, study)
