@@ -167,3 +167,32 @@ def test_one_per_drive_picks_each_drive_once():
         assert sorted(drive[pick]) == [0, 1, 2]
         seen |= set(pick[drive[pick] == 0])
     assert seen == {1, 2, 6}        # every row of drive 0 gets drawn sometimes
+
+
+def test_one_per_drive_matches_lexsort_pick():
+    """The O(n) pick returns exactly the rows the earlier lexsort version picked."""
+    from metrics import one_per_drive
+
+    def lexsort_pick(drive_index, rng):
+        order = np.lexsort((rng.random(drive_index.size), drive_index))
+        d = drive_index[order]
+        return order[np.r_[True, d[1:] != d[:-1]]]
+
+    for seed in range(10):
+        g = np.random.default_rng(100 + seed)
+        codes = g.integers(0, g.integers(1, 500), size=g.integers(1, 20000))
+        assert np.array_equal(lexsort_pick(codes, np.random.default_rng(seed)),
+                              one_per_drive(codes, np.random.default_rng(seed)))
+
+
+def test_ranked_scores_match_weighted_metrics():
+    from metrics import RankedScores, weighted_auc, weighted_average_precision
+
+    g = np.random.default_rng(3)
+    s = np.round(g.random(5000), 2)            # ties
+    y = (g.random(5000) < 0.1).astype(int)
+    r = RankedScores(s, y)
+    for _ in range(5):
+        w = g.random(5000) * g.integers(0, 3, 5000)
+        auc, ap = r.auc_ap_sorted(w[r.order])
+        assert auc == weighted_auc(s, y, w) and ap == weighted_average_precision(s, y, w)
