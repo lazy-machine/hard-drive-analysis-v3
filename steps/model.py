@@ -25,6 +25,7 @@ value and its trends), for the ablations in pipeline.toml.
 
 from __future__ import annotations
 
+import ctypes
 import fnmatch
 import gc
 import json
@@ -33,6 +34,7 @@ from pathlib import Path
 
 import lightgbm as lgb
 import numpy as np
+import pyarrow as pa
 
 from common import Progress, available_memory, load_snapshots, load_study, val_roles, write_json
 from survival import ExpandedSequence, expand, fit_platt, known_status
@@ -49,10 +51,10 @@ BASE_PARAMS = {
 # - "row": split across rows. About 1.6x faster per round, but keeps a second, row-major
 #   copy of the binned data, so its memory grows with training rows x features. Training
 #   rows are snapshots x survival bins for hazard models (48M at full scale), snapshots
-#   for binary ones (7.5M). On a 15 GiB machine it fits for hazard models with up to 49
-#   features (hazard_nocritical, 10.6 GiB peak) and for binary_30d (66 features, 8.8 GiB),
-#   not for the 66-feature hazard models (12 GiB). A step that asks for "row" falls back
-#   to "col" when the memory guard says it does not fit.
+#   for binary ones (7.5M). On a 15 GiB machine every model fits at full scale (the
+#   66-feature hazard models peak at 11.0 GiB), as long as the memory freed after binning
+#   goes back to the OS (_release_freed_memory). A step that asks for "row" falls back to
+#   "col" when the memory guard says it does not fit, e.g. while other programs use RAM.
 # Both give the same trees up to floating-point rounding.
 HISTOGRAM = {"col": {"force_col_wise": True}, "row": {"force_row_wise": True}}
 
@@ -92,11 +94,28 @@ def _memory_need(n_rows: int, n_features: int, X_bytes: int, histogram: str) -> 
     # counted rows x 66 columns peaked at 8.78 GiB RSS, about 1.8 bytes per feature per
     # row (binned data, gradients, batch buffers) on top of the snapshot matrices, plus
     # interpreter and library overhead. 2 bytes keeps a margin: the estimate is 9.6 GiB.
-    # Row-wise histograms add a row-major copy of the binned data. Measured at full scale:
-    # 2.6 bytes per feature per row in all (hazard_smart, 11.99 GiB peak) and 3.2
-    # (hazard_nocritical, 10.63 GiB); 3.5 keeps a margin.
-    per_cell = 3.5 if histogram == "row" else 2
-    return X_bytes + int(n_rows * (n_features + 1) * per_cell) + 2**29
+    if histogram == "col":
+        return X_bytes + n_rows * (n_features + 1) * 2 + 2**29
+    # Row-wise, measured at full scale with the freed memory returned to the OS:
+    # hazard_smart (66 columns) peaked at 10.97 GiB, hazard_nocritical (50) at 9.93 GiB.
+    # Both fit about 117 bytes per row (gradients, scores, bagging, partition) plus 0.61
+    # per feature per row (the row-major copy); 125 and 0.65 keep a margin. Models with
+    # few features peak lower than this predicts (hazard_usage: 4.5 GiB, not 7.6).
+    return X_bytes + int(n_rows * (125 + (n_features + 1) * 0.65)) + 2**29
+
+
+def _release_freed_memory() -> None:
+    """Hand memory that Python, pandas and Arrow freed back to the OS.
+
+    Freed memory otherwise stays in the process (glibc's heap, Arrow's pool) and adds
+    about 1 GiB to the training peak, which decides whether row-wise histograms fit.
+    """
+    gc.collect()
+    pa.default_memory_pool().release_unused()
+    try:
+        ctypes.CDLL("libc.so.6").malloc_trim(0)
+    except (OSError, AttributeError):   # not glibc: nothing to trim
+        pass
 
 
 def _check_memory(n_rows: int, n_features: int, X_bytes: int, log,
@@ -245,7 +264,7 @@ def train(ctx):
     train_ds.construct()
     valid_ds.construct()
     del meta_tr, X_tr, data_tr, y_tr, w_tr, meta_va, X_va, data_va, y_va, w_va
-    gc.collect()
+    _release_freed_memory()
 
     history: dict = {}
     booster = lgb.train(
