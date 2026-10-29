@@ -47,8 +47,12 @@ BASE_PARAMS = {
 # - "col" (default): split across features. Lowest memory; slow with few features,
 #   because only one thread works per feature.
 # - "row": split across rows. About 1.6x faster per round, but keeps a second, row-major
-#   copy of the binned data. At full scale on a 15 GiB machine it fits for up to 49
-#   features (hazard_nocritical, 10.6 GiB peak), not for the 66-feature models (12 GiB).
+#   copy of the binned data, so its memory grows with training rows x features. Training
+#   rows are snapshots x survival bins for hazard models (48M at full scale), snapshots
+#   for binary ones (7.5M). On a 15 GiB machine it fits for hazard models with up to 49
+#   features (hazard_nocritical, 10.6 GiB peak) and for binary_30d (66 features, 8.8 GiB),
+#   not for the 66-feature hazard models (12 GiB). A step that asks for "row" falls back
+#   to "col" when the memory guard says it does not fit.
 # Both give the same trees up to floating-point rounding.
 HISTOGRAM = {"col": {"force_col_wise": True}, "row": {"force_row_wise": True}}
 
