@@ -246,6 +246,8 @@ watch = ["steps/common.py", "steps/metrics.py", "steps/survival.py"]
 # better than 1 on validation drives). Probabilities are recalibrated per bin on validation
 # drives with the true weights, so this changes ranking quality, not the probability scale.
 # include / exclude: glob patterns added to or removed from the feature group (ablations).
+# histogram: "col" (default, low memory) or "row" (faster, needs about 1 more byte per
+# feature per survival row; used for the models with few features, see steps/model.py).
 # recalibrate_recent: also emit <model>_recent, calibrated on the last validation year only.
 
 [[steps]]
@@ -267,7 +269,7 @@ function = "model:train"
 inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
 outputs = { model = "build/models/hazard_nosmart.txt", meta = "build/models/hazard_nosmart.json" }
 depends_on = ["verify"]
-params = { kind = "hazard", features = "context", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 1.0, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+params = { histogram = "row", kind = "hazard", features = "context", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 1.0, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
 requires = ["lightgbm>=4.6", "numpy", "scipy"]
 watch = ["steps/common.py", "steps/survival.py"]
 timeout = 21600
@@ -279,7 +281,7 @@ function = "model:train"
 inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
 outputs = { model = "build/models/binary_30d.txt", meta = "build/models/binary_30d.json" }
 depends_on = ["verify"]
-params = { kind = "binary", features = "all", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+params = { histogram = "row", kind = "binary", features = "all", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
 requires = ["lightgbm>=4.6", "numpy", "scipy"]
 watch = ["steps/common.py", "steps/survival.py"]
 timeout = 21600
@@ -303,7 +305,7 @@ function = "model:train"
 inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
 outputs = { model = "build/models/hazard_usage.txt", meta = "build/models/hazard_usage.json" }
 depends_on = ["verify"]
-params = { kind = "hazard", seed = 42, features = "context", weight_power = 0.5, include = ["smart_4_raw", "smart_9_raw", "smart_12_raw", "smart_193_raw", "smart_240_raw", "smart_241_raw", "smart_242_raw"], num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+params = { histogram = "row", kind = "hazard", seed = 42, features = "context", weight_power = 0.5, include = ["smart_4_raw", "smart_9_raw", "smart_12_raw", "smart_193_raw", "smart_240_raw", "smart_241_raw", "smart_242_raw"], num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 31, min_child_samples = 200, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
 requires = ["lightgbm>=4.6", "numpy", "scipy"]
 watch = ["steps/common.py", "steps/survival.py"]
 timeout = 21600
