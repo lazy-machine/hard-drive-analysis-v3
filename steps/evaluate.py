@@ -30,16 +30,20 @@ Sections of metrics.json:
 
 from __future__ import annotations
 
+import multiprocessing
+import os
 import re
+import warnings
+from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
 import pandas as pd
 
 from common import Progress, left_truncated, load_study, val_roles, write_json
 from metrics import (
-    bootstrap_drive_counts, censoring_survival, concordance, ipcw_weights, km_failure,
-    one_per_drive, uno_concordance, weighted_auc, weighted_average_precision, weighted_brier,
-    weighted_quantile_threshold,
+    RankedScores, bootstrap_drive_counts, censoring_survival, concordance, ipcw_weights,
+    km_failure, one_per_drive, uno_concordance, weighted_auc, weighted_average_precision,
+    weighted_brier, weighted_quantile_threshold,
 )
 from survival import known_status
 
@@ -82,6 +86,41 @@ def risk_of(df: pd.DataFrame, name: str, info: dict) -> np.ndarray:
     return df[f"{name}__p{info['horizons'][0]}"].to_numpy()
 
 
+def _workers() -> int:
+    return int(os.environ.get("HDA_THREADS", 0)) or os.cpu_count() or 4
+
+
+_TASK = None
+
+
+def _run_task(i):
+    return _TASK(i)
+
+
+def parallel_rounds(fn, n: int) -> list:
+    """[fn(0), ..., fn(n - 1)] in order, on forked worker processes.
+
+    Bootstrap rounds are independent and their random draws are made before this call,
+    so the results are the same as a serial loop. Forked workers share the parent's
+    arrays copy-on-write; threads would not help, because the heavy numpy calls here
+    (bincount, fancy indexing) hold the GIL.
+    """
+    global _TASK
+    workers = min(_workers(), n)
+    if workers <= 1:
+        return [fn(i) for i in range(n)]
+    _TASK = fn
+    try:
+        with warnings.catch_warnings():
+            # Arrow's idle reader threads hold no lock the workers use
+            warnings.filterwarnings("ignore", message=".*fork.*", category=DeprecationWarning)
+            with ProcessPoolExecutor(workers, mp_context=multiprocessing.get_context("fork")
+                                     ) as pool:
+                return list(pool.map(_run_task, range(n), chunksize=max(1, n // (4 * workers))))
+    finally:
+        _TASK = None
+
+
 def _interval(values: list[float]) -> list[float]:
     v = np.asarray(values, dtype=float)
     v = v[np.isfinite(v)]
@@ -105,9 +144,6 @@ class Drives:
         return bootstrap_drive_counts(self.n, rounds, seed, self.strata)
 
 
-def _drive_auc(score, y, w, codes, rng):
-    pick = one_per_drive(codes, rng)
-    return weighted_auc(score[pick], y[pick], w[pick])
 
 
 def _ranking_metrics(test, D: Drives, models, H, mask, rounds, seed, reference=None,
@@ -122,32 +158,49 @@ def _ranking_metrics(test, D: Drives, models, H, mask, rounds, seed, reference=N
     iw = ipcw_weights(D.d, D.e, D.w, H, D.G)[mask]
     codes, dw = D.codes[mask], D.drive_w[mask]
     scores = {n: s[mask] for n, i in models.items() if (s := score_of(test, n, i, H)) is not None}
-    orders = {n: np.argsort(-s, kind="mergesort") for n, s in scores.items()}
+    ranked = {n: RankedScores(s, y) for n, s in scores.items()}
+    orders = {n: r.order for n, r in ranked.items()}
     keys = ["auc", "ap", "auc_ipcw", "ap_ipcw"] + (["auc_drive"] if drive_level else [])
     boot = {n: {k: [] for k in keys} for n in scores}
     gains = {n: {"auc": [], "ap": []} for n in scores if n != reference}
     rng = np.random.default_rng(seed)
-    for counts in D.boot(rounds, seed):
-        mult = counts[codes]
-        wb, iwb = w * mult, iw * mult
-        point = {}
-        for n, s in scores.items():
-            o = orders[n]
-            point[n] = (weighted_auc(s, y, wb, o), weighted_average_precision(s, y, wb, o))
-            boot[n]["auc"].append(point[n][0])
-            boot[n]["ap"].append(point[n][1])
-            boot[n]["auc_ipcw"].append(weighted_auc(s, y, iwb, o))
-            boot[n]["ap_ipcw"].append(weighted_average_precision(s, y, iwb, o))
+    all_counts = list(D.boot(rounds, seed))
+    # drawn up front, in round order, so threading does not change the random stream
+    grouped = np.argsort(codes, kind="stable")
+    picks = [one_per_drive(codes, rng, grouped) for _ in all_counts] if drive_level else None
+
+    # per model, the row inputs in score order: a round then only multiplies by the
+    # drive counts, (w * mult)[order] == w[order] * mult[order] exactly
+    in_order = {n: (w[r.order], iw[r.order], codes[r.order]) for n, r in ranked.items()}
+
+    def one_round(i):
+        counts = all_counts[i]
+        res = {}
+        for n, r in ranked.items():
+            w_o, iw_o, codes_o = in_order[n]
+            mult_o = counts[codes_o]
+            auc, ap = r.auc_ap_sorted(w_o * mult_o)
+            auc_ipcw, ap_ipcw = r.auc_ap_sorted(iw_o * mult_o)
+            res[n] = {"auc": auc, "ap": ap, "auc_ipcw": auc_ipcw, "ap_ipcw": ap_ipcw}
         if drive_level:
-            pick = one_per_drive(codes, rng)
-            pick = pick[mult[pick] > 0]
+            mult = counts[codes]
+            pick = picks[i][mult[picks[i]] > 0]
             for n, s in scores.items():
-                boot[n]["auc_drive"].append(weighted_auc(s[pick], y[pick], (dw * mult)[pick]))
+                res[n]["auc_drive"] = weighted_auc(s[pick], y[pick], (dw * mult)[pick])
+        return res
+
+    for res in parallel_rounds(one_round, len(all_counts)):
+        for n in scores:
+            for k in keys:
+                boot[n][k].append(res[n][k])
         for n in gains:
-            if reference in point:
-                gains[n]["auc"].append(point[reference][0] - point[n][0])
-                gains[n]["ap"].append(point[reference][1] - point[n][1])
+            if reference in res:
+                gains[n]["auc"].append(res[reference]["auc"] - res[n]["auc"])
+                gains[n]["ap"].append(res[reference]["ap"] - res[n]["ap"])
     base = float(np.sum(w * y) / np.sum(w))
+    if drive_level:
+        prng = np.random.default_rng(seed + 1)
+        point_picks = [one_per_drive(codes, prng, grouped) for _ in range(20)]
     out = {}
     for n, s in scores.items():
         o = orders[n]
@@ -163,9 +216,9 @@ def _ranking_metrics(test, D: Drives, models, H, mask, rounds, seed, reference=N
             "ap_ipcw_ci": _interval(boot[n]["ap_ipcw"]),
         }
         if drive_level:
-            # the point estimate averages 20 draws of one snapshot per drive
-            prng = np.random.default_rng(seed + 1)
-            draws = [_drive_auc(s, y, dw, codes, prng) for _ in range(20)]
+            # the point estimate averages 20 draws of one snapshot per drive (the same
+            # 20 draws for every model)
+            draws = [weighted_auc(s[p], y[p], dw[p]) for p in point_picks]
             row["auc_drive"] = float(np.nanmean(draws)) if np.isfinite(draws).any() else None
             row["auc_drive_ci"] = _interval(boot[n]["auc_drive"])
         out[n] = row
@@ -491,11 +544,14 @@ def concordance_table(test, models, cap, rounds, seed, tau, binary_horizon, log)
                    "harrell": concordance(r, D.d, D.e, D.w),
                    "uno": uno_concordance(r, D.d, D.e, D.w, tau, D.G)}
             if i == 0:   # intervals for each model's main score only (Fenwick tree per round)
-                h, u = [], []
-                for counts in D.boot(rounds, seed):
-                    wb = D.w * counts[D.codes]
-                    h.append(concordance(r, D.d, D.e, wb))
-                    u.append(uno_concordance(r, D.d, D.e, wb, tau, D.G))
+                all_counts = list(D.boot(rounds, seed))
+
+                def one_round(i, r=r, all_counts=all_counts):
+                    wb = D.w * all_counts[i][D.codes]
+                    return (concordance(r, D.d, D.e, wb),
+                            uno_concordance(r, D.d, D.e, wb, tau, D.G))
+
+                h, u = zip(*parallel_rounds(one_round, len(all_counts)), strict=True)
                 row["harrell_ci"], row["uno_ci"] = _interval(h), _interval(u)
             out.append(row)
     log(f"concordance on {len(sample)} rows of {D.n} drives")
