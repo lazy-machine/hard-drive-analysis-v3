@@ -30,6 +30,7 @@ import fnmatch
 import gc
 import json
 import os
+import platform
 from pathlib import Path
 
 import lightgbm as lgb
@@ -52,9 +53,10 @@ BASE_PARAMS = {
 #   copy of the binned data, so its memory grows with training rows x features. Training
 #   rows are snapshots x survival bins for hazard models (48M at full scale), snapshots
 #   for binary ones (7.5M). On a 15 GiB machine every model fits at full scale (the
-#   66-feature hazard models peak at 11.0 GiB), as long as the memory freed after binning
-#   goes back to the OS (_release_freed_memory). A step that asks for "row" falls back to
-#   "col" when the memory guard says it does not fit, e.g. while other programs use RAM.
+#   65-feature hazard models peak at 11.0 GiB), as long as the memory freed after binning
+#   goes back to the OS (_release_freed_memory, glibc only). A step that asks for "row"
+#   falls back to "col" when the memory guard says it does not fit, e.g. while other
+#   programs use RAM.
 # Both give the same trees up to floating-point rounding.
 HISTOGRAM = {"col": {"force_col_wise": True}, "row": {"force_row_wise": True}}
 
@@ -89,19 +91,29 @@ def process_memory() -> int:
 
 
 def _memory_need(n_rows: int, n_features: int, X_bytes: int, histogram: str) -> int:
-    """Estimated peak memory of a training step, in bytes."""
-    # Measured at full scale (2026-10-28, build-arch snapshots, train_hazard_smart): 57M
-    # counted rows x 66 columns peaked at 8.78 GiB RSS, about 1.8 bytes per feature per
-    # row (binned data, gradients, batch buffers) on top of the snapshot matrices, plus
-    # interpreter and library overhead. 2 bytes keeps a margin: the estimate is 9.6 GiB.
+    """Estimated peak memory of a training step, in bytes.
+
+    `n_rows` counts train and early-stopping snapshots times the survival bins (57M at
+    full scale, an upper bound on the 51.5M rows LightGBM gets), `n_features + 1`
+    columns (hazard models add bin_start).
+    """
+    # Column-wise, measured at full scale (2026-10-28, train_hazard_smart): 57M rows x 66
+    # columns peaked at 8.78 GiB RSS, about 1.8 bytes per column per row (binned data,
+    # gradients, batch buffers) on top of the snapshot matrices, plus interpreter and
+    # library overhead. 2 bytes keeps a margin: the estimate is 9.6 GiB.
+    col = X_bytes + n_rows * (n_features + 1) * 2 + 2**29
     if histogram == "col":
-        return X_bytes + n_rows * (n_features + 1) * 2 + 2**29
+        return col
     # Row-wise, measured at full scale with the freed memory returned to the OS:
-    # hazard_smart (66 columns) peaked at 10.97 GiB, hazard_nocritical (50) at 9.93 GiB.
-    # Both fit about 117 bytes per row (gradients, scores, bagging, partition) plus 0.61
-    # per feature per row (the row-major copy); 125 and 0.65 keep a margin. Models with
-    # few features peak lower than this predicts (hazard_usage: 4.5 GiB, not 7.6).
-    return X_bytes + int(n_rows * (125 + (n_features + 1) * 0.65)) + 2**29
+    # hazard_smart (66 columns) peaked at 10.97 GiB, hazard_nocritical (49) at 9.93 GiB.
+    # Both fit about 120 bytes per row plus 0.58 per column per row; 125 and 0.65 keep a
+    # margin. Few-column models peak lower than this predicts (hazard_usage: 4.5 GiB
+    # measured, 8.0 estimated). Row-wise never needs less than column-wise, hence the
+    # max(). Without glibc nothing is trimmed, which leaves about 1 GiB more in use.
+    row = X_bytes + int(n_rows * (125 + (n_features + 1) * 0.65)) + 2**29
+    if platform.libc_ver()[0] != "glibc":
+        row += 2**30
+    return max(col, row)
 
 
 def _release_freed_memory() -> None:
@@ -260,7 +272,8 @@ def train(ctx):
              "val_rows": int(len(y_va)), "val_events": int(y_va.sum())}
     log(stats)
     # Bin the data now and drop the source arrays: LightGBM keeps its own binned copy,
-    # and only meta_cal / X_cal are needed after training (about 4 GiB at full scale).
+    # and only meta_cal / X_cal are needed after training (this frees about 4 GiB at full
+    # scale).
     train_ds.construct()
     valid_ds.construct()
     del meta_tr, X_tr, data_tr, y_tr, w_tr, meta_va, X_va, data_va, y_va, w_va
