@@ -60,9 +60,14 @@ def test_memory_guard_counts_row_wise_copy(monkeypatch):
 
 
 def test_memory_guard_falls_back_to_column_wise(monkeypatch):
-    # the full-scale 66-feature model: row-wise does not fit in 13.1 GiB, column-wise does
-    monkeypatch.setattr(model, "available_memory", lambda: int(13.1 * GiB))
-    lines = []
-    mode = model._check_memory(57_000_000, 65, int(2.1 * GiB), lambda *a: lines.append(a[0]),
-                               "row")
-    assert mode == "col" and "falling back" in lines[0]
+    # the full-scale 66-feature hazard model (57M counted rows, 2.1 GiB of snapshots):
+    # row-wise fits with 13.1 GiB available, falls back to column-wise with 12 GiB
+    def mode(avail_gib):
+        monkeypatch.setattr(model, "available_memory", lambda: int(avail_gib * GiB))
+        lines = []
+        m = model._check_memory(57_000_000, 65, int(2.1 * GiB), lambda *a: lines.append(a[0]),
+                                "row")
+        return m, lines
+    assert mode(13.1)[0] == "row"
+    m, lines = mode(12.0)
+    assert m == "col" and "falling back" in lines[0]
