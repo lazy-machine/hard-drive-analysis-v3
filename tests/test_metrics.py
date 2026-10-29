@@ -203,3 +203,19 @@ def test_drive_cells_match_row_level_bootstrap():
         wb = w * counts[codes]
         assert abs(auc - weighted_auc(s, y, wb)) < 1e-12
         assert abs(ap - weighted_average_precision(s, y, wb)) < 1e-12
+
+
+def test_empty_inputs():
+    from metrics import RankedScores, ap_from_groups, one_per_drive
+
+    assert one_per_drive(np.zeros(0, dtype=np.int64), np.random.default_rng(0)).size == 0
+    r = RankedScores(np.zeros(0), np.zeros(0))
+    assert r.n_groups == 0 and np.isnan(r.auc(np.zeros(0)))
+    assert np.isnan(ap_from_groups(np.zeros(0), np.zeros(0)))
+
+
+def test_parallel_rounds_keeps_order_and_handles_zero_rounds():
+    import evaluate
+
+    assert evaluate.parallel_rounds(lambda i: i * i, 0) == []
+    assert evaluate.parallel_rounds(lambda i: i * i, 7) == [i * i for i in range(7)]
