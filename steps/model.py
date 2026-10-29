@@ -41,11 +41,16 @@ BASE_PARAMS = {
     "objective": "binary",
     "metric": "binary_logloss",
     "deterministic": True,
-    # Column-wise histograms: row-wise keeps a second, row-major copy of the binned data
-    # (about 3 GiB at full scale). Same trees on every model; about a third slower.
-    "force_col_wise": True,
     "verbosity": -1,
 }
+# How LightGBM builds histograms, per step (params.histogram):
+# - "col" (default): split across features. Lowest memory; slow with few features,
+#   because only one thread works per feature.
+# - "row": split across rows. About 1.6x faster per round, but keeps a second, row-major
+#   copy of the binned data (about 3 GiB for the 66-feature models at full scale), so use
+#   it for the models with few features.
+# Both give the same trees up to floating-point rounding.
+HISTOGRAM = {"col": {"force_col_wise": True}, "row": {"force_row_wise": True}}
 
 
 def model_features(schema: dict, feature_set: str, include=(), exclude=()) -> list[str]:
@@ -77,17 +82,22 @@ def process_memory() -> int:
     return 0
 
 
-def _check_memory(n_rows: int, n_features: int, X_bytes: int, log) -> None:
+def _check_memory(n_rows: int, n_features: int, X_bytes: int, log,
+                  histogram: str = "col") -> None:
     """Fail early with a clear message instead of being OOM-killed mid-training."""
     # Measured at full scale (2026-10-28, build-arch snapshots, train_hazard_smart): 57M
     # counted rows x 66 columns peaked at 8.78 GiB RSS, about 1.8 bytes per feature per
     # row (binned data, gradients, batch buffers) on top of the snapshot matrices, plus
     # interpreter and library overhead. 2 bytes keeps a margin: the estimate is 9.6 GiB.
-    need = X_bytes + n_rows * (n_features + 1) * 2 + 2**29
+    # Row-wise histograms add a row-major copy of the binned data: 11.93 GiB peak for the
+    # same model, about 0.9 more bytes per feature per row; 1 byte keeps a margin.
+    per_cell = 2 + (1 if histogram == "row" else 0)
+    need = X_bytes + n_rows * (n_features + 1) * per_cell + 2**29
     # `need` includes the snapshot matrices, which this process already holds, so they
     # count as available too (otherwise they are subtracted twice).
     avail = available_memory() + process_memory()
-    log(f"memory estimate {need / 2**30:.1f} GiB, available {avail / 2**30:.1f} GiB")
+    log(f"memory estimate {need / 2**30:.1f} GiB ({histogram}-wise histograms), "
+        f"available {avail / 2**30:.1f} GiB")
     if need > 0.9 * avail:
         raise MemoryError(
             f"training needs about {need / 2**30:.1f} GiB but only {avail / 2**30:.1f} GiB "
@@ -188,14 +198,17 @@ def train(ctx):
     if min(m["event"].sum() for m in (meta_tr, meta_va, meta_cal)) == 0:
         raise ValueError("train and both validation parts need at least one failure each")
 
+    histogram = p.get("histogram", "col")
+    if histogram not in HISTOGRAM:
+        raise ValueError(f"histogram must be one of {sorted(HISTOGRAM)}, got '{histogram}'")
     n_bins = len(study["label"]["bin_edges"]) - 1 if p["kind"] == "hazard" else 1
     _check_memory((len(meta_tr) + len(meta_va)) * n_bins, len(features),
-                  X_tr.nbytes + X_va.nbytes + X_cal.nbytes, log)
+                  X_tr.nbytes + X_va.nbytes + X_cal.nbytes, log, histogram)
     names = features + (["bin_start"] if p["kind"] == "hazard" else [])
     power = p.get("weight_power", 1.0)
     data_tr, y_tr, w_tr, _ = _rows(p["kind"], meta_tr, X_tr, study)
     data_va, y_va, w_va, _ = _rows(p["kind"], meta_va, X_va, study)
-    params = {**BASE_PARAMS, **p["lgbm"], "seed": p["seed"],
+    params = {**BASE_PARAMS, **HISTOGRAM[histogram], **p["lgbm"], "seed": p["seed"],
               "num_threads": int(os.environ.get("HDA_THREADS", 0))}
     # The datasets get the training params (lgb.train would set them before binning;
     # min_child_samples, for one, decides which features are kept).
