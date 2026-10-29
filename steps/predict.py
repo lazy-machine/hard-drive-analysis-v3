@@ -35,9 +35,9 @@ RULE = "rule_counters"
 CHUNK = 200_000
 
 
-def _hazard_columns(booster, calibration, X: np.ndarray, edges: list[int],
+def _hazard_columns(z: np.ndarray, calibration, edges: list[int],
                     horizons: list[int], name: str) -> dict[str, np.ndarray]:
-    z = raw_hazard_logits(booster, X, edges, CHUNK)
+    """Output columns of a hazard model from its raw logits per bin and a calibration."""
     h = np.column_stack([apply_platt(z[:, k], c) for k, c in enumerate(calibration)])
     S = hazards_to_survival(h)
     cols = {f"{name}__p{H}": failure_probability(S, edges, H) for H in horizons}
@@ -73,10 +73,11 @@ def predict(ctx):
             if info["bin_edges"] != edges:
                 raise ValueError(f"{name} was trained with bins {info['bin_edges']}, "
                                  f"study has {edges}")
-            out.update(_hazard_columns(booster, info["calibration"], Xm, edges, horizons, name))
+            z = raw_hazard_logits(booster, Xm, edges, CHUNK)   # shared by both calibrations
+            out.update(_hazard_columns(z, info["calibration"], edges, horizons, name))
             if "calibration_recent" in info:
-                out.update(_hazard_columns(booster, info["calibration_recent"], Xm, edges,
-                                           horizons, f"{name}_recent"))
+                out.update(_hazard_columns(z, info["calibration_recent"], edges, horizons,
+                                           f"{name}_recent"))
         else:
             H = info["binary_horizon"]
             z = np.concatenate([booster.predict(Xm[lo:lo + CHUNK], raw_score=True)
