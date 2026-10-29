@@ -13,9 +13,31 @@ def _desc_order(score: np.ndarray) -> np.ndarray:
     return np.argsort(-score, kind="mergesort")
 
 
+def auc_from_groups(gp: np.ndarray, gn: np.ndarray) -> float:
+    """Weighted ROC-AUC from positive / negative weight per tie group, groups in
+    descending score order. Ties count one half."""
+    neg_above = np.cumsum(gn) - gn          # negatives with a strictly higher score
+    total_p, total_n = gp.sum(), gn.sum()
+    if total_p == 0 or total_n == 0:
+        return float("nan")
+    # each positive beats the negatives below it, and ties count one half
+    wins = (gp * (total_n - neg_above - gn)).sum() + 0.5 * (gp * gn).sum()
+    return float(wins / (total_p * total_n))
+
+
+def ap_from_groups(gp: np.ndarray, gn: np.ndarray) -> float:
+    """Area under the precision-recall curve (step-wise, like sklearn) from the same
+    per-group weights: one threshold per tie group."""
+    tp, fp = np.cumsum(gp), np.cumsum(gn)
+    if tp[-1] == 0:
+        return float("nan")
+    precision = tp / np.maximum(tp + fp, 1e-300)
+    recall = tp / tp[-1]
+    return float(np.sum(np.diff(np.r_[0.0, recall]) * precision))
+
+
 class RankedScores:
-    """A score sorted once, for many weighted AUC / AP evaluations with different weights
-    (bootstrap rounds). Only the weights are reordered per call."""
+    """A score sorted once into tie groups, for many weighted AUC / AP evaluations."""
 
     def __init__(self, score: np.ndarray, y: np.ndarray, order: np.ndarray | None = None):
         self.order = _desc_order(score) if order is None else order
@@ -23,39 +45,50 @@ class RankedScores:
         self.yy = y[self.order].astype(bool)
         # group equal scores so ties are handled exactly
         self.gid = np.cumsum(np.r_[True, s[1:] != s[:-1]]) - 1
-        self.last = np.r_[s[1:] != s[:-1], True]       # last row of each tie group
+        self.n_groups = int(self.gid[-1]) + 1 if self.gid.size else 0
+
+    def group_weights(self, w: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Positive and negative weight per tie group."""
+        ww = w[self.order]
+        return (np.bincount(self.gid, np.where(self.yy, ww, 0.0), minlength=self.n_groups),
+                np.bincount(self.gid, np.where(self.yy, 0.0, ww), minlength=self.n_groups))
 
     def auc(self, w: np.ndarray) -> float:
-        return self.auc_ap_sorted(w[self.order])[0]
+        return auc_from_groups(*self.group_weights(w))
 
     def average_precision(self, w: np.ndarray) -> float:
-        return self.auc_ap_sorted(w[self.order])[1]
+        return ap_from_groups(*self.group_weights(w))
 
-    def auc_ap_sorted(self, ww: np.ndarray) -> tuple[float, float]:
-        """(AUC, AP) for weights already in score order (`w[self.order]`)."""
-        pos_w = np.where(self.yy, ww, 0.0)
-        neg_w = np.where(self.yy, 0.0, ww)
-        return self._auc(pos_w, neg_w), self._ap(pos_w, neg_w)
 
-    def _auc(self, pos_w: np.ndarray, neg_w: np.ndarray) -> float:
-        gp = np.bincount(self.gid, pos_w)
-        gn = np.bincount(self.gid, neg_w)
-        neg_above = np.cumsum(gn) - gn          # negatives with a strictly higher score
-        total_p, total_n = gp.sum(), gn.sum()
-        if total_p == 0 or total_n == 0:
-            return float("nan")
-        # each positive beats the negatives below it, and ties count one half
-        wins = (gp * (total_n - neg_above - gn)).sum() + 0.5 * (gp * gn).sum()
-        return float(wins / (total_p * total_n))
+class DriveCells:
+    """A ranked score's rows collapsed into (tie group, drive) cells, for drive-level
+    bootstrap rounds.
 
-    def _ap(self, pos_w: np.ndarray, neg_w: np.ndarray) -> float:
-        tp = np.cumsum(pos_w)[self.last]
-        fp = np.cumsum(neg_w)[self.last]
-        if tp[-1] == 0:
-            return float("nan")
-        precision = tp / np.maximum(tp + fp, 1e-300)
-        recall = tp / tp[-1]
-        return float(np.sum(np.diff(np.r_[0.0, recall]) * precision))
+    A round only changes how often each drive is drawn, so the weight of a cell in a
+    round is its summed weight times its drive's count. A round then costs O(cells)
+    instead of O(rows), and there are far fewer cells than rows because a drive's
+    snapshots often share a score. `weights` names the weight vectors to sum.
+    """
+
+    def __init__(self, ranked: RankedScores, codes: np.ndarray,
+                 weights: dict[str, np.ndarray]):
+        n_drives = int(codes.max()) + 1 if codes.size else 1
+        key = ranked.gid.astype(np.int64) * n_drives + codes[ranked.order]
+        cells, cell_of_row = np.unique(key, return_inverse=True)
+        self.group, self.drive = cells // n_drives, cells % n_drives
+        self.n_groups = ranked.n_groups
+        self.pos, self.neg = {}, {}
+        for name, w in weights.items():
+            ww = w[ranked.order]
+            self.pos[name] = np.bincount(cell_of_row, np.where(ranked.yy, ww, 0.0))
+            self.neg[name] = np.bincount(cell_of_row, np.where(ranked.yy, 0.0, ww))
+
+    def auc_ap(self, drive_counts: np.ndarray, weights: str) -> tuple[float, float]:
+        """(AUC, AP) with every drive's weight multiplied by its count in the round."""
+        m = drive_counts[self.drive]
+        gp = np.bincount(self.group, self.pos[weights] * m, minlength=self.n_groups)
+        gn = np.bincount(self.group, self.neg[weights] * m, minlength=self.n_groups)
+        return auc_from_groups(gp, gn), ap_from_groups(gp, gn)
 
 
 def weighted_auc(score: np.ndarray, y: np.ndarray, w: np.ndarray,
