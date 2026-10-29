@@ -41,7 +41,7 @@ import pandas as pd
 
 from common import Progress, left_truncated, load_study, val_roles, write_json
 from metrics import (
-    RankedScores, bootstrap_drive_counts, censoring_survival, concordance, ipcw_weights,
+    DriveCells, RankedScores, bootstrap_drive_counts, censoring_survival, concordance, ipcw_weights,
     km_failure, one_per_drive, uno_concordance, weighted_auc, weighted_average_precision,
     weighted_brier, weighted_quantile_threshold,
 )
@@ -165,22 +165,19 @@ def _ranking_metrics(test, D: Drives, models, H, mask, rounds, seed, reference=N
     gains = {n: {"auc": [], "ap": []} for n in scores if n != reference}
     rng = np.random.default_rng(seed)
     all_counts = list(D.boot(rounds, seed))
-    # drawn up front, in round order, so threading does not change the random stream
+    # drawn up front, in round order, so the worker processes do not change the random
+    # stream
     grouped = np.argsort(codes, kind="stable")
     picks = [one_per_drive(codes, rng, grouped) for _ in all_counts] if drive_level else None
 
-    # per model, the row inputs in score order: a round then only multiplies by the
-    # drive counts, (w * mult)[order] == w[order] * mult[order] exactly
-    in_order = {n: (w[r.order], iw[r.order], codes[r.order]) for n, r in ranked.items()}
+    cells = {n: DriveCells(r, codes, {"w": w, "ipcw": iw}) for n, r in ranked.items()}
 
     def one_round(i):
         counts = all_counts[i]
         res = {}
-        for n, r in ranked.items():
-            w_o, iw_o, codes_o = in_order[n]
-            mult_o = counts[codes_o]
-            auc, ap = r.auc_ap_sorted(w_o * mult_o)
-            auc_ipcw, ap_ipcw = r.auc_ap_sorted(iw_o * mult_o)
+        for n, c in cells.items():
+            auc, ap = c.auc_ap(counts, "w")
+            auc_ipcw, ap_ipcw = c.auc_ap(counts, "ipcw")
             res[n] = {"auc": auc, "ap": ap, "auc_ipcw": auc_ipcw, "ap_ipcw": ap_ipcw}
         if drive_level:
             mult = counts[codes]
