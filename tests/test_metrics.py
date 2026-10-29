@@ -185,14 +185,21 @@ def test_one_per_drive_matches_lexsort_pick():
                               one_per_drive(codes, np.random.default_rng(seed)))
 
 
-def test_ranked_scores_match_weighted_metrics():
-    from metrics import RankedScores, weighted_auc, weighted_average_precision
+def test_drive_cells_match_row_level_bootstrap():
+    """A round on (tie group, drive) cells equals the metric on rows reweighted by the
+    drive counts, up to floating-point rounding."""
+    from metrics import DriveCells, RankedScores, weighted_auc, weighted_average_precision
 
     g = np.random.default_rng(3)
-    s = np.round(g.random(5000), 2)            # ties
-    y = (g.random(5000) < 0.1).astype(int)
-    r = RankedScores(s, y)
+    n, drives = 5000, 300
+    s = np.round(g.random(n), 2)            # ties
+    y = (g.random(n) < 0.1).astype(int)
+    codes = g.integers(0, drives, n)
+    w = g.random(n)
+    cells = DriveCells(RankedScores(s, y), codes, {"w": w})
     for _ in range(5):
-        w = g.random(5000) * g.integers(0, 3, 5000)
-        auc, ap = r.auc_ap_sorted(w[r.order])
-        assert auc == weighted_auc(s, y, w) and ap == weighted_average_precision(s, y, w)
+        counts = g.integers(0, 3, drives)
+        auc, ap = cells.auc_ap(counts, "w")
+        wb = w * counts[codes]
+        assert abs(auc - weighted_auc(s, y, wb)) < 1e-12
+        assert abs(ap - weighted_average_precision(s, y, wb)) < 1e-12
