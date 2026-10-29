@@ -71,3 +71,9 @@ def test_memory_guard_falls_back_to_column_wise(monkeypatch):
     assert mode(13.1)[0] == "row"
     m, lines = mode(12.0)
     assert m == "col" and "falling back" in lines[0]
+
+
+def test_row_wise_never_estimated_below_column_wise():
+    for cols in (5, 65, 120, 300):
+        row = model._memory_need(10**7, cols, 0, "row")
+        assert row >= model._memory_need(10**7, cols, 0, "col")
