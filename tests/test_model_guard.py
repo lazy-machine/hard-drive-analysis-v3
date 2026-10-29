@@ -50,3 +50,14 @@ def test_memory_guard_passes_full_scale_on_15gb_machine(monkeypatch):
     # snapshot matrices, 8.78 GiB peak. It must pass with ~13.9 GiB available.
     monkeypatch.setattr(model, "available_memory", lambda: int(13.9 * GiB))
     model._check_memory(57_000_000, 65, int(2.1 * GiB), lambda *a: None)
+
+
+def test_memory_guard_counts_row_wise_copy(monkeypatch):
+    # row-wise histograms need 1 more byte per feature per row than column-wise
+    monkeypatch.setattr(model, "available_memory", lambda: 64 * GiB)
+    lines = []
+    model._check_memory(1_000_000, 20, 0, lambda *a: lines.append(a[0]), "row")
+    model._check_memory(1_000_000, 20, 0, lambda *a: lines.append(a[0]), "col")
+    assert "row-wise" in lines[0] and "col-wise" in lines[1]
+    est = [float(s.split()[2]) for s in lines]
+    assert est[0] > est[1]
