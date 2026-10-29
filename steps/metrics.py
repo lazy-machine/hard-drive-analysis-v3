@@ -13,40 +13,61 @@ def _desc_order(score: np.ndarray) -> np.ndarray:
     return np.argsort(-score, kind="mergesort")
 
 
+class RankedScores:
+    """A score sorted once, for many weighted AUC / AP evaluations with different weights
+    (bootstrap rounds). Only the weights are reordered per call."""
+
+    def __init__(self, score: np.ndarray, y: np.ndarray, order: np.ndarray | None = None):
+        self.order = _desc_order(score) if order is None else order
+        s = score[self.order]
+        self.yy = y[self.order].astype(bool)
+        # group equal scores so ties are handled exactly
+        self.gid = np.cumsum(np.r_[True, s[1:] != s[:-1]]) - 1
+        self.last = np.r_[s[1:] != s[:-1], True]       # last row of each tie group
+
+    def auc(self, w: np.ndarray) -> float:
+        return self.auc_ap_sorted(w[self.order])[0]
+
+    def average_precision(self, w: np.ndarray) -> float:
+        return self.auc_ap_sorted(w[self.order])[1]
+
+    def auc_ap_sorted(self, ww: np.ndarray) -> tuple[float, float]:
+        """(AUC, AP) for weights already in score order (`w[self.order]`)."""
+        pos_w = np.where(self.yy, ww, 0.0)
+        neg_w = np.where(self.yy, 0.0, ww)
+        return self._auc(pos_w, neg_w), self._ap(pos_w, neg_w)
+
+    def _auc(self, pos_w: np.ndarray, neg_w: np.ndarray) -> float:
+        gp = np.bincount(self.gid, pos_w)
+        gn = np.bincount(self.gid, neg_w)
+        neg_above = np.cumsum(gn) - gn          # negatives with a strictly higher score
+        total_p, total_n = gp.sum(), gn.sum()
+        if total_p == 0 or total_n == 0:
+            return float("nan")
+        # each positive beats the negatives below it, and ties count one half
+        wins = (gp * (total_n - neg_above - gn)).sum() + 0.5 * (gp * gn).sum()
+        return float(wins / (total_p * total_n))
+
+    def _ap(self, pos_w: np.ndarray, neg_w: np.ndarray) -> float:
+        tp = np.cumsum(pos_w)[self.last]
+        fp = np.cumsum(neg_w)[self.last]
+        if tp[-1] == 0:
+            return float("nan")
+        precision = tp / np.maximum(tp + fp, 1e-300)
+        recall = tp / tp[-1]
+        return float(np.sum(np.diff(np.r_[0.0, recall]) * precision))
+
+
 def weighted_auc(score: np.ndarray, y: np.ndarray, w: np.ndarray,
                  order: np.ndarray | None = None) -> float:
     """ROC-AUC with sample weights; ties count one half. Pass `order` to reuse a sort."""
-    order = _desc_order(score) if order is None else order
-    s, yy, ww = score[order], y[order].astype(bool), w[order]
-    pos_w = np.where(yy, ww, 0.0)
-    neg_w = np.where(yy, 0.0, ww)
-    # group equal scores so ties are handled exactly
-    new = np.r_[True, s[1:] != s[:-1]]
-    gid = np.cumsum(new) - 1
-    gp = np.bincount(gid, pos_w)
-    gn = np.bincount(gid, neg_w)
-    neg_above = np.cumsum(gn) - gn          # negatives with a strictly higher score
-    total_p, total_n = gp.sum(), gn.sum()
-    if total_p == 0 or total_n == 0:
-        return float("nan")
-    # each positive beats the negatives below it, and ties count one half
-    wins = (gp * (total_n - neg_above - gn)).sum() + 0.5 * (gp * gn).sum()
-    return float(wins / (total_p * total_n))
+    return RankedScores(score, y, order).auc(w)
 
 
 def weighted_average_precision(score: np.ndarray, y: np.ndarray, w: np.ndarray,
                                order: np.ndarray | None = None) -> float:
     """Area under the precision-recall curve (step-wise, like sklearn) with weights."""
-    order = _desc_order(score) if order is None else order
-    s, yy, ww = score[order], y[order].astype(bool), w[order]
-    last = np.r_[s[1:] != s[:-1], True]               # last row of each tie group
-    tp = np.cumsum(np.where(yy, ww, 0.0))[last]
-    fp = np.cumsum(np.where(yy, 0.0, ww))[last]
-    if tp[-1] == 0:
-        return float("nan")
-    precision = tp / np.maximum(tp + fp, 1e-300)
-    recall = tp / tp[-1]
-    return float(np.sum(np.diff(np.r_[0.0, recall]) * precision))
+    return RankedScores(score, y, order).average_precision(w)
 
 
 def weighted_brier(p: np.ndarray, y: np.ndarray, w: np.ndarray) -> float:
@@ -242,8 +263,20 @@ def bootstrap_counts(drive_index: np.ndarray, n_drives: int, rounds: int, seed: 
         yield counts[drive_index]
 
 
-def one_per_drive(drive_index: np.ndarray, rng) -> np.ndarray:
-    """Row indices of one random row per drive (for drive-level metrics)."""
-    order = np.lexsort((rng.random(drive_index.size), drive_index))
-    d = drive_index[order]
-    return order[np.r_[True, d[1:] != d[:-1]]]
+def one_per_drive(drive_index: np.ndarray, rng, grouped: np.ndarray | None = None
+                  ) -> np.ndarray:
+    """Row indices of one random row per drive (for drive-level metrics), in drive order.
+
+    Each row draws a uniform number and each drive keeps its row with the smallest one.
+    `grouped` (np.argsort(drive_index, kind="stable")) can be passed to reuse that sort.
+    """
+    r = rng.random(drive_index.size)
+    grouped = np.argsort(drive_index, kind="stable") if grouped is None else grouped
+    d = drive_index[grouped]
+    starts = np.flatnonzero(np.r_[True, d[1:] != d[:-1]])
+    rs = r[grouped]
+    is_min = rs == np.repeat(np.minimum.reduceat(rs, starts), np.diff(np.r_[starts, rs.size]))
+    # the first minimum of each drive (ties between uniform draws do not happen in practice)
+    first = np.flatnonzero(is_min)
+    first = first[np.r_[True, d[first][1:] != d[first][:-1]]]
+    return grouped[first]
