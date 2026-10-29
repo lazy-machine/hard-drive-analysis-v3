@@ -251,13 +251,14 @@ watch = ["steps/common.py", "steps/metrics.py", "steps/survival.py"]
 # drives with the true weights, so this changes ranking quality, not the probability scale.
 # include / exclude: glob patterns added to or removed from the feature group (ablations).
 # early_stopping_rounds: rounds without a better validation loss before training stops.
-# Each model's value sits above the longest such stretch before its best iteration in the
-# 2026-10 full-scale run (smart 90, nosmart 90, binary_30d 50, nocritical 28, usage 20,
-# w075 6, w100 4 rounds), so the shorter patience stops at the same best iteration: the
-# same trees, without up to 80 extra rounds after it. Lower values stop smart and nosmart
-# early and move test scores by up to 0.017 (checked).
+# Each model's value sits above the longest such stretch before its best iteration,
+# replayed tree by tree from the 2026-10-28 full-scale models (smart 90, nosmart 90,
+# binary_30d 50, nocritical 28, usage 20, w075 6, w100 4 rounds). So training stops at
+# the same best iteration, with the same trees, without up to 80 extra rounds after it.
+# smart and nosmart keep 100 on purpose: a uniform 50 stops them early and moved test
+# scores by up to 0.017 (checked). Recheck the stretches if the data or features change.
 # histogram: "col" (default, low memory) or "row" (faster, needs about 1.5 more bytes per
-# feature per survival row; used for the models with fewer features, see steps/model.py).
+# feature per training row; for the steps where that fits, see steps/model.py).
 # recalibrate_recent: also emit <model>_recent, calibrated on the last validation year only.
 
 [[steps]]

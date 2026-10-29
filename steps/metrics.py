@@ -29,7 +29,7 @@ def ap_from_groups(gp: np.ndarray, gn: np.ndarray) -> float:
     """Area under the precision-recall curve (step-wise, like sklearn) from the same
     per-group weights: one threshold per tie group."""
     tp, fp = np.cumsum(gp), np.cumsum(gn)
-    if tp[-1] == 0:
+    if tp.size == 0 or tp[-1] == 0:
         return float("nan")
     precision = tp / np.maximum(tp + fp, 1e-300)
     recall = tp / tp[-1]
@@ -37,15 +37,19 @@ def ap_from_groups(gp: np.ndarray, gn: np.ndarray) -> float:
 
 
 class RankedScores:
-    """A score sorted once into tie groups, for many weighted AUC / AP evaluations."""
+    """A score sorted once into tie groups, for many weighted AUC / AP evaluations.
+
+    `order`, if given, must be a stable descending argsort of `score`.
+    """
 
     def __init__(self, score: np.ndarray, y: np.ndarray, order: np.ndarray | None = None):
         self.order = _desc_order(score) if order is None else order
         s = score[self.order]
         self.yy = y[self.order].astype(bool)
         # group equal scores so ties are handled exactly
-        self.gid = np.cumsum(np.r_[True, s[1:] != s[:-1]]) - 1
-        self.n_groups = int(self.gid[-1]) + 1 if self.gid.size else 0
+        new_group = np.r_[True, s[1:] != s[:-1]] if s.size else np.zeros(0, dtype=bool)
+        self.gid = np.cumsum(new_group) - 1
+        self.n_groups = int(self.gid[-1]) + 1 if s.size else 0
 
     def group_weights(self, w: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """Positive and negative weight per tie group."""
@@ -83,11 +87,11 @@ class DriveCells:
             self.pos[name] = np.bincount(cell_of_row, np.where(ranked.yy, ww, 0.0))
             self.neg[name] = np.bincount(cell_of_row, np.where(ranked.yy, 0.0, ww))
 
-    def auc_ap(self, drive_counts: np.ndarray, weights: str) -> tuple[float, float]:
+    def auc_ap(self, drive_counts: np.ndarray, weight_name: str) -> tuple[float, float]:
         """(AUC, AP) with every drive's weight multiplied by its count in the round."""
         m = drive_counts[self.drive]
-        gp = np.bincount(self.group, self.pos[weights] * m, minlength=self.n_groups)
-        gn = np.bincount(self.group, self.neg[weights] * m, minlength=self.n_groups)
+        gp = np.bincount(self.group, self.pos[weight_name] * m, minlength=self.n_groups)
+        gn = np.bincount(self.group, self.neg[weight_name] * m, minlength=self.n_groups)
         return auc_from_groups(gp, gn), ap_from_groups(gp, gn)
 
 
@@ -300,16 +304,20 @@ def one_per_drive(drive_index: np.ndarray, rng, grouped: np.ndarray | None = Non
                   ) -> np.ndarray:
     """Row indices of one random row per drive (for drive-level metrics), in drive order.
 
-    Each row draws a uniform number and each drive keeps its row with the smallest one.
-    `grouped` (np.argsort(drive_index, kind="stable")) can be passed to reuse that sort.
+    Each row draws a uniform number and each drive keeps its row with the smallest one
+    (the same rows as lexsort((draws, drive_index)) picks, ties included).
+    `grouped` must be np.argsort(drive_index, kind="stable"); pass it to reuse that sort.
     """
     r = rng.random(drive_index.size)
+    if drive_index.size == 0:
+        return np.zeros(0, dtype=np.int64)
     grouped = np.argsort(drive_index, kind="stable") if grouped is None else grouped
+    assert grouped.size == drive_index.size, "grouped must be the argsort of drive_index"
     d = drive_index[grouped]
     starts = np.flatnonzero(np.r_[True, d[1:] != d[:-1]])
     rs = r[grouped]
     is_min = rs == np.repeat(np.minimum.reduceat(rs, starts), np.diff(np.r_[starts, rs.size]))
-    # the first minimum of each drive (ties between uniform draws do not happen in practice)
+    # the first minimum of each drive: on a tie, the lowest row index, like lexsort
     first = np.flatnonzero(is_min)
     first = first[np.r_[True, d[first][1:] != d[first][:-1]]]
     return grouped[first]
