@@ -33,13 +33,17 @@ outputs = { cohort = "build/cohort.parquet", summary = "build/cohort-summary.jso
 requires = ["pandas>=2.2", "pyarrow"]
 watch = ["steps/common.py"]
 
+# extract reads the panel one date range at a time. Each read pays about 3 s of fixed cost
+# whatever its size, so 12-month chunks (10 reads) take 241 s against 470 s for 120
+# monthly ones, with the same rows (peak 10.2 GiB). drive_index keeps 1-month chunks: its
+# GROUP BY over a whole year spilled tens of GB (docs/ISSUES.md in the original project).
 [[steps]]
 name = "extract"
 description = "The cohort's daily rows: curated SMART columns, deduplicated, cut at first failure"
 function = "panel:extract"
 inputs = { panel = "dataset/dataset.parquet", cohort = "build/cohort.parquet", study = "config/study.toml" }
 outputs = { panel_dir = "build/panel" }
-params = { chunk_months = 1, batches = 8 }
+params = { chunk_months = 12, batches = 8 }
 requires = ["duckdb>=2.0", "pandas>=2.2"]
 watch = ["steps/common.py"]
 
