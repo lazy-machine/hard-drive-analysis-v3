@@ -24,7 +24,7 @@ def test_memory_guard_passes(monkeypatch):
     monkeypatch.setattr(model, "available_memory", lambda: 64 * GiB)
     lines = []
     model._check_memory(1_000_000, 20, 1 * GiB, lambda *a: lines.append(a))
-    assert lines and "memory estimate" in lines[0][0]
+    assert lines and "memory estimate" in lines[-1][0]
 
 
 def test_memory_guard_threshold(monkeypatch):
@@ -53,11 +53,16 @@ def test_memory_guard_passes_full_scale_on_15gb_machine(monkeypatch):
 
 
 def test_memory_guard_counts_row_wise_copy(monkeypatch):
-    # row-wise histograms need 1 more byte per feature per row than column-wise
+    # row-wise histograms need more memory than column-wise, and fit here
     monkeypatch.setattr(model, "available_memory", lambda: 64 * GiB)
+    assert model._memory_need(10**6, 20, 0, "row") > model._memory_need(10**6, 20, 0, "col")
+    assert model._check_memory(1_000_000, 20, 0, lambda *a: None, "row") == "row"
+
+
+def test_memory_guard_falls_back_to_column_wise(monkeypatch):
+    # the full-scale 66-feature model: row-wise does not fit in 13.1 GiB, column-wise does
+    monkeypatch.setattr(model, "available_memory", lambda: int(13.1 * GiB))
     lines = []
-    model._check_memory(1_000_000, 20, 0, lambda *a: lines.append(a[0]), "row")
-    model._check_memory(1_000_000, 20, 0, lambda *a: lines.append(a[0]), "col")
-    assert "row-wise" in lines[0] and "col-wise" in lines[1]
-    est = [float(s.split()[2]) for s in lines]
-    assert est[0] > est[1]
+    mode = model._check_memory(57_000_000, 65, int(2.1 * GiB), lambda *a: lines.append(a[0]),
+                               "row")
+    assert mode == "col" and "falling back" in lines[0]
