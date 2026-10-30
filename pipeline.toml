@@ -194,7 +194,7 @@ watch = ["steps/common.py", "steps/metrics.py", "steps/survival.py"]
 
 [[steps]]
 name = "report"
-description = "Plain-language answer with figures: build/report/report.md"
+description = "Headline numbers (build/report/results.md) and the detailed analysis with figures (build/report/analysis.md)"
 function = "report:report"
 inputs = { metrics = "build/metrics.json", calibration = "build/calibration.csv", detection = "build/detection.csv", life = "build/life.csv", predictions = "build/predictions.parquet", cohort_summary = "build/cohort-summary.json", verify = "build/verify-report.json", explore = "build/explore", meta_hazard_smart = "build/models/hazard_smart.json" }
 outputs = { dir = "build/report" }

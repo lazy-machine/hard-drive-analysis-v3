@@ -11,7 +11,9 @@ import pandas as pd
 def test_pipeline_runs_and_caches(pipeline_run):
     project, result = pipeline_run
     assert all(o.status == "ran" for o in result.outcomes.values())
-    assert (project / "build" / "report" / "report.md").read_text().startswith("# Can SMART")
+    report = project / "build" / "report"
+    assert (report / "results.md").read_text().startswith("# Results")
+    assert (report / "analysis.md").read_text().startswith("# Can SMART")
 
     from data_pipeline import config
     from data_pipeline.orchestrator import Orchestrator
