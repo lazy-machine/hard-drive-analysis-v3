@@ -14,7 +14,10 @@ Pipeline described in `pipeline.toml`. It checkpoints all steps.
 - `audit`: reviews and suggestions from other agents.
 - `docs`: general documentation, besides `README.md`.
 - `article`: main theoretical study of the project.
-- `article/reseach`: stores reference paper and articles for the main article.
+- `article/research`: local copies of the reference papers cited by the article (gitignored, see `article/references.md`).
+- `results`: small artifacts of past full-scale runs, copied from `build`.
+- `research_notes`, `reports`: literature research behind the methodology.
+- `info`: hardware report of the machine used for full-scale runs.
 
 ## Conventions
 - Do not read from other projects at `projects/`.

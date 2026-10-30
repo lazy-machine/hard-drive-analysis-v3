@@ -115,20 +115,11 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "data-verify", marker = "extra == 'verify'", editable = "../data-pipeline/packages/data-verify" },
-    { name = "packaging", specifier = ">=26.3" },
-]
-provides-extras = ["verify"]
+requires-dist = [{ name = "packaging", specifier = ">=26.3" }]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "duckdb", specifier = ">=1.1" },
-    { name = "pytest", specifier = ">=9.1.1" },
-    { name = "ruff", specifier = ">=0.6" },
-]
+dev = [{ name = "pytest", specifier = ">=9.1.1" }]
 examples = [
-    { name = "data-verify", editable = "../data-pipeline/packages/data-verify" },
     { name = "matplotlib", specifier = ">=3.11.2" },
     { name = "numpy", specifier = ">=2.5.4" },
     { name = "pandas", specifier = ">=3.0.6" },
