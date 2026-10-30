@@ -11,7 +11,7 @@
 # Changing the scale reruns cohort and everything downstream. drive_index (the
 # full-panel scan) does not read this file, so it stays cached.
 
-scale = "medium"
+scale = "full"
 
 [scales.small]
 # Runs in a few minutes on a 15 GB laptop once drive_index is cached.

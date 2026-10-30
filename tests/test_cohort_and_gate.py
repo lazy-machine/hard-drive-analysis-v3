@@ -72,86 +72,133 @@ def test_contract_validation(tmp_path):
         load_sample(tmp_path / "sample.toml")
 
 
-def _checks(project, tamper_sql=None):
-    import json
+def _checks(project, tmp_path, tamper_sql=None):
+    """Run the pipeline's data-verify step, optionally on tampered snapshots."""
+    import tomllib
 
-    from verify import run_checks
+    from data_verify import run
 
     build = project / "build"
-    con = duckdb.connect()
-    con.sql(f"CREATE TABLE snap AS SELECT * FROM read_parquet('{build}/snapshots.parquet')")
-    con.sql(f"CREATE VIEW cohort AS SELECT * FROM read_parquet('{build}/cohort.parquet')")
+    pipeline = tomllib.loads((project / "pipeline.toml").read_text())
+    step = next(s for s in pipeline["steps"] if s["name"] == "verify")
+    inputs = {k: project / v for k, v in step["inputs"].items()}
     if tamper_sql:
+        con = duckdb.connect()
+        con.sql(f"CREATE TABLE snap AS SELECT * FROM read_parquet('{build}/snapshots.parquet')")
+        con.sql(f"CREATE VIEW cohort AS SELECT * FROM read_parquet('{build}/cohort.parquet')")
         changed = con.sql(tamper_sql).fetchall()[0][0]
         assert changed > 0, "the tamper must change at least one row"
-    checks = run_checks(con, pd.read_parquet(build / "cohort.parquet"),
-                        json.loads((build / "feature-schema.json").read_text()),
-                        load_study(project / "config" / "study.toml"),
-                        load_sample(project / "config" / "sample.toml"))
-    return {c.name: c for c in checks}
+        inputs["snapshots"] = tmp_path / "snapshots.parquet"
+        con.sql(f"COPY (SELECT * FROM snap) TO '{inputs['snapshots']}' (FORMAT parquet)")
+    report = run(step["params"], inputs, log=lambda *a: None, workdir=project)
+    return {c["id"]: c for c in report["checks"]}
 
 
-def _gate(project, tamper_sql=None):
-    checks = _checks(project, tamper_sql)
-    return {c.name for c in checks.values() if not c.ok and c.severity == "error"}
+def _gate(project, tmp_path, tamper_sql=None):
+    checks = _checks(project, tmp_path, tamper_sql)
+    return {cid for cid, c in checks.items()
+            if c["status"] in ("fail", "error") and c["severity"] == "error"}
 
 
-def test_gate_passes_clean_data(pipeline_run):
+def test_gate_passes_clean_data(pipeline_run, tmp_path):
     project, _ = pipeline_run
-    assert _gate(project) == set()
+    assert _gate(project, tmp_path) == set()
 
 
-def test_gate_catches_v2_label_bug(pipeline_run):
+def test_gate_catches_v2_label_bug(pipeline_run, tmp_path):
     """Rows inside a visible failure window relabelled as healthy (review §3.2)."""
     project, _ = pipeline_run
-    failed = _gate(project, "UPDATE snap SET event = 0 WHERE event = 1 AND duration_days < 10")
-    assert {"labels_match_cohort", "no_visible_failure_labelled_censored"} <= failed
+    failed = _gate(project, tmp_path,
+                   "UPDATE snap SET event = 0 WHERE event = 1 AND duration_days < 10")
+    assert {"assert.labels_match_cohort", "assert.no_visible_failure_labelled_censored"} <= failed
 
 
-def test_gate_catches_split_leak(pipeline_run):
+def test_gate_catches_split_leak(pipeline_run, tmp_path):
     project, _ = pipeline_run
-    failed = _gate(project, """UPDATE snap SET split = 'train' WHERE (serial_number, date) =
+    failed = _gate(project, tmp_path, """UPDATE snap SET split = 'train'
+                               WHERE (serial_number, date) =
                                (SELECT (serial_number, date) FROM snap WHERE split = 'test'
                                 ORDER BY serial_number, date LIMIT 1)""")
-    assert "each_drive_in_one_split" in failed or "snapshot_split_matches_cohort" in failed
+    assert {"split.group_overlap", "assert.snapshot_split_matches_cohort"} <= failed
 
 
-def test_gate_catches_train_rows_in_test_period(pipeline_run):
+def test_gate_catches_train_rows_in_test_period(pipeline_run, tmp_path):
     project, _ = pipeline_run
-    failed = _gate(project, """UPDATE snap SET date = DATE '2024-02-01'
+    failed = _gate(project, tmp_path, """UPDATE snap SET date = DATE '2024-02-01'
                                WHERE split = 'train' AND date = (SELECT max(date) FROM snap
                                                                  WHERE split = 'train')""")
-    assert "train_val_before_train_end" in failed
+    assert {"temporal.bounds", "temporal.order"} <= failed
 
 
-def test_gate_catches_stride_rows_off_stride_days(pipeline_run):
+def test_gate_catches_stride_rows_off_stride_days(pipeline_run, tmp_path):
     """Stride rows moved off the drive's stride day keep their weight but not the density."""
     project, _ = pipeline_run
     stride = load_sample(project / "config" / "sample.toml")["stride_days"]
-    failed = _gate(project, f"""UPDATE snap SET date = snap.date + 1 FROM cohort c
+    failed = _gate(project, tmp_path, f"""UPDATE snap SET date = snap.date + 1 FROM cohort c
                                WHERE snap.serial_number = c.serial_number
                                  AND abs(snap.weight - c.drive_weight * {stride}) < 1e-6""")
-    assert "stride_rows_on_stride_days" in failed
+    assert "custom.stride_rows_on_stride_days" in failed
 
 
-def test_gate_catches_dense_weight_far_from_failure(pipeline_run):
+def test_gate_catches_dense_weight_far_from_failure(pipeline_run, tmp_path):
     project, _ = pipeline_run
-    failed = _gate(project, """UPDATE snap SET weight = c.drive_weight FROM cohort c
+    failed = _gate(project, tmp_path, """UPDATE snap SET weight = c.drive_weight FROM cohort c
                                WHERE snap.serial_number = c.serial_number
                                  AND (snap.serial_number, snap.date) =
                                      (SELECT (s.serial_number, s.date) FROM snap s
                                       JOIN cohort c2 USING (serial_number)
                                       WHERE c2.failure_date IS NULL
                                       ORDER BY s.serial_number, s.date LIMIT 1)""")
-    assert "dense_rows_before_visible_failure" in failed
-    assert "snapshot_weights_valid" not in failed  # the weight itself is a valid value
+    assert "assert.dense_rows_before_visible_failure" in failed
+    assert "assert.snapshot_weights_valid" not in failed  # the weight itself is a valid value
 
 
-def test_gate_warns_on_cohort_drive_without_snapshots(pipeline_run):
+def test_gate_warns_on_cohort_drive_without_snapshots(pipeline_run, tmp_path):
     project, _ = pipeline_run
-    before = _checks(project)["cohort_drives_have_snapshots"]
-    after = _checks(project, """DELETE FROM snap WHERE serial_number =
-                                (SELECT min(serial_number) FROM snap)""")[
-        "cohort_drives_have_snapshots"]
-    assert not after.ok and after.severity == "warn"
-    assert int(after.detail.split()[0]) == int(before.detail.split()[0]) + 1
+    name = "assert.cohort_drives_have_snapshots"
+    before = _checks(project, tmp_path)[name]
+    after = _checks(project, tmp_path, """DELETE FROM snap WHERE serial_number =
+                                          (SELECT min(serial_number) FROM snap)""")[name]
+    assert after["status"] == "fail" and after["severity"] == "warn"
+    assert not after["blocking"]
+    missing = before.get("details", {}).get("violations", 0)
+    assert after["details"]["violations"] == missing + 1
+
+
+
+def _gate_on(project, tmp_path, snapshots_sql=None, cohort_sql=None):
+    """Blocking check ids, with the snapshot or cohort table rewritten by a SELECT."""
+    import tomllib
+
+    from data_verify import run
+
+    build = project / "build"
+    step = next(s for s in tomllib.loads((project / "pipeline.toml").read_text())["steps"]
+                if s["name"] == "verify")
+    inputs = {k: project / v for k, v in step["inputs"].items()}
+    con = duckdb.connect()
+    for name, sql in (("snapshots", snapshots_sql), ("cohort", cohort_sql)):
+        if sql:
+            con.sql(f"CREATE VIEW {name} AS SELECT * FROM read_parquet('{build}/{name}.parquet')")
+            inputs[name] = tmp_path / f"{name}.parquet"
+            con.sql(f"COPY ({sql}) TO '{inputs[name]}' (FORMAT parquet)")
+    report = run(step["params"], inputs, log=lambda *a: None, workdir=project)
+    return set(report["blocking"])
+
+
+def test_gate_catches_non_float_feature(pipeline_run, tmp_path):
+    project, _ = pipeline_run
+    blocking = _gate_on(project, tmp_path, snapshots_sql=(
+        "SELECT * REPLACE (smart_9_raw::DOUBLE AS smart_9_raw) FROM snapshots"))
+    assert "custom.features_are_float" in blocking
+
+
+def test_gate_catches_cohort_drive_in_wrong_split(pipeline_run, tmp_path):
+    """A cohort drive without snapshots in the wrong split: only the cohort check sees it."""
+    project, _ = pipeline_run
+    blocking = _gate_on(project, tmp_path, cohort_sql="""
+        SELECT * REPLACE (CASE WHEN serial_number = (SELECT min(serial_number) FROM cohort)
+                          THEN CASE split WHEN 'train' THEN 'test' ELSE 'train' END
+                          ELSE split END AS split)
+        FROM cohort""")
+    assert "custom.cohort_split_matches_stable_bucket" in blocking
