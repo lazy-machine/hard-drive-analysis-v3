@@ -16,7 +16,9 @@ These numbers come from the full-scale run of 2026-10-26/27 with the audit fixes
 `audit-fixes`, the step code of `9b77159`). Its full tables are in
 [`results/full-2026-10-27/report/report.md`](results/full-2026-10-27/report/report.md), a
 committed copy of that run (the original `build-arch/` is local and gitignored).
-`build/report/report.md` holds the last local run, whatever its scale. The run before
+`build/report/` holds the last local run, whatever its scale: `results.md` has the
+headline numbers, `analysis.md` the explanation and the detailed tables. The committed
+runs predate this split and keep everything in one `report.md`. The run before
 the fixes (2026-10-24, `398f421`) is kept in `results/full-2026-10-24/`. What changed
 between the two is at the end of this section.
 
@@ -168,7 +170,7 @@ uv run data-pipeline             # run everything that is out of date
 ```
 
 The panel goes in `dataset/dataset.parquet` (21.8 GB, not in git). Results land in
-`build/report/report.md`. Long steps log progress to `build/logs/<step>.log`.
+`build/report/results.md` (numbers) and `build/report/analysis.md` (explanation). Long steps log progress to `build/logs/<step>.log`.
 
 CI (`.github/workflows/test.yml`) runs the linter and the tests on every push and pull
 request. It checks out `data-pipeline` next to this repository from the repository
@@ -219,7 +221,7 @@ dataset.parquet ─► drive_index ─► cohort ─► extract ─► snapshots
 | `train_*` | `build/models/` | LightGBM text models + metadata (features, params, calibration, importance). `hazard_smart` is the model under test; `hazard_nosmart`, `hazard_nocritical` and `hazard_usage` are ablations; `binary_30d` is the fixed-horizon baseline; `hazard_smart_w075` / `_w100` test the training weight power |
 | `predict` | `build/predictions.parquet` | Survival curves → P(fail within 7/30/90/180/365 d), median remaining life, interval. Adds `hazard_smart_recent` (same trees, calibrated on the last validation year) and the rule score |
 | `evaluate` | `build/metrics.json`, `*.csv` | Weighted, censoring-aware metrics with drive-level bootstrap intervals, slices, alert budgets, drift, retirement |
-| `report` | `build/report/report.md` | The answer in plain language, with figures |
+| `report` | `build/report/results.md`, `analysis.md` | `results.md`: the run and the headline numbers, one line per table on how to read it. `analysis.md`: the answer in plain language, every detailed table, the figures |
 
 ## Layout
 

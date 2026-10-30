@@ -1,4 +1,8 @@
-"""Write build/report/report.md and its figures from the evaluation outputs.
+"""Write the run's report to build/report from the evaluation outputs.
+
+- results.md: the run (scale, cohort, test set, gate) and the headline numbers in a few
+  compact tables, each with one line on how to read it.
+- analysis.md: the plain-language answer and every detailed table, with the figures.
 
 Every sentence that states a conclusion is derived from the numbers (for example, "SMART
 adds information" only if the bootstrap interval of the gain excludes zero), so the
@@ -281,17 +285,14 @@ def report(ctx):
 
     disc = pd.DataFrame(metrics["discrimination"])
     gains = pd.DataFrame(metrics["reference_gain"])
-    scale = cohort["scale"]
-    test = metrics["test"]
+    results = _results(metrics, cohort, gate, preds, ref, labels)
+    (out / "results.md").write_text("\n".join(results) + "\n")
+
     lines = [
         "# Can SMART data predict when a hard drive will fail?",
         "",
-        f"Scale **{scale['scale']}**: {cohort['cohort_drives']} drives in the cohort "
-        f"(failing drives sampled at {_pct(scale['failing_fraction'], 0)}, healthy at "
-        f"{_pct(scale['healthy_fraction'], 1)}, weighted back to the real population). "
-        f"Test: {test['drives']} drives never seen in training, {test['failing_drives']} of "
-        f"which fail during the test period ({test['snapshots']} snapshots). Verification "
-        f"gate: {sum(c['ok'] for c in gate['checks'])}/{len(gate['checks'])} checks passed.",
+        "The run itself (scale, cohort, test set, gate) and the headline numbers are in "
+        "[results.md](results.md). This file explains them and holds the detailed tables.",
         "",
         "## Answer",
         "",
@@ -316,8 +317,143 @@ def report(ctx):
                     for _, r in signal.head(15).iterrows()])
     lines += ["", "![importance](importance.png)", "",
               "Also see `build/explore/km_by_counters.png` and `build/explore/models.csv`.", ""]
-    (out / "report.md").write_text("\n".join(lines))
-    return {"lines": len(lines)}
+    (out / "analysis.md").write_text("\n".join(lines) + "\n")
+    return {"results_lines": len(results), "analysis_lines": len(lines)}
+
+
+def _pivot(rows, models, cell, labels, horizons):
+    """One row per model, one column per horizon; models without any row are left out."""
+    by = {(r["model"], r["horizon"]): r for r in rows}
+    body = []
+    for m in models:
+        if any((m, H) in by for H in horizons):
+            body.append([_label(m, labels)]
+                        + [cell(by[(m, H)]) if (m, H) in by else "-" for H in horizons])
+    return body
+
+
+def _results(metrics, cohort, gate, preds, ref, labels) -> list[str]:
+    """The run and its headline numbers, without discussion (that is analysis.md)."""
+    scale, test = cohort["scale"], metrics["test"]
+    split = cohort.get("by_split_stratum", {})
+    per_split = ", ".join(
+        f"{s} {sum(n for k, n in split.items() if k.startswith(s + '/'))}"
+        for s in ("train", "val", "test") if any(k.startswith(s + "/") for k in split))
+    dates = pd.to_datetime(preds["date"])
+    span = lambda sp: (f"{dates[preds['split'] == sp].min().date()} to "  # noqa: E731
+                       f"{dates[preds['split'] == sp].max().date()}"
+                       if (preds["split"] == sp).any() else "n/a")
+    failed = [c for c in gate["checks"] if not c["ok"]]
+    trained = [m for m in metrics.get("models", {}) if m != ref]
+    hz = sorted({r["horizon"] for r in metrics["discrimination"]})
+    head = [f"{H} d" for H in hz]
+    H = _binary_horizon(metrics)
+
+    lines = [
+        "# Results",
+        "",
+        "Numbers only. What they mean, and the detailed tables behind them, are in "
+        "[analysis.md](analysis.md).",
+        "",
+        "## Run",
+        "",
+    ]
+    lines += table(["", ""], [
+        ["scale", f"{scale['scale']} (failing drives sampled at "
+                  f"{_pct(scale['failing_fraction'], 0)}, healthy at "
+                  f"{_pct(scale['healthy_fraction'], 1)})"],
+        ["cohort", f"{cohort['cohort_drives']} drives ({per_split})"],
+        ["validation snapshots", span("val")],
+        ["test snapshots", span("test")],
+        ["test set", f"{test['drives']} drives, {test['failing_drives']} fail "
+                     f"({test.get('silent_failing_drives', 'n/a')} silent), "
+                     f"{test['snapshots']} snapshots"],
+        ["reference model", _label(ref, labels)],
+        ["compared with", f"{len(trained)} models and baselines (rows of the tables below)"],
+        ["verification gate", f"{sum(c['ok'] for c in gate['checks'])}/{len(gate['checks'])} "
+                              "checks passed"
+                              + "".join(f"; {c['name']} failed ({c['severity']})"
+                                        for c in failed)],
+        ["intervals", f"95% drive-level bootstrap, {metrics['bootstrap_rounds']} rounds"],
+    ])
+
+    core = [r for r in metrics["discrimination"] if r["model"] in CORE]
+    lines += ["", "## Ranking (ROC-AUC)", "",
+              "> How well the score separates drives that fail within the horizon from those "
+              "that don't. 0.5 = random, 1 = perfect.", ""]
+    lines += table(["model"] + head,
+                   _pivot(core, CORE, lambda r: est(r["auc"], r["auc_ci"]), labels, hz))
+
+    base = {r["horizon"]: r["base_rate"] for r in core}
+    lines += ["", "## Precision-recall (PR-AUC)", "",
+              "> Failures are rare, so compare each value with the base rate (the real share "
+              "of drive-days that fail within the horizon), which is what a random ranking "
+              "scores.", ""]
+    lines += table(["model"] + head,
+                   [["base rate"] + [_fmt(base.get(h), 5) for h in hz]]
+                   + _pivot(core, CORE, lambda r: est(r["ap"], r["ap_ci"], 4), labels, hz))
+
+    others = [m for m in CORE + ABLATIONS if m != ref]
+    gain_rows = [{**g, "model": g["other"]} for g in metrics["reference_gain"]]
+    lines += ["", "## Reference gain over each model (ROC-AUC)", "",
+              f"> The reference ({_label(ref, labels)}) minus the model in the row, paired "
+              "on the same "
+              "bootstrap rounds. An interval above zero means the reference ranks better; "
+              "one that covers zero means no clear difference.", ""]
+    lines += table(["model"] + head,
+                   _pivot(gain_rows, others,
+                          lambda g: est(g["auc_gain"], g["auc_gain_ci"], sign=True), labels, hz))
+
+    main = _main_alert(metrics, ref)
+    if main:
+        rows = [a for a in metrics["alerting"] if a["budget"] == main["budget"]
+                and a["model"] in CORE]
+        rows.sort(key=lambda a: _rank(a["model"]))
+        lines += ["", f"## Alerts at a {_pct(main['budget'], 1)} false-alarm budget", "",
+                  f"> The threshold is set on validation drives so that {_pct(main['budget'], 1)} "
+                  "of healthy drive-days alert. On test, false alarms above the budget mean "
+                  f"drift. Precision = share of alerted drive-days that fail within "
+                  f"{main['horizon']} days.", ""]
+        lines += table(
+            ["model", "false alarms (test)", "precision",
+             f"failing drives alerted in their last {main['horizon']} d",
+             f"alerted >= {main['early_days']} d before failure"],
+            [[_label(a["model"], labels),
+              est(a["false_alarm_rate_test"], a.get("false_alarm_rate_test_ci"), 2, pct=True),
+              est(a["precision_test"], a.get("precision_test_ci"), 2, pct=True),
+              f"{a['failing_drives_alerted']}/{a['failing_drives']}",
+              f"{a.get('failing_drives_alerted_early', 'n/a')}/{a['failing_drives']}"]
+             for a in rows])
+
+    life = next((r for r in metrics["life"] if r["model"] == ref), None)
+    if life:
+        qc = life["quantile_calibration"]
+        lines += ["", "## Remaining life", "",
+                  "> For each snapshot the model names the day by which the failure "
+                  "probability reaches 10%, 50% and 90%. If the timing is right, the share "
+                  "that failed by that day matches the target. Below target = too "
+                  "pessimistic, above = too optimistic.", ""]
+        lines += table(["predicted day", "target", "failed by then", "snapshots"],
+                       [[{"0.1": "10% day", "0.5": "median", "0.9": "90% day"}[q],
+                         _pct(qc[q]["target"], 0),
+                         _pct(qc[q]["share_failed_by_predicted_day"]), qc[q]["snapshots"]]
+                        for q in ("0.1", "0.5", "0.9") if q in qc])
+        lines += ["", f"Failing drives' snapshots with a median within a year: "
+                  f"{_pct(life['share_median_within_horizon'])}. Healthy snapshots with a "
+                  f"median beyond a year: {_pct(life['healthy_share_median_beyond_horizon'])}."]
+
+    drift = next((r for r in metrics.get("drift", []) if r["model"] == ref), None)
+    if drift:
+        lo, hi = drift["val_band"]
+        lines += ["", f"## Calibration over time ({H}-day risk)", "",
+                  "> Ratio = mean predicted / observed risk. 1 = right, above 1 = the model "
+                  f"over-predicts. Validation years span {_fmt(lo, 2)} to {_fmt(hi, 2)}; a "
+                  "test year outside that band is drift.", ""]
+        lines += table(["test year", "ratio", "outside validation band"],
+                       [[t["year"], est(t.get("ratio"), t.get("ratio_ci"), 2),
+                         "yes" if t["outside_band"] else "no"] for t in drift["test_years"]])
+
+    return lines
 
 
 def _discrimination(metrics, preds, labels) -> list[str]:
