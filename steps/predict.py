@@ -89,7 +89,7 @@ def predict(ctx):
             if info.get("needs_panel"):
                 scorer.windows = engines.PanelWindows.build(
                     ctx.inputs["panel_dir"], ctx.inputs["snapshots"], ["val", "test"], study,
-                    scorer.prep, info["features"], scorer.device, log)
+                    scorer.scaling, scorer.device, log)
             logits = scorer.hazard_logits
         else:
             booster, info = load_booster(ctx.inputs[f"model_{name}"], ctx.inputs[f"meta_{name}"])

@@ -11,14 +11,19 @@ other pair.
 Engines (params.engine):
 - "xgboost": boosted trees on the person-period rows (snapshot features + bin start),
   streamed in batches like the LightGBM steps. params.device is "cpu", or "cuda" for a
-  ROCm build of XGBoost (the PyPI wheel has no AMD support).
+  ROCm build of XGBoost (the PyPI wheel has no AMD support). A missing value is passed as
+  XGB_MISSING, below every real value: with NaN in the data XGBoost stores the binned
+  matrix sparse, about 630 bytes per person-period row against 66, which does not fit at
+  full scale. A tree still separates missing from real values with one split, but missing
+  always sits on the low side instead of taking a learned default direction.
 - "xgboost_aft": an accelerated failure time model on the snapshots themselves, without
   the expansion: log T = f(x) + sigma * Z. A failure on day d is interval-censored in
   [d, d + 1), a snapshot censored at d is right-censored at d + 1. The bin logits come from
   the fitted survival curve at the bin edges, so this is the one engine whose curve has a
   parametric shape.
 - "catboost": oblivious trees on the person-period rows. CatBoost cannot stream batches,
-  so the expanded matrix goes through a memory-mapped file in build/tmp.
+  so the expanded matrix goes through a memory-mapped file in build/tmp. Missing values
+  keep CatBoost's own handling (treated as below the minimum).
 - "torch": a neural logistic-hazard network (Gensheimer & Narasimhan 2018, Kvamme &
   Borgan 2021). One output per bin, trained on the snapshots with a mask of the bins each
   one is at risk in, which gives the same likelihood as the person-period rows without
@@ -41,6 +46,7 @@ from survival import expand
 
 ENGINES = ("xgboost", "xgboost_aft", "catboost", "torch")
 CHUNK = 200_000
+XGB_MISSING = -1e9      # below every feature value (the most negative trend is about -2e5)
 
 
 def _threads() -> int:
@@ -149,6 +155,11 @@ def _xgb_types(names, categorical):
     return ["c" if n in categorical else "q" for n in names]
 
 
+def _xgb_dense(rows: np.ndarray) -> np.ndarray:
+    """Missing values as XGB_MISSING, so XGBoost keeps its dense binned layout."""
+    return np.where(np.isnan(rows), np.float32(XGB_MISSING), rows)
+
+
 def _person_period_iter(X, idx, bin_start, y, w, names, types, batch=1 << 20):
     import xgboost as xgb
 
@@ -163,8 +174,9 @@ def _person_period_iter(X, idx, bin_start, y, w, names, types, batch=1 << 20):
             if self.pos >= idx.size:
                 return 0
             sl = slice(self.pos, self.pos + batch)
-            input_data(data=np.hstack([X[idx[sl]], bin_start[sl, None]]), label=y[sl],
-                       weight=w[sl], feature_names=names, feature_types=types)
+            rows = _xgb_dense(np.hstack([X[idx[sl]], bin_start[sl, None]]))
+            input_data(data=rows, label=y[sl], weight=w[sl], feature_names=names,
+                       feature_types=types)
             self.pos += batch
             return 1
 
@@ -243,9 +255,9 @@ class XGBHazard:
         for lo in range(0, X.shape[0], CHUNK):
             part = X[lo:lo + CHUNK]
             for k in range(K):
-                dm = xgb.DMatrix(_with_bin(part, self.edges[k]), feature_names=self.names,
-                                 feature_types=self.types, enable_categorical=True,
-                                 nthread=_threads())
+                dm = xgb.DMatrix(_xgb_dense(_with_bin(part, self.edges[k])),
+                                 feature_names=self.names, feature_types=self.types,
+                                 enable_categorical=True, nthread=_threads())
                 z[lo:lo + CHUNK, k] = self.booster.predict(dm, output_margin=True)
         return z
 
@@ -300,7 +312,7 @@ def _fit_aft(ctx, p, study, schema, features, categorical, parts, log):
         meta, X = parts[part]
         lo, hi = aft_bounds(meta)
         mats[part] = xgb.QuantileDMatrix(
-            X, label_lower_bound=lo, label_upper_bound=hi,
+            _xgb_dense(X), label_lower_bound=lo, label_upper_bound=hi,
             weight=meta["weight"].to_numpy() ** power, feature_names=features,
             feature_types=types, enable_categorical=True,
             max_bin=params.get("max_bin", 256), ref=mats.get("train"))
@@ -341,9 +353,10 @@ class XGBAFT(XGBHazard):
         import xgboost as xgb
 
         mu = np.concatenate([
-            self.booster.predict(xgb.DMatrix(X[lo:lo + CHUNK], feature_names=self.names,
-                                             feature_types=self.types, enable_categorical=True,
-                                             nthread=_threads()), output_margin=True)
+            self.booster.predict(xgb.DMatrix(_xgb_dense(X[lo:lo + CHUNK]),
+                                             feature_names=self.names, feature_types=self.types,
+                                             enable_categorical=True, nthread=_threads()),
+                                 output_margin=True)
             for lo in range(0, X.shape[0], CHUNK)]).astype(np.float64)
         return aft_hazard_logits(mu, self.aft["scale"], self.aft["distribution"], self.edges)
 
@@ -634,8 +647,9 @@ def _fit_torch(ctx, p, study, schema, features, categorical, parts, log):
         targets[part] = [torch.from_numpy(a).to(dev) for a in (Y, W)]
     windows = None
     if cfg["arch"]["type"] == "gru":
+        scaling = channel_scaling(ctx, study, prep, features)
         windows = PanelWindows.build(ctx.inputs["panel_dir"], ctx.inputs["snapshots"],
-                                     ["train", "val"], study, prep, features, dev, log)
+                                     ["train", "val"], study, scaling, dev, log)
         # load_snapshots orders by split, so train rows come first, then val
         n_tr = len(meta_tr)
         early = ~val_roles(_val_serials(ctx), study["split"]["calibration_share"])
@@ -657,6 +671,7 @@ def _fit_torch(ctx, p, study, schema, features, categorical, parts, log):
     model = TorchHazard(net.cpu(), prep, cfg["arch"], K, dev)
     if windows is not None:
         model.windows = windows.restricted(_calib_rows(ctx, study, len(meta_tr)))
+        model.scaling = scaling
     return model, {
         "best_iter": best_epoch, "val_loss": best, "val_metric": "logloss",
         "train_rows": int(len(meta_tr)), "train_events": int(meta_tr["event"].sum()),
@@ -699,14 +714,15 @@ class PanelWindows:
         return self.values.shape[1] + 2
 
     @classmethod
-    def build(cls, panel_dir, snapshots, splits, study, prep, features, dev, log):
+    def build(cls, panel_dir, snapshots, splits, study, scaling, dev, log):
+        """`scaling` = (mean, std) per panel column after the signed log."""
         import duckdb
         import torch
 
         from common import q, smart_columns
         length = max(study["features"]["trend_windows"])
         cols = smart_columns(study)
-        mean, std = _channel_scaling(prep, features, cols)
+        mean, std = scaling
         con = duckdb.connect(config={"threads": _threads()})
         where = "split IN (" + ", ".join(q(s) for s in splits) + ")"
         con.sql(f"""CREATE TABLE keys AS SELECT row_number() OVER (ORDER BY split, serial_number,
@@ -764,14 +780,38 @@ class PanelWindows:
         return PanelWindows(self.values, self.days, self.pos[r], self.start[r], self.length)
 
 
-def _channel_scaling(prep: Prep, features, cols):
-    """Scaling of each panel column: the snapshot feature's, which Prep fitted on train."""
+def channel_scaling(ctx, study, prep: Prep, features):
+    """Scaling of each panel column after the signed log: the snapshot feature's, which Prep
+    fitted on train; for a column the model does not take as a feature, the mean and
+    standard deviation over the train drives' daily rows."""
+    import duckdb
+
+    from common import q, smart_columns
+    cols = smart_columns(study)
     by_name = {features[j]: i for i, j in enumerate(prep.numeric)}
-    missing = [c for c in cols if c not in by_name]
-    if missing:
-        raise ValueError(f"the sequence model needs the SMART features {missing} for scaling")
-    i = [by_name[c] for c in cols]
-    return prep.mean[i], prep.std[i]
+    mean = np.zeros(len(cols), np.float32)
+    std = np.ones(len(cols), np.float32)
+    rest = []
+    for k, c in enumerate(cols):
+        if c in by_name:
+            mean[k], std[k] = prep.mean[by_name[c]], prep.std[by_name[c]]
+        else:
+            rest.append(k)
+    if rest:
+        con = duckdb.connect(config={"threads": _threads()})
+        panel = q(str(ctx.inputs["panel_dir"]) + "/*/*.parquet")
+        train = (f"SELECT DISTINCT serial_number FROM read_parquet({q(ctx.inputs['snapshots'])}) "
+                 "WHERE split = 'train'")
+        exprs = ", ".join(f"avg(sign({c}) * ln(1 + abs({c}))), "
+                          f"stddev_pop(sign({c}) * ln(1 + abs({c})))" for c in
+                          (cols[k] for k in rest))
+        row = con.sql(f"SELECT {exprs} FROM read_parquet({panel}, hive_partitioning = true) "
+                      f"WHERE serial_number IN ({train})").fetchall()[0]
+        for n, k in enumerate(rest):
+            m, sd = row[2 * n], row[2 * n + 1]
+            mean[k] = m if m is not None else 0.0
+            std[k] = sd if sd and sd > 1e-6 else 1.0
+    return mean, std
 
 
 class TorchHazard:
@@ -779,6 +819,7 @@ class TorchHazard:
     line up with the X passed to hazard_logits; predict and train attach them."""
 
     windows = None
+    scaling = None      # (mean, std) per panel column, for a sequence model
 
     def __init__(self, net, prep: Prep, arch: dict, K: int, device):
         self.net, self.prep, self.arch, self.K, self.device = net, prep, arch, K, device
@@ -786,9 +827,12 @@ class TorchHazard:
     def save(self, path: Path):
         import torch
 
-        torch.save({"state_dict": self.net.state_dict(), "prep": self.prep.state(),
-                    "arch": self.arch, "K": self.K,
-                    "channels": self.windows.channels if self.windows else 0}, path)
+        state = {"state_dict": self.net.state_dict(), "prep": self.prep.state(),
+                 "arch": self.arch, "K": self.K,
+                 "channels": self.windows.channels if self.windows else 0}
+        if self.scaling is not None:
+            state["scaling"] = [torch.from_numpy(np.asarray(a)) for a in self.scaling]
+        torch.save(state, path)
 
     @classmethod
     def load(cls, path: Path, info: dict):
@@ -799,7 +843,10 @@ class TorchHazard:
         net = _hazard_net(prep.n_num, prep.cards, s["K"], s["arch"], s.get("channels", 0))
         net.load_state_dict(s["state_dict"])
         dev = _device(info.get("params", {}).get("device", "auto"))
-        return cls(net, prep, s["arch"], s["K"], dev)
+        model = cls(net, prep, s["arch"], s["K"], dev)
+        if "scaling" in s:
+            model.scaling = tuple(t.numpy() for t in s["scaling"])
+        return model
 
     def hazard_logits(self, X: np.ndarray) -> np.ndarray:
         import torch

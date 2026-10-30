@@ -382,7 +382,7 @@ function = "engines:train"
 inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
 outputs = { model = "build/models/catboost_hazard.cbm", meta = "build/models/catboost_hazard.json" }
 depends_on = ["verify"]
-params = { engine = "catboost", features = "all", seed = 42, weight_power = 0.5, num_boost_round = 3000, early_stopping_rounds = 100, catboost = { learning_rate = 0.08, depth = 6, l2_leaf_reg = 5.0, border_count = 254, bootstrap_type = "Bernoulli", subsample = 0.8, rsm = 0.8 } }
+params = { engine = "catboost", features = "all", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 50, catboost = { learning_rate = 0.1, depth = 6, l2_leaf_reg = 5.0, border_count = 254, bootstrap_type = "Bernoulli", subsample = 0.8, rsm = 0.8, one_hot_max_size = 32 } }
 requires = ["catboost>=1.2", "numpy", "pyarrow", "scipy"]
 watch = ["steps/common.py", "steps/survival.py", "steps/model.py"]
 timeout = 21600
@@ -423,13 +423,63 @@ requires = ["torch>=2.15", "duckdb>=2.0", "numpy", "pyarrow", "scipy"]
 watch = ["steps/common.py", "steps/survival.py", "steps/model.py"]
 timeout = 21600
 
+# -- round 2: capacity, raw history, seed noise ------------------------------------------------
+
+[[steps]]
+name = "train_hazard_smart_big"
+description = "Capacity check: the reference LightGBM model with 127 leaves (31 in the reference)"
+function = "model:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/hazard_smart_big.txt", meta = "build/models/hazard_smart_big.json" }
+depends_on = ["verify"]
+params = { histogram = "row", kind = "hazard", features = "all", seed = 42, weight_power = 0.5, num_boost_round = 2000, early_stopping_rounds = 100, lgbm = { learning_rate = 0.03, num_leaves = 127, min_child_samples = 100, feature_fraction = 0.8, bagging_fraction = 0.8, bagging_freq = 1, lambda_l2 = 5.0, cat_smooth = 20 } }
+requires = ["lightgbm>=4.6", "numpy", "pyarrow", "scipy"]
+watch = ["steps/common.py", "steps/survival.py"]
+timeout = 21600
+
+[[steps]]
+name = "train_torch_gru_raw"
+description = "Engine: GRU over the raw daily SMART readings with the context features only (no snapshot SMART values or trends)"
+function = "engines:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml", panel_dir = "build/panel" }
+outputs = { model = "build/models/torch_gru_raw.pt", meta = "build/models/torch_gru_raw.json" }
+depends_on = ["verify"]
+params = { engine = "torch", device = "auto", features = "context", seed = 42, weight_power = 0.5, torch = { arch = { type = "gru", hidden = [512, 256, 128], dropout = 0.1, rnn_hidden = 64 }, lr = 0.002, weight_decay = 1e-5, batch_size = 8192, max_epochs = 40, patience = 4 } }
+requires = ["torch>=2.15", "duckdb>=2.0", "numpy", "pyarrow", "scipy"]
+watch = ["steps/common.py", "steps/survival.py", "steps/model.py"]
+timeout = 21600
+
+[[steps]]
+name = "train_torch_mlp_s43"
+description = "Seed noise: the MLP engine with seed 43"
+function = "engines:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/torch_mlp_s43.pt", meta = "build/models/torch_mlp_s43.json" }
+depends_on = ["verify"]
+params = { engine = "torch", device = "auto", features = "all", seed = 43, weight_power = 0.5, torch = { arch = { type = "mlp", hidden = [512, 256, 128], dropout = 0.1 }, lr = 0.002, weight_decay = 1e-5, batch_size = 8192, max_epochs = 40, patience = 4 } }
+requires = ["torch>=2.15", "numpy", "pyarrow", "scipy"]
+watch = ["steps/common.py", "steps/survival.py", "steps/model.py"]
+timeout = 21600
+
+[[steps]]
+name = "train_torch_mlp_s44"
+description = "Seed noise: the MLP engine with seed 44"
+function = "engines:train"
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml" }
+outputs = { model = "build/models/torch_mlp_s44.pt", meta = "build/models/torch_mlp_s44.json" }
+depends_on = ["verify"]
+params = { engine = "torch", device = "auto", features = "all", seed = 44, weight_power = 0.5, torch = { arch = { type = "mlp", hidden = [512, 256, 128], dropout = 0.1 }, lr = 0.002, weight_decay = 1e-5, batch_size = 8192, max_epochs = 40, patience = 4 } }
+requires = ["torch>=2.15", "numpy", "pyarrow", "scipy"]
+watch = ["steps/common.py", "steps/survival.py", "steps/model.py"]
+timeout = 21600
+
 # -- evaluation ------------------------------------------------------------------------------
 
 [[steps]]
 name = "predict"
 description = "Score validation and test snapshots with every model and the rule baseline"
 function = "predict:predict"
-inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml", model_hazard_smart = "build/models/hazard_smart.txt", meta_hazard_smart = "build/models/hazard_smart.json", model_hazard_nosmart = "build/models/hazard_nosmart.txt", meta_hazard_nosmart = "build/models/hazard_nosmart.json", model_binary_30d = "build/models/binary_30d.txt", meta_binary_30d = "build/models/binary_30d.json", model_hazard_nocritical = "build/models/hazard_nocritical.txt", meta_hazard_nocritical = "build/models/hazard_nocritical.json", model_hazard_usage = "build/models/hazard_usage.txt", meta_hazard_usage = "build/models/hazard_usage.json", model_hazard_smart_w075 = "build/models/hazard_smart_w075.txt", meta_hazard_smart_w075 = "build/models/hazard_smart_w075.json", model_hazard_smart_w100 = "build/models/hazard_smart_w100.txt", meta_hazard_smart_w100 = "build/models/hazard_smart_w100.json", model_xgb_hazard = "build/models/xgb_hazard.ubj", meta_xgb_hazard = "build/models/xgb_hazard.json", model_xgb_aft = "build/models/xgb_aft.ubj", meta_xgb_aft = "build/models/xgb_aft.json", model_catboost_hazard = "build/models/catboost_hazard.cbm", meta_catboost_hazard = "build/models/catboost_hazard.json", model_torch_mlp = "build/models/torch_mlp.pt", meta_torch_mlp = "build/models/torch_mlp.json", model_torch_linear = "build/models/torch_linear.pt", meta_torch_linear = "build/models/torch_linear.json", model_torch_gru = "build/models/torch_gru.pt", meta_torch_gru = "build/models/torch_gru.json", panel_dir = "build/panel" }
+inputs = { snapshots = "build/snapshots.parquet", schema = "build/feature-schema.json", study = "config/study.toml", model_hazard_smart = "build/models/hazard_smart.txt", meta_hazard_smart = "build/models/hazard_smart.json", model_hazard_nosmart = "build/models/hazard_nosmart.txt", meta_hazard_nosmart = "build/models/hazard_nosmart.json", model_binary_30d = "build/models/binary_30d.txt", meta_binary_30d = "build/models/binary_30d.json", model_hazard_nocritical = "build/models/hazard_nocritical.txt", meta_hazard_nocritical = "build/models/hazard_nocritical.json", model_hazard_usage = "build/models/hazard_usage.txt", meta_hazard_usage = "build/models/hazard_usage.json", model_hazard_smart_w075 = "build/models/hazard_smart_w075.txt", meta_hazard_smart_w075 = "build/models/hazard_smart_w075.json", model_hazard_smart_w100 = "build/models/hazard_smart_w100.txt", meta_hazard_smart_w100 = "build/models/hazard_smart_w100.json", model_xgb_hazard = "build/models/xgb_hazard.ubj", meta_xgb_hazard = "build/models/xgb_hazard.json", model_xgb_aft = "build/models/xgb_aft.ubj", meta_xgb_aft = "build/models/xgb_aft.json", model_catboost_hazard = "build/models/catboost_hazard.cbm", meta_catboost_hazard = "build/models/catboost_hazard.json", model_torch_mlp = "build/models/torch_mlp.pt", meta_torch_mlp = "build/models/torch_mlp.json", model_torch_linear = "build/models/torch_linear.pt", meta_torch_linear = "build/models/torch_linear.json", model_torch_gru = "build/models/torch_gru.pt", meta_torch_gru = "build/models/torch_gru.json", model_hazard_smart_big = "build/models/hazard_smart_big.txt", meta_hazard_smart_big = "build/models/hazard_smart_big.json", model_torch_gru_raw = "build/models/torch_gru_raw.pt", meta_torch_gru_raw = "build/models/torch_gru_raw.json", model_torch_mlp_s43 = "build/models/torch_mlp_s43.pt", meta_torch_mlp_s43 = "build/models/torch_mlp_s43.json", model_torch_mlp_s44 = "build/models/torch_mlp_s44.pt", meta_torch_mlp_s44 = "build/models/torch_mlp_s44.json", panel_dir = "build/panel" }
 outputs = { predictions = "build/predictions.parquet" }
 requires = ["lightgbm>=4.6", "pandas>=2.2", "pyarrow"]
 watch = ["steps/common.py", "steps/model.py", "steps/survival.py", "steps/engines.py"]
@@ -439,6 +489,7 @@ watch = ["steps/common.py", "steps/model.py", "steps/survival.py", "steps/engine
 ens_trees = ["hazard_smart", "xgb_hazard", "catboost_hazard"]
 ens_trees_mlp = ["hazard_smart", "xgb_hazard", "catboost_hazard", "torch_mlp"]
 ens_lgbm_mlp = ["hazard_smart", "torch_mlp"]
+ens_mlp_seeds = ["torch_mlp", "torch_mlp_s43", "torch_mlp_s44"]
 
 [[steps]]
 name = "evaluate"
@@ -483,18 +534,28 @@ catboost_hazard = "engine: CatBoost hazard"
 torch_mlp = "engine: neural hazard (MLP)"
 torch_linear = "engine: linear logistic hazard"
 torch_gru = "engine: neural hazard, MLP + GRU over 30 daily readings"
+torch_gru_raw = "engine: GRU over raw daily readings + context only"
+torch_mlp_s43 = "engine: neural hazard (MLP), seed 43"
+torch_mlp_s44 = "engine: neural hazard (MLP), seed 44"
+hazard_smart_big = "survival model, SMART + context, 127 leaves"
 ens_trees = "ensemble: LightGBM + XGBoost + CatBoost"
+ens_mlp_seeds = "ensemble: MLP, three seeds"
 ens_trees_mlp = "ensemble: the three tree engines + MLP"
 ens_lgbm_mlp = "ensemble: LightGBM + MLP"
 
 # Engines compared in the report's "Prediction engines" section, with what each tests.
 [steps.params.engines]
-xgb_hazard = "XGBoost's histogram trees on the same person-period rows, with matched capacity (31 leaves, learning rate 0.03, row and column subsampling 0.8). Tests whether the results are specific to LightGBM."
-catboost_hazard = "CatBoost's oblivious (symmetric) trees, depth 6, on the same rows, with ordered target statistics for the drive model and vendor. A differently regularised tree learner."
+xgb_hazard = "XGBoost's histogram trees on the same person-period rows, with matched capacity (31 leaves, learning rate 0.03, row and column subsampling 0.8); missing values coded below every real value (steps/engines.py). Tests whether the results are specific to LightGBM."
+catboost_hazard = "CatBoost's oblivious (symmetric) trees, depth 6, learning rate 0.1, on the same rows; model and vendor one-hot (target statistics took twice as long per tree). A differently regularised tree learner."
 xgb_aft = "XGBoost's accelerated failure time objective on the snapshots themselves (7.6M rows instead of 48M person-period rows): log T = f(x) + 1.7 Z, Z standard normal (a log-normal time; normal with scale 1.7 had the best validation likelihood of normal, logistic and minimum-Gumbel errors at scales 0.5-3 on the small scale). The only engine whose survival curve has a fixed parametric shape."
 torch_mlp = "a neural network on the GPU (3 hidden layers of 512/256/128, signed-log scaled inputs with missing-value flags, embeddings for model and vendor) with one output per bin, trained on the snapshots with a mask of the bins each is at risk in. Same likelihood as the person-period rows without building them."
 torch_linear = "the textbook discrete-time model: one linear score shared by every bin plus a per-bin intercept (proportional odds), on the same scaled inputs. Shows how much the trees and the network add over a linear hazard."
 torch_gru = "the MLP plus a GRU (64 units) over each snapshot's last 30 daily readings of all 34 SMART columns, with the days before the snapshot and a real-row flag per step. Tests whether the raw daily history holds signal that the 7- and 30-day trend features miss."
+torch_gru_raw = "the GRU over the last 30 daily readings with only the context features (model, capacity, age) beside it: no snapshot SMART values and no hand-made trends. Can the network find in the raw history what the features encode?"
+hazard_smart_big = "the reference LightGBM model with four times the leaves (127, min 100 rows per leaf). Tests whether the reference underfits."
+torch_mlp_s43 = "the MLP with seed 43 (initialisation and batch order). With seed 44, shows how much the network's numbers move from training noise alone."
+torch_mlp_s44 = "the MLP with seed 44."
+ens_mlp_seeds = "mean of the three MLP seeds."
 ens_trees = "mean of the LightGBM, XGBoost and CatBoost hazards per bin."
 ens_trees_mlp = "the same plus the neural network."
 ens_lgbm_mlp = "LightGBM and the neural network only: trees and a network make different errors."
