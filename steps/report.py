@@ -343,7 +343,8 @@ def _results(metrics, cohort, gate, preds, ref, labels) -> list[str]:
     span = lambda sp: (f"{dates[preds['split'] == sp].min().date()} to "  # noqa: E731
                        f"{dates[preds['split'] == sp].max().date()}"
                        if (preds["split"] == sp).any() else "n/a")
-    failed = [c for c in gate["checks"] if not c["ok"]]
+    ran = [c for c in gate["checks"] if c["status"] in ("pass", "fail", "error")]
+    failed = [c for c in ran if c["status"] != "pass"]
     trained = [m for m in metrics.get("models", {}) if m != ref]
     hz = sorted({r["horizon"] for r in metrics["discrimination"]})
     head = [f"{H} d" for H in hz]
@@ -370,9 +371,11 @@ def _results(metrics, cohort, gate, preds, ref, labels) -> list[str]:
                      f"{test['snapshots']} snapshots"],
         ["reference model", _label(ref, labels)],
         ["compared with", f"{len(trained)} models and baselines (rows of the tables below)"],
-        ["verification gate", f"{sum(c['ok'] for c in gate['checks'])}/{len(gate['checks'])} "
-                              "checks passed"
-                              + "".join(f"; {c['name']} failed ({c['severity']})"
+        ["verification gate", f"{len(ran) - len(failed)}/{len(ran)} checks passed "
+                              f"(data-verify {gate['version']}; {gate['counts']['skip']} "
+                              "skipped: their roles are not declared)"
+                              + "".join(f"; {c['id']} "
+                                        + ("warned" if c["severity"] == "warn" else "failed")
                                         for c in failed)],
         ["intervals", f"95% drive-level bootstrap, {metrics['bootstrap_rounds']} rounds"],
     ])

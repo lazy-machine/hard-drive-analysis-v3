@@ -5,7 +5,7 @@ __pycache__/
 .pytest_cache/
 
 # Data and everything the pipeline generates (outputs, checkpoints, logs, spill files)
-dataset/
+dataset
 build/
 build-arch/
 

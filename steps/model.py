@@ -26,8 +26,10 @@ value and its trends), for the ablations in pipeline.toml.
 from __future__ import annotations
 
 import fnmatch
+import gc
 import json
 import os
+from pathlib import Path
 
 import lightgbm as lgb
 import numpy as np
@@ -39,7 +41,9 @@ BASE_PARAMS = {
     "objective": "binary",
     "metric": "binary_logloss",
     "deterministic": True,
-    "force_row_wise": True,
+    # Column-wise histograms: row-wise keeps a second, row-major copy of the binned data
+    # (about 3 GiB at full scale). Same trees on every model; about a third slower.
+    "force_col_wise": True,
     "verbosity": -1,
 }
 
@@ -62,15 +66,27 @@ def model_features(schema: dict, feature_set: str, include=(), exclude=()) -> li
     return [f for f in schema["features"] if f in chosen]
 
 
+def process_memory() -> int:
+    """Resident memory of this process, in bytes (0 where /proc is missing)."""
+    try:
+        for line in Path("/proc/self/status").read_text().splitlines():
+            if line.startswith("VmRSS:"):
+                return int(line.split()[1]) * 1024
+    except OSError:
+        pass
+    return 0
+
+
 def _check_memory(n_rows: int, n_features: int, X_bytes: int, log) -> None:
     """Fail early with a clear message instead of being OOM-killed mid-training."""
-    # Measured at the medium scale: 11M survival rows x 67 features peaked at 3.45 GiB,
-    # about 4 bytes per feature per row (binned data, gradients, batch buffers) on top of
-    # the snapshot matrices, plus interpreter and library overhead. At full scale (48.2M
-    # rows) this estimates 17.8 GiB, about 3 GiB under the guard on the 31 GB machine. The
-    # real full-scale peak was not recorded, so the factor is only checked at medium.
-    need = X_bytes + n_rows * (n_features + 1) * 4 + 2**29
-    avail = available_memory()
+    # Measured at full scale (2026-10-28, build-arch snapshots, train_hazard_smart): 57M
+    # counted rows x 66 columns peaked at 8.78 GiB RSS, about 1.8 bytes per feature per
+    # row (binned data, gradients, batch buffers) on top of the snapshot matrices, plus
+    # interpreter and library overhead. 2 bytes keeps a margin: the estimate is 9.6 GiB.
+    need = X_bytes + n_rows * (n_features + 1) * 2 + 2**29
+    # `need` includes the snapshot matrices, which this process already holds, so they
+    # count as available too (otherwise they are subtracted twice).
+    avail = available_memory() + process_memory()
     log(f"memory estimate {need / 2**30:.1f} GiB, available {avail / 2**30:.1f} GiB")
     if need > 0.9 * avail:
         raise MemoryError(
@@ -179,16 +195,25 @@ def train(ctx):
     power = p.get("weight_power", 1.0)
     data_tr, y_tr, w_tr, _ = _rows(p["kind"], meta_tr, X_tr, study)
     data_va, y_va, w_va, _ = _rows(p["kind"], meta_va, X_va, study)
+    params = {**BASE_PARAMS, **p["lgbm"], "seed": p["seed"],
+              "num_threads": int(os.environ.get("HDA_THREADS", 0))}
+    # The datasets get the training params (lgb.train would set them before binning;
+    # min_child_samples, for one, decides which features are kept).
     train_ds = lgb.Dataset(data_tr, label=y_tr, weight=w_tr ** power, feature_name=names,
-                           categorical_feature=categorical, free_raw_data=True)
+                           categorical_feature=categorical, params=params, free_raw_data=True)
     valid_ds = lgb.Dataset(data_va, label=y_va, weight=w_va ** power, reference=train_ds,
+                           feature_name=names, categorical_feature=categorical, params=params,
                            free_raw_data=True)
     stats = {"train_rows": int(len(y_tr)), "train_events": int(y_tr.sum()),
              "val_rows": int(len(y_va)), "val_events": int(y_va.sum())}
     log(stats)
+    # Bin the data now and drop the source arrays: LightGBM keeps its own binned copy,
+    # and only meta_cal / X_cal are needed after training (about 4 GiB at full scale).
+    train_ds.construct()
+    valid_ds.construct()
+    del meta_tr, X_tr, data_tr, y_tr, w_tr, meta_va, X_va, data_va, y_va, w_va
+    gc.collect()
 
-    params = {**BASE_PARAMS, **p["lgbm"], "seed": p["seed"],
-              "num_threads": int(os.environ.get("HDA_THREADS", 0))}
     history: dict = {}
     booster = lgb.train(
         params, train_ds, num_boost_round=p["num_boost_round"], valid_sets=[valid_ds],

@@ -27,9 +27,12 @@ def test_pipeline_runs_and_caches(pipeline_run):
 def test_gate_passed(pipeline_run):
     project, _ = pipeline_run
     report = json.loads((project / "build" / "verify-report.json").read_text())
-    assert report["passed"]
-    errors = [c for c in report["checks"] if not c["ok"] and c["severity"] == "error"]
-    assert not errors
+    assert report["passed"] and report["tool"] == "data-verify"
+    assert report["blocking"] == []
+    assert (project / "build" / "verify-report.md").read_text().startswith("# data-verify: PASSED")
+    # the project's own Python checks ran too
+    ids = {c["id"] for c in report["checks"]}
+    assert {"custom.stride_rows_on_stride_days", "custom.features_are_float"} <= ids
 
 
 def test_cohort_excludes_ssd_and_normalizes_models(pipeline_run):
