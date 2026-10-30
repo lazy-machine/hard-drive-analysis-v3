@@ -141,15 +141,13 @@ def _main_alert(metrics, ref):
                 next((a for a in rows if a["budget"] == main), rows[0] if rows else None))
 
 
-def figures(out, metrics, calib, detection, preds, meta_ref, ref, labels):
-    disc = pd.DataFrame(metrics["discrimination"])
-    disc = disc[disc["model"].isin(CORE)]
+def _auc_figure(path, disc, models, labels):
+    """ROC-AUC per horizon with bootstrap intervals, one series per model."""
     fig, ax = plt.subplots(figsize=(7.5, 4.5))
-    models = sorted(dict.fromkeys(disc["model"]), key=_rank)
     hz = sorted(disc["horizon"].unique())
     for i, name in enumerate(models):
-        d = disc[disc["model"] == name]
-        x = np.array([hz.index(h) for h in d["horizon"]]) + (i - (len(models) - 1) / 2) * 0.12
+        d = disc[disc["model"] == name].sort_values("horizon")
+        x = np.array([hz.index(h) for h in d["horizon"]]) + (i - (len(models) - 1) / 2) * 0.08
         ci = [c if _ci_ok(c) else [a, a] for c, a in zip(d["auc_ci"], d["auc"], strict=True)]
         lo = d["auc"].to_numpy() - np.array([c[0] for c in ci])
         hi = np.array([c[1] for c in ci]) - d["auc"].to_numpy()
@@ -161,8 +159,18 @@ def figures(out, metrics, calib, detection, preds, meta_ref, ref, labels):
     ax.legend(fontsize=7, loc="lower right")
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    fig.savefig(out / "auc_by_horizon.png", dpi=120)
+    fig.savefig(path, dpi=120)
     plt.close(fig)
+
+
+def figures(out, metrics, calib, detection, preds, meta_ref, ref, labels, engines=()):
+    disc = pd.DataFrame(metrics["discrimination"])
+    core = disc[disc["model"].isin(CORE)]
+    _auc_figure(out / "auc_by_horizon.png", core,
+                sorted(dict.fromkeys(core["model"]), key=_rank), labels)
+    shown = [ref] + [m for m in engines if m in set(disc["model"])]
+    if len(shown) > 1:
+        _auc_figure(out / "engines.png", disc[disc["model"].isin(shown)], shown, labels)
 
     c = calib[calib["model"] == ref]
     if not c.empty:
@@ -281,11 +289,13 @@ def report(ctx):
     ref = metrics["reference"]
     labels = ctx.params.get("labels", {})
     meta_ref = json.loads(ctx.inputs[f"meta_{ref}"].read_text())
-    figures(out, metrics, calib, detection, preds, meta_ref, ref, labels)
+    engines = ctx.params.get("engines", {})
+    figures(out, metrics, calib, detection, preds, meta_ref, ref, labels, engines)
 
     disc = pd.DataFrame(metrics["discrimination"])
     gains = pd.DataFrame(metrics["reference_gain"])
     results = _results(metrics, cohort, gate, preds, ref, labels)
+    results += _engines_summary(metrics, ref, labels, engines)
     (out / "results.md").write_text("\n".join(results) + "\n")
 
     lines = [
@@ -300,6 +310,7 @@ def report(ctx):
     lines += _answer(disc, gains, metrics, ref, labels, ctx.params["timing_tolerance"])
     lines += _discrimination(metrics, preds, labels)
     lines += _ablations(metrics, ref, labels)
+    lines += _engines(metrics, ref, labels, engines)
     lines += _slices(metrics, ref, labels)
     lines += _concordance(metrics, labels)
     lines += _life(metrics, life_table, ref, labels)
@@ -528,6 +539,92 @@ def _ablations(metrics, ref, labels) -> list[str]:
                          _pct(g["share_of_rounds_reference_not_better"], 0) if g else "n/a"])
     lines += table(["horizon", "model", "ROC-AUC", "reference gain, ROC-AUC",
                     "reference gain, PR-AUC", "not better"], rows)
+    return lines
+
+
+def _engine_rows(metrics, ref, engines):
+    present = [m for m in engines if m in metrics.get("models", {})]
+    disc = {(r["horizon"], r["model"]): r for r in metrics["discrimination"]}
+    gain = {(g["horizon"], g["other"]): g for g in metrics["reference_gain"]}
+    return present, disc, gain
+
+
+def _engines_summary(metrics, ref, labels, engines) -> list[str]:
+    """results.md: the engines at the binary horizon, one line each."""
+    present, disc, gain = _engine_rows(metrics, ref, engines)
+    if not present:
+        return []
+    H = _binary_horizon(metrics)
+    lines = ["", f"## Prediction engines ({H}-day ROC-AUC)", "",
+             f"> Same features, rows, weights and calibration as the reference "
+             f"({_label(ref, labels)}); only the learner changes. Gain = reference minus "
+             "engine, paired on the bootstrap rounds: above zero, the reference ranks "
+             "better.", ""]
+    rows = []
+    for m in [ref] + present:
+        r, g = disc.get((H, m)), gain.get((H, m))
+        if not r:
+            continue
+        rows.append([_label(m, labels), est(r["auc"], r["auc_ci"]), est(r["ap"], r["ap_ci"], 4),
+                     est(g["auc_gain"], g["auc_gain_ci"], sign=True) if g else "reference"])
+    lines += table(["model", "ROC-AUC", "PR-AUC", "reference gain, ROC-AUC"], rows)
+    return lines
+
+
+def _engines(metrics, ref, labels, engines) -> list[str]:
+    """analysis.md: every engine against the reference, at every horizon."""
+    present, disc, gain = _engine_rows(metrics, ref, engines)
+    if not present:
+        return []
+    hz = sorted({h for h, _ in disc})
+    lines = ["", "## Prediction engines", "",
+             "The same discrete-time hazard fitted by other learners. Every engine sees the "
+             "reference's features, training rows, tempered weights and early-stopping "
+             "drives, and its raw per-bin scores go through the same per-bin calibration, "
+             "so only the learner differs. Ensembles average the members' calibrated "
+             "hazards per bin.", ""]
+    lines += [f"- **{_label(m, labels)}**: {engines[m]}" for m in present]
+    lines += ["", "ROC-AUC:", ""]
+    lines += table(["model"] + [f"{H} d" for H in hz],
+                   _pivot(metrics["discrimination"], [ref] + present,
+                          lambda r: est(r["auc"], r["auc_ci"]), labels, hz))
+    lines += ["", "Reference gain over each engine (ROC-AUC; above zero = the reference "
+              "ranks better):", ""]
+    gain_rows = [{**g, "model": g["other"]} for g in metrics["reference_gain"]]
+    lines += table(["model"] + [f"{H} d" for H in hz],
+                   _pivot(gain_rows, present,
+                          lambda g: est(g["auc_gain"], g["auc_gain_ci"], sign=True), labels, hz))
+    lines += ["", "PR-AUC:", ""]
+    lines += table(["model"] + [f"{H} d" for H in hz],
+                   _pivot(metrics["discrimination"], [ref] + present,
+                          lambda r: est(r["ap"], r["ap_ci"], 4), labels, hz))
+    H = _binary_horizon(metrics)
+    conc = {(r["model"], r["score"]): r for r in metrics["concordance"]}
+    drift = {r["model"]: r for r in metrics.get("drift", [])}
+    main = _main_alert(metrics, ref)
+    alert = {a["model"]: a for a in metrics["alerting"]
+             if main and a["budget"] == main["budget"]}
+    rows = []
+    for m in [ref] + present:
+        c = conc.get((m, "-rmst_days"))
+        d = drift.get(m)
+        a = alert.get(m)
+        years = {t["year"]: t for t in d["test_years"]} if d else {}
+        rows.append([_label(m, labels), est(c["harrell"], c.get("harrell_ci")) if c else "n/a",
+                     f"{a['failing_drives_alerted']}/{a['failing_drives']}" if a else "n/a",
+                     est(a["precision_test"], a.get("precision_test_ci"), 2, pct=True)
+                     if a else "n/a"]
+                    + [_fmt(years[y].get("ratio"), 2) if y in years else "n/a"
+                       for y in sorted({t["year"] for r in drift.values()
+                                        for t in r["test_years"]})])
+    years = sorted({t["year"] for r in drift.values() for t in r["test_years"]})
+    budget = _pct(main["budget"], 1) if main else "n/a"
+    lines += ["", f"Harrell's C (score -rmst_days), alerts at the {budget} budget "
+              f"(failing drives alerted in their last {H} days, precision), and predicted / "
+              f"observed {H}-day risk per test year (drift; 1 = right):", ""]
+    lines += table(["model", "Harrell's C", "failing drives alerted", "precision"]
+                   + [f"ratio {y}" for y in years], rows)
+    lines += ["", "![engines](engines.png)", ""]
     return lines
 
 

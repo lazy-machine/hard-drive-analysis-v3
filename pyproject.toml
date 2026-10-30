@@ -16,6 +16,10 @@ dependencies = [
     "pyarrow>=20",
     "scikit-learn>=1.6",
     "scipy>=1.18",
+    # alternative prediction engines (steps/engines.py)
+    "catboost>=1.2.10",
+    "torch>=2.15",
+    "xgboost>=3.4",
 ]
 
 [dependency-groups]
@@ -26,10 +30,21 @@ dev = [
 
 [tool.uv]
 package = false
+# The ROCm torch wheels exist for Linux x86_64 only, which is what this fork targets.
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
 
 [tool.uv.sources]
 data-pipeline = { path = "../data-pipeline", editable = true }
 data-verify = { path = "../data-verify", editable = true }
+# ROCm builds of PyTorch (the AMD GPU is the "cuda" device).
+torch = { index = "pytorch-rocm" }
+
+[[tool.uv.index]]
+name = "pytorch-rocm"
+url = "https://download.pytorch.org/whl/rocm10.0"
+# Not explicit: torch's ROCm runtime packages (rocm, rocm-sdk-*, triton-rocm) exist only
+# on this index, and uv applies `sources` to direct dependencies only. Packages this index
+# also mirrors (numpy, pillow, ...) then resolve from it, with the same files as PyPI.
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

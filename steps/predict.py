@@ -12,6 +12,11 @@ Output columns per model, named `<model>__<quantity>`:
 
 A hazard model trained with `recalibrate_recent` also appears as `<model>_recent`: the
 same trees with the calibration refitted on the last validation year before train_end.
+
+Models from steps/engines.py (XGBoost, CatBoost, PyTorch) carry `engine` in their
+metadata and are scored through engines.load; LightGBM models have no `engine` key.
+params.ensembles = {name = [model, ...]} adds hazard models whose per-bin hazard is the
+mean of the members' calibrated hazards.
 `critical_nonzero` flags snapshots where any critical counter is above zero (evaluate
 uses it for the silent-failure slice).
 """
@@ -25,6 +30,7 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+import engines
 from common import Progress, load_snapshots, load_study
 from model import load_booster, raw_hazard_logits
 from survival import (
@@ -35,10 +41,14 @@ RULE = "rule_counters"
 CHUNK = 200_000
 
 
-def _hazard_columns(z: np.ndarray, calibration, edges: list[int],
-                    horizons: list[int], name: str) -> dict[str, np.ndarray]:
-    """Output columns of a hazard model from its raw logits per bin and a calibration."""
-    h = np.column_stack([apply_platt(z[:, k], c) for k, c in enumerate(calibration)])
+def calibrated_hazards(z: np.ndarray, calibration) -> np.ndarray:
+    """Hazard per bin from raw logits per bin and a calibration, shape (n, bins)."""
+    return np.column_stack([apply_platt(z[:, k], c) for k, c in enumerate(calibration)])
+
+
+def _hazard_columns(h: np.ndarray, edges: list[int], horizons: list[int],
+                    name: str) -> dict[str, np.ndarray]:
+    """Output columns of a hazard model from its calibrated hazards per bin."""
     S = hazards_to_survival(h)
     cols = {f"{name}__p{H}": failure_probability(S, edges, H) for H in horizons}
     cols[f"{name}__median_days"] = life_quantile(S, edges, 0.5)
@@ -66,24 +76,49 @@ def predict(ctx):
     position = {f: j for j, f in enumerate(schema["features"])}
     out = {c: meta[c].to_numpy() for c in meta.columns}
 
+    ensembles = ctx.params.get("ensembles", {})
+    members = {m for ms in ensembles.values() for m in ms}
+    unknown = sorted(members - set(names))
+    if unknown:
+        raise ValueError(f"ensemble members {unknown} are not among the models {names}")
+    hazards = {}
     for name in names:
-        booster, info = load_booster(ctx.inputs[f"model_{name}"], ctx.inputs[f"meta_{name}"])
+        info = json.loads(ctx.inputs[f"meta_{name}"].read_text())
+        if "engine" in info:
+            scorer = engines.load(ctx.inputs[f"model_{name}"], info)
+            if info.get("needs_panel"):
+                scorer.windows = engines.PanelWindows.build(
+                    ctx.inputs["panel_dir"], ctx.inputs["snapshots"], ["val", "test"], study,
+                    scorer.prep, info["features"], scorer.device, log)
+            logits = scorer.hazard_logits
+        else:
+            booster, info = load_booster(ctx.inputs[f"model_{name}"], ctx.inputs[f"meta_{name}"])
+
+            def logits(Xm, booster=booster):
+                return raw_hazard_logits(booster, Xm, edges, CHUNK)
         Xm = X[:, [position[f] for f in info["features"]]]
         if info["kind"] == "hazard":
             if info["bin_edges"] != edges:
                 raise ValueError(f"{name} was trained with bins {info['bin_edges']}, "
                                  f"study has {edges}")
-            z = raw_hazard_logits(booster, Xm, edges, CHUNK)   # shared by both calibrations
-            out.update(_hazard_columns(z, info["calibration"], edges, horizons, name))
+            z = logits(Xm)                                     # shared by both calibrations
+            h = calibrated_hazards(z, info["calibration"])
+            out.update(_hazard_columns(h, edges, horizons, name))
+            if name in members:
+                hazards[name] = h
             if "calibration_recent" in info:
-                out.update(_hazard_columns(z, info["calibration_recent"], edges, horizons,
-                                           f"{name}_recent"))
+                out.update(_hazard_columns(calibrated_hazards(z, info["calibration_recent"]),
+                                           edges, horizons, f"{name}_recent"))
         else:
             H = info["binary_horizon"]
             z = np.concatenate([booster.predict(Xm[lo:lo + CHUNK], raw_score=True)
                                 for lo in range(0, len(Xm), CHUNK)])
             out[f"{name}__p{H}"] = apply_platt(z, info["calibration"][0])
         log(f"scored {name}")
+    for name, ms in sorted(ensembles.items()):
+        out.update(_hazard_columns(np.mean([hazards[m] for m in ms], axis=0), edges, horizons,
+                                   name))
+        log(f"ensemble {name}: mean hazard of {', '.join(ms)}")
 
     counters = study["features"]["critical_counters"]
     Xc = X[:, [position[c] for c in counters]]
@@ -92,4 +127,4 @@ def predict(ctx):
 
     table = pa.Table.from_pandas(pd.DataFrame(out), preserve_index=False)
     pq.write_table(table, ctx.outputs["predictions"], compression="zstd")
-    return {"rows": len(meta), "models": len(names) + 1}
+    return {"rows": len(meta), "models": len(names) + len(ensembles) + 1}
