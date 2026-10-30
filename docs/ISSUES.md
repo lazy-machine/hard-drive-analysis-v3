@@ -13,11 +13,19 @@ something surprises you, and close it with how it was verified.
 
 ---
 
-### 1. Full scale needs most of the 31 GB machine
+### 1. Full scale needed most of the 31 GB machine
 - **Tags:** FRAGILE
-- **Status:** run on the 31 GB machine (`info/hwspec-archmachine-20261021.md`) on
+- **Status:** resolved on 2026-10-30. A full-scale run at `09ebfdd` finished on a 15 GiB,
+  12-thread machine (`debianmachine`) with every training step on row-wise histograms.
+  It took 3,935 s with `drive_index` cached. The largest training estimate was 11.5 GiB
+  against an 11.9-12.1 GiB budget. Used memory, sampled every 15 s, peaked at 11.0 GiB,
+  and available memory never fell below 4.7 GiB. Every metric in `build/metrics.json`
+  matches `results/full-2026-10-27/` within 5e-7, with the same best iterations. Earlier
+  runs were on the 31 GB machine (`info/hwspec-archmachine-20261021.md`) on
   2026-10-24 (`398f421`, three models) and on 2026-10-26/27 with the audit fixes (seven
   train steps, gate 30 checks with one warning; `results/full-2026-10-27/`).
+- **Still fragile:** the training estimates sit 0.4-0.6 GiB under the guard's budget on
+  15 GiB, so other programs running at the same time can trip it.
 - **Detail:** the first run took 30 min end to end from an empty `build/`:
 
   | step | time | size |
@@ -42,6 +50,12 @@ something surprises you, and close it with how it was verified.
   `extract` 261 s, `snapshots` 55 s, the seven train steps 115-502 s each (2,352 s in
   all), `predict` 179 s and `evaluate` 2,196 s. The largest training estimate was
   16.6 GiB with 22.4 GiB available.
+
+  The 15 GiB run of 2026-10-30 took 3,935 s: `extract` 488 s, `snapshots` 78 s,
+  `verify` 148 s, `explore` 60 s, the seven train steps 137-551 s each (2,479 s in all),
+  `predict` 197 s and `evaluate` 476 s. The gate ran 54 checks with two warnings:
+  `smart_18_raw`, `smart_23_raw` and `smart_24_raw` are constant in train, and 16 cohort
+  drives have no snapshot.
 
 ### 2. A single GROUP BY over the whole panel spills tens of GB
 - **Tags:** SLOW, CONFUSE
@@ -220,8 +234,12 @@ something surprises you, and close it with how it was verified.
   `data-pipeline`, or pinning it to a git URL with a commit, would let a fresh clone
   `uv sync` on its own.
 
-### 17. The article is not started
+### 17. The article draft
 - **Tags:** OPEN
-- **Detail:** `article/main-article.md` holds only "to do". The reference papers are in
-  `article/research/`. Quote the full-scale numbers with the fixes
-  (`results/full-2026-10-27/`).
+- **Status:** draft committed on 2026-10-29 (`644ef26`).
+- **Detail:** `article/main-article.md` is a full draft of the technical report in pt-BR,
+  written to `article/ARTICLE.md` and `article/writing-guide.md`. It quotes the
+  full-scale numbers with the fixes (`results/full-2026-10-27/`). The author line is still
+  a `[PREENCHER: ...]` placeholder. The reference papers are listed in
+  `article/references.md`; the local copies in `article/research/` are gitignored, so a
+  fresh clone does not have them.

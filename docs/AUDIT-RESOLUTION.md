@@ -139,4 +139,4 @@ beyond the reviews:
   `DATA_PIPELINE_REPO` names its remote (docs/ISSUES.md #16).
 - **Rolling-origin evaluation** (docs/ISSUES.md #9), **"leaves the panel" as an event**
   (deepseek D3, docs/ISSUES.md #7) and a **pod-level bootstrap** (opus D7).
-- **The article** (docs/ISSUES.md #17).
+- **Finishing the article.** A draft exists; the author line is still open (docs/ISSUES.md #17).
