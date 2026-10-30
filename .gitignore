@@ -11,3 +11,6 @@ build-arch/
 
 # Another agent's harness state
 .pi-glla/
+
+# Third-party papers and pages, kept locally only
+article/research/
