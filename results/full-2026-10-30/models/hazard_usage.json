@@ -1,0 +1,133 @@
+{
+  "best_iteration": 305,
+  "bin_edges": [
+    0,
+    7,
+    14,
+    30,
+    60,
+    90,
+    180,
+    365
+  ],
+  "binary_horizon": 30,
+  "calibration": [
+    [
+      0.5978963724087322,
+      1.422024908278576
+    ],
+    [
+      0.5094231579580232,
+      1.4037585571669855
+    ],
+    [
+      -0.09660823420534832,
+      1.3424593528417423
+    ],
+    [
+      -1.0955818604029348,
+      1.1644745556839775
+    ],
+    [
+      -0.9994505246012559,
+      1.1923169037870898
+    ],
+    [
+      -0.00037921236252986905,
+      1.2008845342662366
+    ],
+    [
+      -0.09854884662396426,
+      1.2058975155964555
+    ]
+  ],
+  "calibration_notes": {
+    "fallback_bins": [],
+    "fixed_slope_bins": []
+  },
+  "calibration_snapshots": 534083,
+  "categorical": [
+    "model_code",
+    "vendor_code"
+  ],
+  "exclude": [],
+  "feature_set": "context",
+  "features": [
+    "days_in_service",
+    "left_truncated",
+    "capacity_tb",
+    "model_code",
+    "vendor_code",
+    "smart_4_raw",
+    "smart_9_raw",
+    "smart_12_raw",
+    "smart_193_raw",
+    "smart_240_raw",
+    "smart_241_raw",
+    "smart_242_raw"
+  ],
+  "importance_gain": {
+    "bin_start": 16213097.94569397,
+    "capacity_tb": 8417060.327194214,
+    "days_in_service": 2229822.451095581,
+    "left_truncated": 501343.1666870117,
+    "model_code": 8685608.752838135,
+    "smart_12_raw": 1348713.0501708984,
+    "smart_193_raw": 2217832.303588867,
+    "smart_240_raw": 1505381.7960662842,
+    "smart_241_raw": 3741221.149307251,
+    "smart_242_raw": 4543352.087921143,
+    "smart_4_raw": 1761316.5723876953,
+    "smart_9_raw": 1122391.039489746,
+    "vendor_code": 558022.8383483887
+  },
+  "include": [
+    "smart_4_raw",
+    "smart_9_raw",
+    "smart_12_raw",
+    "smart_193_raw",
+    "smart_240_raw",
+    "smart_241_raw",
+    "smart_242_raw"
+  ],
+  "kind": "hazard",
+  "model_features": [
+    "days_in_service",
+    "left_truncated",
+    "capacity_tb",
+    "model_code",
+    "vendor_code",
+    "smart_4_raw",
+    "smart_9_raw",
+    "smart_12_raw",
+    "smart_193_raw",
+    "smart_240_raw",
+    "smart_241_raw",
+    "smart_242_raw",
+    "bin_start"
+  ],
+  "name": "train_hazard_usage",
+  "params": {
+    "bagging_fraction": 0.8,
+    "bagging_freq": 1,
+    "cat_smooth": 20,
+    "deterministic": true,
+    "feature_fraction": 0.8,
+    "force_row_wise": true,
+    "lambda_l2": 5.0,
+    "learning_rate": 0.03,
+    "metric": "binary_logloss",
+    "min_child_samples": 200,
+    "num_leaves": 31,
+    "num_threads": 0,
+    "objective": "binary",
+    "seed": 42,
+    "verbosity": -1
+  },
+  "train_events": 1440968,
+  "train_rows": 48083205,
+  "val_events": 105110,
+  "val_logloss": 0.0397677481979632,
+  "val_rows": 3435318,
+  "weight_power": 0.5
+}

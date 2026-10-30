@@ -28,7 +28,7 @@ Figura 2 – ROC-AUC por horizonte, com intervalos de confiança de 95%
 
 Figura 3 – Proporção de retratos de discos que falham com alerta, por dias antes da falha (orçamento de 1%)
 
-Figura 4 – Mediana prevista da vida útil reAdd remote machines with simulatomanescente contra o tempo real até a falha, discos que falham no teste
+Figura 4 – Mediana prevista da vida útil remanescente contra o tempo real até a falha, discos que falham no teste
 
 Figura 5 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)
 

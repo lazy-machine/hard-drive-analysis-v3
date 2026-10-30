@@ -187,7 +187,7 @@ check of the dataset.
 |---|---|---|---|
 | small | 4% / 0.4% | 7 days | any machine. ~7 min after `drive_index` (timed with three models) |
 | medium | 20% / 2% | 7 days | 15 GB machine. ~22 min after `drive_index` with the seven train steps, of which `evaluate` takes ~11 min. Training estimate 3.7 GiB |
-| full | 100% / 10% | 7 days | 31 GB machine (`info/hwspec-archmachine-20261021.md`). ~85 min after `drive_index` with the seven train steps (2026-10-27), of which `evaluate` takes ~37 min. Training estimate 16.6 GiB with 22.4 GiB free |
+| full | 100% / 10% | 7 days | 15 GB machine. ~66 min after `drive_index` with the seven train steps (2026-10-30), of which `evaluate` takes ~8 min. Training estimate 11.5 GiB, peak used memory 11.0 GiB (docs/ISSUES.md #1) |
 
 Every scale estimates the same real-world numbers: sampled drives and snapshots carry
 inverse-probability weights. Smaller scales give wider confidence intervals.
