@@ -1,0 +1,27 @@
+[train_xgb_hazard] xgboost / all: 65 features, 7597961 train, 543346 early, 534083 calib snapshots
+[train_xgb_hazard] person-period rows: train (48083205, 1440968), early stopping (3435318, 105110) (rows, events)
+[train_xgb_hazard] xgboost round 50: val logloss 0.0369298
+[train_xgb_hazard] xgboost round 100: val logloss 0.035891
+[train_xgb_hazard] xgboost round 150: val logloss 0.035548
+[train_xgb_hazard] xgboost round 200: val logloss 0.0353804
+[train_xgb_hazard] xgboost round 250: val logloss 0.0352831
+[train_xgb_hazard] xgboost round 300: val logloss 0.0352211
+[train_xgb_hazard] xgboost round 350: val logloss 0.0351674
+[train_xgb_hazard] xgboost round 400: val logloss 0.0351568
+[train_xgb_hazard] xgboost round 450: val logloss 0.0351395
+[train_xgb_hazard] xgboost round 500: val logloss 0.0351173
+[train_xgb_hazard] xgboost round 550: val logloss 0.0351057
+[train_xgb_hazard] xgboost round 600: val logloss 0.0350879
+[train_xgb_hazard] xgboost round 650: val logloss 0.0350762
+[train_xgb_hazard] xgboost round 700: val logloss 0.0350737
+[train_xgb_hazard] xgboost round 750: val logloss 0.0350598
+[train_xgb_hazard] xgboost round 800: val logloss 0.0350509
+[train_xgb_hazard] xgboost round 850: val logloss 0.0350383
+[train_xgb_hazard] xgboost round 900: val logloss 0.0350318
+[train_xgb_hazard] xgboost round 950: val logloss 0.0350342
+[train_xgb_hazard] xgboost round 1000: val logloss 0.0350295
+[train_xgb_hazard] xgboost round 1050: val logloss 0.0350148
+[train_xgb_hazard] xgboost round 1100: val logloss 0.0350182
+[train_xgb_hazard] xgboost round 1150: val logloss 0.0350152
+[train_xgb_hazard] best iteration 1058, val logloss 0.0350105
+[train_xgb_hazard] calibration (a, b) per bin: [[-0.0, 1.304], [-0.235, 1.253], [-0.494, 1.255], [-1.076, 1.157], [-1.235, 1.137], [-0.24, 1.151], [-0.317, 1.159]]

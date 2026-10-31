@@ -1,0 +1,39 @@
+[evaluate] 825321 test snapshots of 8981 drives; 534083 validation snapshots for alert thresholds
+[evaluate] discrimination at 7 days: 25 models
+[evaluate] discrimination at 30 days: 26 models
+[evaluate] discrimination at 90 days: 25 models
+[evaluate] discrimination at 180 days: 25 models
+[evaluate] discrimination at 365 days: 25 models
+[evaluate] slices at 7 days
+[evaluate] slices at 30 days
+[evaluate] slices at 90 days
+[evaluate] slices at 180 days
+[evaluate] slices at 365 days
+[evaluate] concordance on 299930 rows of 3267 drives
+[evaluate] alerting done
+[evaluate] calibration over time and retirement done
+[evaluate] DRIFT binary_30d: test years outside the validation band 0.90-1.37: [2024, 2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT catboost_hazard: test years outside the validation band 0.84-1.42: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT hazard_nocritical: test years outside the validation band 0.84-1.34: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT hazard_nosmart: test years outside the validation band 0.87-1.31: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT hazard_smart: test years outside the validation band 0.89-1.44: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT hazard_smart_recent: test years outside the validation band 1.01-1.63: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT hazard_smart_big: test years outside the validation band 0.84-1.40: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT hazard_smart_w075: test years outside the validation band 0.77-1.49: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT hazard_smart_w100: test years outside the validation band 0.77-1.45: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT hazard_usage: test years outside the validation band 0.85-1.35: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT torch_gru: test years outside the validation band 0.89-1.33: [2024, 2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT torch_gru_raw: test years outside the validation band 0.80-1.19: [2024, 2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT torch_linear: test years outside the validation band 0.73-1.86: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT torch_linear_ple: test years outside the validation band 0.76-1.41: [2024, 2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT torch_mlp: test years outside the validation band 0.80-1.34: [2025]; last validation year outside the earlier band: True
+[evaluate] DRIFT torch_mlp_ple: test years outside the validation band 0.90-1.32: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT torch_mlp_ple_s43: test years outside the validation band 0.87-1.34: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT torch_mlp_ple_s44: test years outside the validation band 0.89-1.28: [2024, 2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT xgb_aft: test years outside the validation band 0.77-1.30: [2024, 2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT xgb_hazard: test years outside the validation band 0.89-1.32: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT ens_all: test years outside the validation band 0.90-1.37: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT ens_lgbm_mlp: test years outside the validation band 0.90-1.38: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT ens_mlp_seeds: test years outside the validation band 0.89-1.31: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT ens_trees: test years outside the validation band 0.89-1.39: [2025]; last validation year outside the earlier band: False
+[evaluate] DRIFT ens_trees_mlp: test years outside the validation band 0.90-1.38: [2025]; last validation year outside the earlier band: False

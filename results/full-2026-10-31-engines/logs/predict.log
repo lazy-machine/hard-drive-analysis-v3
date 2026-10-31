@@ -1,0 +1,27 @@
+[predict] 1902750 snapshots, models: binary_30d, catboost_hazard, hazard_nocritical, hazard_nosmart, hazard_smart, hazard_smart_big, hazard_smart_w075, hazard_smart_w100, hazard_usage, torch_gru, torch_gru_raw, torch_linear, torch_linear_ple, torch_mlp, torch_mlp_ple, torch_mlp_ple_s43, torch_mlp_ple_s44, xgb_aft, xgb_hazard
+[predict] scored binary_30d
+[predict] scored catboost_hazard
+[predict] scored hazard_nocritical
+[predict] scored hazard_nosmart
+[predict] scored hazard_smart
+[predict] scored hazard_smart_big
+[predict] scored hazard_smart_w075
+[predict] scored hazard_smart_w100
+[predict] scored hazard_usage
+[predict] panel windows: 11731922 daily rows of 34 channels for 1902750 snapshots
+[predict] scored torch_gru
+[predict] panel windows: 11731922 daily rows of 34 channels for 1902750 snapshots
+[predict] scored torch_gru_raw
+[predict] scored torch_linear
+[predict] scored torch_linear_ple
+[predict] scored torch_mlp
+[predict] scored torch_mlp_ple
+[predict] scored torch_mlp_ple_s43
+[predict] scored torch_mlp_ple_s44
+[predict] scored xgb_aft
+[predict] scored xgb_hazard
+[predict] ensemble ens_all: mean hazard of hazard_smart, xgb_hazard, catboost_hazard, torch_mlp_ple, torch_gru
+[predict] ensemble ens_lgbm_mlp: mean hazard of hazard_smart, torch_mlp_ple
+[predict] ensemble ens_mlp_seeds: mean hazard of torch_mlp_ple, torch_mlp_ple_s43, torch_mlp_ple_s44
+[predict] ensemble ens_trees: mean hazard of hazard_smart, xgb_hazard, catboost_hazard
+[predict] ensemble ens_trees_mlp: mean hazard of hazard_smart, xgb_hazard, catboost_hazard, torch_mlp_ple

@@ -1,0 +1,25 @@
+[train_torch_mlp_ple_s44] torch / all: 65 features, 7597961 train, 543346 early, 534083 calib snapshots
+[train_torch_mlp_ple_s44] device cuda, 122 numerical inputs (59 missing flags), 2 embeddings, 1240070 parameters
+[train_torch_mlp_ple_s44] epoch 1: val logloss 0.0449359 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 2: val logloss 0.0447789 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 3: val logloss 0.0393649 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 4: val logloss 0.0383234 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 5: val logloss 0.0376977 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 6: val logloss 0.036655 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 7: val logloss 0.0360913 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 8: val logloss 0.0359609 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 9: val logloss 0.0358227 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 10: val logloss 0.0356421 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 11: val logloss 0.0355099 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 12: val logloss 0.0354659 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 13: val logloss 0.0353216 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 14: val logloss 0.0352941 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 15: val logloss 0.0351629 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 16: val logloss 0.0352246 (lr 0.002)
+[train_torch_mlp_ple_s44] epoch 17: val logloss 0.035123 (lr 0.001)
+[train_torch_mlp_ple_s44] epoch 18: val logloss 0.0352606 (lr 0.001)
+[train_torch_mlp_ple_s44] epoch 19: val logloss 0.0351753 (lr 0.0005)
+[train_torch_mlp_ple_s44] epoch 20: val logloss 0.035196 (lr 0.00025)
+[train_torch_mlp_ple_s44] epoch 21: val logloss 0.0351703 (lr 0.00013)
+[train_torch_mlp_ple_s44] best epoch 17, val logloss 0.035123
+[train_torch_mlp_ple_s44] calibration (a, b) per bin: [[-0.094, 1.264], [-0.187, 1.251], [-0.545, 1.232], [-0.926, 1.186], [-1.159, 1.146], [-0.264, 1.134], [-0.429, 1.113]]

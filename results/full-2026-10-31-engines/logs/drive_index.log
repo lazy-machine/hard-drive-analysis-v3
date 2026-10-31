@@ -1,0 +1,18 @@
+[drive_index] sha256 4/22 GiB
+[drive_index] sha256 8/22 GiB
+[drive_index] sha256 12/22 GiB
+[drive_index] sha256 16/22 GiB
+[drive_index] sha256 20/22 GiB
+[drive_index] sha256 ok (d43984e8200893ebdd1bc739cabff8e05dc759aeb572dc2adb5aaad29e40b556)
+[drive_index] panel 2016-01-01..2025-12-31, 120 chunks
+[drive_index] chunk 12/120 (2016-12-01)
+[drive_index] chunk 24/120 (2017-12-01)
+[drive_index] chunk 36/120 (2018-12-01)
+[drive_index] chunk 48/120 (2019-12-01)
+[drive_index] chunk 60/120 (2020-12-01)
+[drive_index] chunk 72/120 (2021-12-01)
+[drive_index] chunk 84/120 (2022-12-01)
+[drive_index] chunk 96/120 (2023-12-01)
+[drive_index] chunk 108/120 (2024-12-01)
+[drive_index] chunk 120/120 (2025-12-01)
+[drive_index] 478464 drives, 26679 with a failure, 646777037 rows

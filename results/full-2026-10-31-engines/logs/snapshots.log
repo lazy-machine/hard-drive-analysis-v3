@@ -1,0 +1,9 @@
+[snapshots] batch 1/8
+[snapshots] batch 2/8
+[snapshots] batch 3/8
+[snapshots] batch 4/8
+[snapshots] batch 5/8
+[snapshots] batch 6/8
+[snapshots] batch 7/8
+[snapshots] batch 8/8
+[snapshots] {'test': 825321, 'train': 7597961, 'val': 1077429, 'events': 3215526, 'features': 65}

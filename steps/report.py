@@ -163,14 +163,67 @@ def _auc_figure(path, disc, models, labels):
     plt.close(fig)
 
 
+ENGINE_FAMILIES = {  # family: (colour, marker); colours validated for colour-blind separation
+    "trees": ("#2a78d6", "o"), "network": ("#eb6834", "s"),
+    "linear": ("#1baf7a", "^"), "ensemble": ("#eda100", "D")}
+
+
+def _family(model):
+    if model.startswith("ens_"):
+        return "ensemble"
+    if model.startswith("torch_linear"):
+        return "linear"
+    return "network" if model.startswith("torch_") else "trees"
+
+
+def _engines_figure(path, metrics, models, labels, horizons=(7, 30, 365)):
+    """Each engine's ROC-AUC minus the reference's, with the paired bootstrap interval,
+    one panel per horizon; one row per engine, grouped by family."""
+    gain = {(g["horizon"], g["other"]): g for g in metrics["reference_gain"]}
+    horizons = [H for H in horizons if any((H, m) in gain for m in models)]
+    models = sorted(models, key=lambda m: list(ENGINE_FAMILIES).index(_family(m)))
+    if not horizons or not models:
+        return
+    y = np.arange(len(models))[::-1]
+    fig, axes = plt.subplots(1, len(horizons), sharex=True, sharey=True,
+                             figsize=(3 + 2.6 * len(horizons), 0.32 * len(models) + 1.4))
+    for ax, H in zip(np.atleast_1d(axes), horizons, strict=True):
+        ax.axvline(0, color="#7d7c78", lw=1)
+        for yi, m in zip(y, models, strict=True):
+            g = gain.get((H, m))
+            if not g:
+                continue
+            colour, marker = ENGINE_FAMILIES[_family(m)]
+            d = -g["auc_gain"]
+            ci = g["auc_gain_ci"] if _ci_ok(g["auc_gain_ci"]) else [g["auc_gain"]] * 2
+            ax.plot([-ci[1], -ci[0]], [yi, yi], color=colour, lw=2, solid_capstyle="round")
+            ax.plot(d, yi, marker=marker, ms=6, color=colour, mec="white", mew=1.5, ls="")
+        ax.set_title(f"fails within {H} d", fontsize=10)
+        ax.grid(axis="x", alpha=0.3)
+        ax.tick_params(length=0)
+        for s in ("top", "right", "left"):
+            ax.spines[s].set_visible(False)
+    axes = np.atleast_1d(axes)
+    axes[0].set_yticks(y, [_label(m, labels) for m in models], fontsize=8)
+    axes[len(axes) // 2].set_xlabel("ROC-AUC minus the reference (95% paired drive bootstrap; "
+                                    "right of 0 = better)")
+    handles = [plt.Line2D([], [], color=c, marker=mk, ls="", ms=6) for c, mk in
+               ENGINE_FAMILIES.values()]
+    fig.legend(handles, list(ENGINE_FAMILIES), loc="upper center", ncol=len(ENGINE_FAMILIES),
+               frameon=False, fontsize=8, bbox_to_anchor=(0.6, 1.0))
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
+    fig.savefig(path, dpi=120)
+    plt.close(fig)
+
+
 def figures(out, metrics, calib, detection, preds, meta_ref, ref, labels, engines=()):
     disc = pd.DataFrame(metrics["discrimination"])
     core = disc[disc["model"].isin(CORE)]
     _auc_figure(out / "auc_by_horizon.png", core,
                 sorted(dict.fromkeys(core["model"]), key=_rank), labels)
-    shown = [ref] + [m for m in engines if m in set(disc["model"])]
-    if len(shown) > 1:
-        _auc_figure(out / "engines.png", disc[disc["model"].isin(shown)], shown, labels)
+    shown = [m for m in engines if m in set(disc["model"])]
+    if shown:
+        _engines_figure(out / "engines.png", metrics, shown, labels)
 
     c = calib[calib["model"] == ref]
     if not c.empty:

@@ -243,3 +243,68 @@ something surprises you, and close it with how it was verified.
   a `[PREENCHER: ...]` placeholder. The reference papers are listed in
   `article/references.md`; the local copies in `article/research/` are gitignored, so a
   fresh clone does not have them.
+
+### 18. No tree learner can use the AMD GPU
+- **Tags:** LIMIT
+- **Status:** measured on 2026-10-30 on the RX 7800 XT (gfx1101, ROCm 7.2). Details and
+  numbers in `docs/ENGINES.md` section 1.
+- **Detail:** LightGBM's OpenCL learner is 5% faster at 63 bins, refuses 255 bins (one
+  feature needs 258) and gives a wrong model at 252. LightGBM 4.7 compiled for ROCm is
+  3.4x faster per round but diverges on 7 of the 66 features, and segfaults on the
+  `lgb.Sequence` input the pipeline uses. AMD's XGBoost fork is wrong on toy data in
+  wave32 and faults in wave64. The tree engines therefore run on the CPU; the GPU runs
+  the PyTorch engines (`steps/neural.py`). Worth retrying with a newer LightGBM or ROCm:
+  the ROCm learner's speed is real, its correctness is not.
+
+### 19. XGBoost needs dense data at full scale
+- **Tags:** FRAGILE
+- **Status:** worked around on 2026-10-30 (`1e92afa`).
+- **Detail:** with NaN in the person-period rows, XGBoost's `QuantileDMatrix` uses its
+  sparse layout, about 630 bytes per row (measured on 3.8M, 7.5M and 15.4M rows): 30 GB at
+  full scale, which swapped the 31 GB machine. `engines.XGB_MISSING` (-1e9) replaces NaN
+  in training and prediction, which keeps the dense layout (the matrix builds in 50 s).
+  Missing then always sorts below every real value instead of taking a learned default
+  direction. A feature with real values below -1e9 would break this; the most negative
+  trend is about -2e5.
+
+### 20. CatBoost is the slowest and most memory-hungry engine
+- **Tags:** SLOW, FRAGILE
+- **Status:** mitigated on 2026-10-31 (`7db0e2a`).
+- **Detail:** CatBoost cannot stream, so the 48.1M x 65 expanded matrix is written to a
+  memory-mapped file in `build/tmp/train_catboost_hazard/` (12.5 GB on disk) and copied
+  by CatBoost. The first full run peaked at 26 GiB resident plus 12 GiB of swap and took
+  64 min (681 trees). The training pool is now binned (`Pool.quantize`) and the raw copy
+  freed before training. One-hot encoding of model and vendor halved the time per tree
+  against CatBoost's target statistics. The second full run peaked at 24.7 GiB used
+  with under 1 GiB of extra swap and took 80 min (838 trees). On a 15 GB machine this step will
+  not fit.
+
+### 21. A change to engines.py reruns every tree engine
+- **Tags:** CONFUSE
+- **Status:** structural, mitigated on 2026-10-31 (`7db0e2a`).
+- **Detail:** data-pipeline checkpoints a step on the hash of the module its function
+  lives in. All tree engines are `engines:train`, so any edit to `steps/engines.py`
+  reruns XGBoost, the AFT model and CatBoost (about 1.5 hours at full scale). The
+  networks moved to `steps/neural.py` for that reason: tuning them reruns only network
+  steps. The LightGBM steps (`model:train`) are untouched by either module.
+
+### 22. uv rewrites the lock under this container's environment
+- **Tags:** CONFUSE
+- **Status:** fixed in the fork on 2026-10-30 (`e9a08fe`).
+- **Detail:** the container sets `UV_EXTRA_INDEX_URL` to the PyTorch ROCm index and
+  `UV_INDEX_STRATEGY=unsafe-best-match`. In the upstream project `uv sync` then rewrote
+  `uv.lock` to take some packages from that index. The fork declares the same index in
+  `pyproject.toml` (not explicit: torch's ROCm runtime packages exist only there, and uv
+  applies `sources` to direct dependencies only), so the lock is identical with and
+  without those variables. The lock covers Linux x86_64 only (`tool.uv.environments`).
+
+### 23. The GRU's batch size is capped by GPU memory
+- **Tags:** FRAGILE
+- **Status:** fixed on 2026-10-31.
+- **Detail:** the GRU steps keep the daily panel (53.6M rows x 34 channels, fp16) and the
+  training snapshots on the GPU, about 10 GiB of the card's 16. With the MLP's batch of
+  65,536 a training step needs another 5.2 GiB, and the first try ran out of memory on
+  the first batch. Both GRU steps train with batches of 16,384 (1.4 GiB) and learning rate
+  0.001. Prediction and calibration go through the GRU in chunks of 16,384 rows
+  (`neural.SEQ_CHUNK`) for the same reason: one chunk of 200k rows asked MIOpen for a
+  5.7 GB workspace. On a card with less memory, lower `batch_size` in `pipeline.toml`.

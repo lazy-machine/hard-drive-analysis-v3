@@ -1,0 +1,10 @@
+[train_torch_mlp] torch / all: 65 features, 7597961 train, 543346 early, 534083 calib snapshots
+[train_torch_mlp] device cuda, 122 numerical inputs (59 missing flags), 2 embeddings, 240134 parameters
+[train_torch_mlp] epoch 1: val logloss 0.0375071 (lr 0.002)
+[train_torch_mlp] epoch 2: val logloss 0.0373019 (lr 0.002)
+[train_torch_mlp] epoch 3: val logloss 0.0373881 (lr 0.002)
+[train_torch_mlp] epoch 4: val logloss 0.0374612 (lr 0.001)
+[train_torch_mlp] epoch 5: val logloss 0.037675 (lr 0.0005)
+[train_torch_mlp] epoch 6: val logloss 0.03777 (lr 0.00025)
+[train_torch_mlp] best epoch 2, val logloss 0.0373019
+[train_torch_mlp] calibration (a, b) per bin: [[-0.454, 1.213], [-0.354, 1.242], [-0.725, 1.205], [-1.096, 1.148], [-1.438, 1.089], [-0.639, 1.055], [-0.684, 1.033]]

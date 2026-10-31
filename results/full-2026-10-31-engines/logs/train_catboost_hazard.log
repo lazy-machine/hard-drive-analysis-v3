@@ -1,0 +1,22 @@
+[train_catboost_hazard] catboost / all: 65 features, 7597961 train, 543346 early, 534083 calib snapshots
+[train_catboost_hazard] train: 48083205 person-period rows, 1440968 events
+[train_catboost_hazard] early: 3435318 person-period rows, 105110 events
+[train_catboost_hazard] catboost round 50: val Logloss 0.0371014
+[train_catboost_hazard] catboost round 100: val Logloss 0.0364662
+[train_catboost_hazard] catboost round 150: val Logloss 0.0361423
+[train_catboost_hazard] catboost round 200: val Logloss 0.0358682
+[train_catboost_hazard] catboost round 250: val Logloss 0.0356883
+[train_catboost_hazard] catboost round 300: val Logloss 0.0355683
+[train_catboost_hazard] catboost round 350: val Logloss 0.0354954
+[train_catboost_hazard] catboost round 400: val Logloss 0.0354367
+[train_catboost_hazard] catboost round 450: val Logloss 0.0353741
+[train_catboost_hazard] catboost round 500: val Logloss 0.0353434
+[train_catboost_hazard] catboost round 550: val Logloss 0.0353081
+[train_catboost_hazard] catboost round 600: val Logloss 0.0352754
+[train_catboost_hazard] catboost round 650: val Logloss 0.0352626
+[train_catboost_hazard] catboost round 700: val Logloss 0.035251
+[train_catboost_hazard] catboost round 750: val Logloss 0.0352115
+[train_catboost_hazard] catboost round 800: val Logloss 0.0352057
+[train_catboost_hazard] catboost round 850: val Logloss 0.0352086
+[train_catboost_hazard] best iteration 838, val logloss 0.0351939
+[train_catboost_hazard] calibration (a, b) per bin: [[-0.113, 1.276], [-0.3, 1.248], [-0.534, 1.228], [-0.886, 1.207], [-1.177, 1.15], [-0.24, 1.147], [-0.424, 1.123]]

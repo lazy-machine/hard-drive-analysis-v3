@@ -1,0 +1,3 @@
+[extract] chunk 10/10 (2025-01-01) rows so far 58678959
+[extract] strings that are not numbers (now NULL): {'smart_18_raw': 0, 'smart_22_raw': 0, 'smart_23_raw': 0, 'smart_24_raw': 0}
+[extract] wrote 58678959 rows for 57309 drives

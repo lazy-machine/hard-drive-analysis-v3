@@ -1,0 +1,107 @@
+{
+  "best_iter": 8,
+  "bin_edges": [
+    0,
+    7,
+    14,
+    30,
+    60,
+    90,
+    180,
+    365
+  ],
+  "binary_horizon": 30,
+  "calibration": [
+    [
+      -0.4147318687316856,
+      1.2245634256388411
+    ],
+    [
+      -0.6009761765222962,
+      1.1987001811127436
+    ],
+    [
+      -0.8323092700252019,
+      1.1882424687565727
+    ],
+    [
+      -1.1947767237904126,
+      1.1346199277532085
+    ],
+    [
+      -1.4412860584665466,
+      1.0926557563251504
+    ],
+    [
+      -0.5681204434419228,
+      1.0710136656369813
+    ],
+    [
+      -0.6564259226818964,
+      1.0621579550328002
+    ]
+  ],
+  "calibration_notes": {
+    "fallback_bins": [],
+    "fixed_slope_bins": []
+  },
+  "calibration_snapshots": 534083,
+  "categorical": [
+    "model_code",
+    "vendor_code"
+  ],
+  "engine": "torch",
+  "exclude": [],
+  "feature_set": "context",
+  "features": [
+    "days_in_service",
+    "left_truncated",
+    "capacity_tb",
+    "model_code",
+    "vendor_code"
+  ],
+  "include": [],
+  "kind": "hazard",
+  "model_features": [
+    "days_in_service",
+    "left_truncated",
+    "capacity_tb",
+    "model_code",
+    "vendor_code"
+  ],
+  "name": "train_torch_gru_raw",
+  "needs_panel": true,
+  "params": {
+    "device": "auto",
+    "engine": "torch",
+    "seed": 42,
+    "torch": {
+      "arch": {
+        "bins": 32,
+        "dropout": 0.3,
+        "encoding": "ple",
+        "hidden": [
+          512,
+          256,
+          128
+        ],
+        "rnn_hidden": 64,
+        "type": "gru"
+      },
+      "batch_size": 16384,
+      "lr": 0.001,
+      "max_epochs": 40,
+      "patience": 4,
+      "weight_decay": 1e-05
+    },
+    "weight_power": 0.5
+  },
+  "train_events": 2618201,
+  "train_rows": 7597961,
+  "val_events": 193949,
+  "val_loss": 0.03550860056231402,
+  "val_metric": "logloss",
+  "val_rows": 543346,
+  "weight_power": 0.5,
+  "window_days": 30
+}

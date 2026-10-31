@@ -1,0 +1,17 @@
+[train_torch_gru_raw] torch / context: 5 features, 7597961 train, 543346 early, 534083 calib snapshots
+[train_torch_gru_raw] panel windows: 53574819 daily rows of 34 channels for 8675390 snapshots
+[train_torch_gru_raw] device cuda, 4 numerical inputs (1 missing flags), 2 embeddings, 247366 parameters, 30-day windows of 36 channels
+[train_torch_gru_raw] epoch 1: val logloss 0.0372697 (lr 0.001)
+[train_torch_gru_raw] epoch 2: val logloss 0.0359661 (lr 0.001)
+[train_torch_gru_raw] epoch 3: val logloss 0.035623 (lr 0.001)
+[train_torch_gru_raw] epoch 4: val logloss 0.0355704 (lr 0.001)
+[train_torch_gru_raw] epoch 5: val logloss 0.0355936 (lr 0.001)
+[train_torch_gru_raw] epoch 6: val logloss 0.0355262 (lr 0.0005)
+[train_torch_gru_raw] epoch 7: val logloss 0.0355647 (lr 0.0005)
+[train_torch_gru_raw] epoch 8: val logloss 0.0355086 (lr 0.00025)
+[train_torch_gru_raw] epoch 9: val logloss 0.0355447 (lr 0.00025)
+[train_torch_gru_raw] epoch 10: val logloss 0.035541 (lr 0.00013)
+[train_torch_gru_raw] epoch 11: val logloss 0.0355583 (lr 6.3e-05)
+[train_torch_gru_raw] epoch 12: val logloss 0.0355485 (lr 3.1e-05)
+[train_torch_gru_raw] best epoch 8, val logloss 0.0355086
+[train_torch_gru_raw] calibration (a, b) per bin: [[-0.415, 1.225], [-0.601, 1.199], [-0.832, 1.188], [-1.195, 1.135], [-1.441, 1.093], [-0.568, 1.071], [-0.656, 1.062]]

@@ -1,0 +1,18 @@
+[train_xgb_aft] xgboost_aft / all: 65 features, 7597961 train, 543346 early, 534083 calib snapshots
+[train_xgb_aft] xgboost round 50: val aft-nloglik 1.35594
+[train_xgb_aft] xgboost round 100: val aft-nloglik 1.22815
+[train_xgb_aft] xgboost round 150: val aft-nloglik 1.2248
+[train_xgb_aft] xgboost round 200: val aft-nloglik 1.22386
+[train_xgb_aft] xgboost round 250: val aft-nloglik 1.22352
+[train_xgb_aft] xgboost round 300: val aft-nloglik 1.22345
+[train_xgb_aft] xgboost round 350: val aft-nloglik 1.22314
+[train_xgb_aft] xgboost round 400: val aft-nloglik 1.22296
+[train_xgb_aft] xgboost round 450: val aft-nloglik 1.22282
+[train_xgb_aft] xgboost round 500: val aft-nloglik 1.22266
+[train_xgb_aft] xgboost round 550: val aft-nloglik 1.22266
+[train_xgb_aft] xgboost round 600: val aft-nloglik 1.22258
+[train_xgb_aft] xgboost round 650: val aft-nloglik 1.22247
+[train_xgb_aft] xgboost round 700: val aft-nloglik 1.22254
+[train_xgb_aft] xgboost round 750: val aft-nloglik 1.22259
+[train_xgb_aft] best iteration 652, val aft-nloglik 1.22245
+[train_xgb_aft] calibration (a, b) per bin: [[-1.42, 0.804], [-1.407, 0.896], [-1.175, 0.979], [-0.929, 1.071], [-0.597, 1.16], [-0.463, 1.249], [-0.14, 1.371]]

@@ -1,0 +1,3 @@
+[verify] WARN  features.constant                    3 constant feature(s) in train: ['smart_18_raw', 'smart_23_raw', 'smart_24_raw']
+[verify] WARN  assert.cohort_drives_have_snapshots  query returned 16 violating row(s)
+[verify] 52 passed, 0 blocking, 2 warning(s), 12 skipped, 2 off
