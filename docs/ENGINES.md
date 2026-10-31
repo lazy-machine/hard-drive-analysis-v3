@@ -199,19 +199,18 @@ ROC-AUC of each model minus the reference's (right of 0 = better than the refere
 | ensemble: three trees + MLP + GRU | -0.010 [-0.014, -0.007] | -0.010 [-0.013, -0.007] | +0.000 [-0.003, 0.005] | 0.764 | 0.127 |
 | ensemble: MLP, three seeds | -0.010 [-0.014, -0.006] | -0.008 [-0.013, -0.004] | -0.002 [-0.007, 0.004] | 0.772 | 0.114 |
 
-What this says:
-
 - **The reference underfits a little.** The same LightGBM with 127 leaves instead of 31
   ranks better at every horizon (by 0.004; the intervals exclude zero from 30 to 180 days
   and touch it at 7 and 365) and
   has the lowest validation logloss of every engine. It also trains faster: 186 trees
   against 595. Section 4 sweeps the capacity.
-- **The other tree learners are slightly worse, not different.** XGBoost and CatBoost
+- **The other tree learners rank slightly worse and tell the same story.** XGBoost and CatBoost
   rank 0.006 to 0.009 below the reference up to 90 days and tie it at a year. XGBoost had
   a *lower* validation logloss than the reference (0.03501 against 0.03516) and still
-  ranks the test years worse, so these gaps are within what the shift from the
-  2016-2023 validation drives to 2024-2025 can move. The study's conclusions about SMART
-  do not depend on LightGBM.
+  ranks the test years worse, so gaps of this size may come from the shift from the
+  2016-2023 validation drives to 2024-2025 rather than from the learner. The engines
+  leave the study's conclusions about SMART as they are, but only LightGBM was fitted on
+  the reduced feature sets (context only, no critical counters, usage).
 - **AFT trades short-term ranking for the shape of the curve.** One log-normal time per
   snapshot, fitted in 4 minutes on 7.6M rows instead of 48M, ranks worse at 7-30 days
   and level at a year. It has the best Harrell's C (0.777 against 0.766, overlapping
@@ -224,16 +223,17 @@ What this says:
   gap to the reference runs from -0.007 to -0.016. Seed 44 had a lower validation
   logloss than the reference and still ranks worse on test. Averaging the three seeds
   (-0.010) does not close the gap.
-- **The plain MLP ranks worse but alerts well.** Its 7-day PR-AUC is above the
+- **The plain MLP ranks worse overall but is better calibrated.** Its 7-day PR-AUC is above the
   reference's (0.079 against 0.067), its 2025 predicted/observed ratio is the closest to
   1 (1.84 against 2.28), and its remaining-life medians are calibrated (46.2% fail by the
-  predicted median). Its high validation logloss must then come from the bulk of the
+  predicted median). Its high validation logloss probably comes from the bulk of the
   snapshots rather than the riskiest ones.
 - **Short-term risk needs interactions, long-term risk is nearly additive.** The additive
   model (one learned curve per feature) is 0.037 below the reference at 7 days but ties
   it at a year (-0.007, interval across zero, same Harrell's C). The linear model on
-  scaled inputs is worse everywhere: the curves matter, then the interactions.
-- **The raw daily history adds nothing over the trend features.** Adding a GRU over the
+  scaled inputs is worse everywhere: the per-feature curves add ranking at every
+  horizon, the interactions mostly at short horizons.
+- **A GRU over the raw daily history adds nothing over the trend features.** Adding a GRU over the
   last 30 daily readings to the encoded MLP made it worse (-0.020 against -0.012 at 7
   days); its validation loss rose after epoch 5. Given only the context features
   and the raw history, the GRU reaches 0.851 ROC-AUC at 30 days, against 0.604 for the
@@ -267,7 +267,8 @@ numbers exactly.
 
 Validation logloss falls from 31 to 63 leaves, is flat from 63 to 127, and rises after.
 A stricter leaf minimum (500 rows) gains 0.00004, a tenth of the difference between two
-MLP seeds. 63 to 127 leaves is the right capacity for this data; 31 is on the small side.
+MLP seeds. 63 to 127 leaves gives the lowest validation loss of the settings tried; 31 is on the
+small side.
 Every setting stays within 15.3 GiB resident, and the larger trees stop sooner, so they
 also train in half the time.
 

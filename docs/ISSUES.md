@@ -276,8 +276,8 @@ something surprises you, and close it with how it was verified.
   64 min (681 trees). The training pool is now binned (`Pool.quantize`) and the raw copy
   freed before training. One-hot encoding of model and vendor halved the time per tree
   against CatBoost's target statistics. The second full run peaked at 24.7 GiB used
-  with under 1 GiB of extra swap and took 80 min (838 trees). On a 15 GB machine this step will
-  not fit.
+  with under 1 GiB of extra swap and took 80 min (838 trees). On a 15 GB machine this
+  step will not fit.
 
 ### 21. A change to engines.py reruns every tree engine
 - **Tags:** CONFUSE

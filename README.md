@@ -19,13 +19,14 @@ ensembles of them. 12 extra train steps; `evaluate` and the report compare each 
 the reference on the test years. [docs/ENGINES.md](docs/ENGINES.md) has the setup, the
 GPU benchmarks and the results; the run is in `results/full-2026-10-31-engines/`.
 
-In short: no tree learner can use this GPU (every GPU build tried was wrong or crashed),
-the networks train on it, and no other learner ranks failing drives better than
-LightGBM. LightGBM with 127 leaves instead of 31 does, by 0.004 ROC-AUC. The conclusions
-about SMART below hold for every engine.
+No tree learner can use this GPU (every GPU build tried was wrong or crashed), the
+networks train on it, and no other learner ranks failing drives better than LightGBM.
+LightGBM with 127 leaves instead of 31 does, by 0.004 ROC-AUC. The engines leave the
+conclusions about SMART below as they are; only LightGBM was fitted on the reduced
+feature sets.
 
 The full-scale run with the engines takes about 4.5 hours after `drive_index` and needs
-31 GiB of memory (CatBoost) and a GPU for the networks (`device = "auto"` falls back to
+about 25 GiB of memory (CatBoost) and a GPU for the networks (`device = "auto"` falls back to
 the CPU, which is slow for the GRUs). The sections below describe the upstream study and
 its own runs.
 
