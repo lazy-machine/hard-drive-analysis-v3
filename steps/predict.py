@@ -87,7 +87,8 @@ def predict(ctx):
         if "engine" in info:
             scorer = engines.load(ctx.inputs[f"model_{name}"], info)
             if info.get("needs_panel"):
-                scorer.windows = engines.PanelWindows.build(
+                import neural
+                scorer.windows = neural.PanelWindows.build(
                     ctx.inputs["panel_dir"], ctx.inputs["snapshots"], ["val", "test"], study,
                     scorer.scaling, scorer.device, log)
             logits = scorer.hazard_logits
