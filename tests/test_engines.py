@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from engines import Prep, aft_bounds, aft_hazard_logits, dense_targets
+from engines import aft_bounds, aft_hazard_logits, dense_targets
+from neural import Prep
 from survival import expand
 
 EDGES = [0, 7, 14, 30]
@@ -71,9 +72,10 @@ def _toy(n=6000, seed=0):
     return meta, X
 
 
-@pytest.mark.parametrize("engine", ["xgboost", "xgboost_aft", "catboost", "torch"])
+@pytest.mark.parametrize("engine", ["xgboost", "xgboost_aft", "catboost", "torch", "torch_ple"])
 def test_engine_ranks_a_known_signal(engine, tmp_path):
     import engines
+    import neural
 
     study = {"label": {"bin_edges": EDGES}}
     schema = {"categorical": {"c": ["a", "b", "c"]}}
@@ -86,13 +88,16 @@ def test_engine_ranks_a_known_signal(engine, tmp_path):
          "catboost": {"learning_rate": 0.1, "depth": 4},
          "torch": {"arch": {"type": "mlp", "hidden": [16], "dropout": 0.0}, "lr": 0.01,
                    "weight_decay": 0.0, "batch_size": 512, "max_epochs": 5, "patience": 2}}
+    if engine == "torch_ple":
+        p["torch"]["arch"].update(encoding="ple", bins=8)
+        engine = "torch"
 
     class Ctx:
         workdir = tmp_path
         name = "toy"
 
     fit = {"xgboost": engines._fit_xgboost, "xgboost_aft": engines._fit_aft,
-           "catboost": engines._fit_catboost, "torch": engines._fit_torch}[engine]
+           "catboost": engines._fit_catboost, "torch": neural._fit_torch}[engine]
     model, info = fit(Ctx, p, study, schema, features, categorical, parts, lambda *a: None)
     path = tmp_path / {"xgboost": "m.ubj", "xgboost_aft": "m.ubj", "catboost": "m.cbm",
                        "torch": "m.pt"}[engine]
