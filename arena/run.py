@@ -145,7 +145,8 @@ def main() -> None:
             entry["state"] = f"predict failed: {pred['killed'] or 'exit ' + str(pred['exit'])}"
         else:
             edges = FitData(views / "fit").bin_edges
-            reference = None if args.block == "baseline_lgbm" else latest_reference(record, "baseline_lgbm")
+            own = args.smoke or args.block == "baseline_lgbm"
+            reference = None if own else latest_reference(record, "baseline_lgbm")
             entry["metrics"] = score_run(run, views, edges, reference)
             entry["state"] = "scored"
     if not args.smoke:
