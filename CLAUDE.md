@@ -20,6 +20,5 @@ Pipeline described in `pipeline.toml`. It checkpoints all steps.
 - `info`: hardware report of the machine used for full-scale runs.
 
 ## Conventions
-- Do not read from other projects at `projects/`.
 - Use the skill `unslop` to write documentation.
 - Don't modify or add code, unless it's necessary.
