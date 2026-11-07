@@ -24,12 +24,31 @@ dev = [
     "ruff>=0.17.3",
 ]
 
+# Experimental: engines for the block arena (arena/README.md).
+arena = [
+    "catboost>=1.2",
+    "numba>=0.62",
+    "torch>=2.12",
+    "triton-rocm",
+    "xgboost>=3.0",
+]
+
 [tool.uv]
 package = false
+default-groups = ["dev", "arena"]
+# ROCm wheels: Linux x86_64, CPython 3.13 is the interpreter this branch runs on.
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64' and python_version == '3.13'"]
+
+[[tool.uv.index]]
+name = "pytorch-rocm"
+url = "https://download.pytorch.org/whl/rocm7.2"
+explicit = true
 
 [tool.uv.sources]
 data-pipeline = { path = "../data-pipeline", editable = true }
 data-verify = { path = "../data-verify", editable = true }
+torch = { index = "pytorch-rocm" }
+triton-rocm = { index = "pytorch-rocm" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
