@@ -21,3 +21,7 @@ Model files (`build/models/*.txt`) and parquet tables are not included.
 Known defects of the run of 2026-10-24, fixed on `audit-fixes`: `report/importance.png`
 lists the first 20 features alphabetically instead of the top 20 by gain, and the rule
 baseline (`rule_counters`) includes Seagate's packed SMART 188 raw values.
+
+`arena/` holds the block arena's dev-split record: `dev-runs.jsonl` (one line per run, written by
+`arena/run.py`) and `dev-leaderboard.md` (best run per block, written by `arena/leaderboard.py`).
+These runs score on the time-based dev split, not the test split used by the full-scale runs above.
