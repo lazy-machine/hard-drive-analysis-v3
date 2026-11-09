@@ -162,7 +162,8 @@ Against `results/full-2026-10-24/` (`398f421`):
 ## Quick start
 
 ```bash
-uv sync                          # Python 3.13, deps from uv.lock (data-pipeline is ../data-pipeline, editable)
+uv sync                          # Python 3.13, deps from uv.lock (data-pipeline is ../data-pipeline, editable;
+                                 # the data gate, data-verify, comes from its verify extra)
 uv run pytest                    # unit + end-to-end tests on a synthetic panel (~40 s)
 uv run ruff check steps tests    # lint (config in pyproject.toml)
 uv run data-pipeline -n          # what would run, and why

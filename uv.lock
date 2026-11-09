@@ -114,12 +114,26 @@ dependencies = [
     { name = "packaging" },
 ]
 
+[package.optional-dependencies]
+verify = [
+    { name = "data-verify" },
+]
+
 [package.metadata]
-requires-dist = [{ name = "packaging", specifier = ">=26.3" }]
+requires-dist = [
+    { name = "data-verify", marker = "extra == 'verify'", editable = "../data-pipeline/packages/data-verify" },
+    { name = "packaging", specifier = ">=26.3" },
+]
+provides-extras = ["verify"]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.1.1" }]
+dev = [
+    { name = "duckdb", specifier = ">=1.1" },
+    { name = "pytest", specifier = ">=9.1.1" },
+    { name = "ruff", specifier = ">=0.6" },
+]
 examples = [
+    { name = "data-verify", editable = "../data-pipeline/packages/data-verify" },
     { name = "matplotlib", specifier = ">=3.11.2" },
     { name = "numpy", specifier = ">=2.5.4" },
     { name = "pandas", specifier = ">=3.0.6" },
@@ -128,8 +142,8 @@ examples = [
 
 [[package]]
 name = "data-verify"
-version = "0.1.0"
-source = { editable = "../data-verify" }
+version = "0.4.0"
+source = { editable = "../data-pipeline/packages/data-verify" }
 dependencies = [
     { name = "numpy" },
     { name = "pandas" },
@@ -222,8 +236,7 @@ name = "hard-drive-analysis"
 version = "3.0.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "data-pipeline" },
-    { name = "data-verify" },
+    { name = "data-pipeline", extra = ["verify"] },
     { name = "duckdb" },
     { name = "lightgbm" },
     { name = "matplotlib" },
@@ -242,8 +255,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "data-pipeline", editable = "../data-pipeline" },
-    { name = "data-verify", editable = "../data-verify" },
+    { name = "data-pipeline", extras = ["verify"], editable = "../data-pipeline" },
     { name = "duckdb", specifier = ">=2.0" },
     { name = "lightgbm", specifier = ">=4.6" },
     { name = "matplotlib", specifier = ">=3.10" },
