@@ -21,7 +21,7 @@ import pandas as pd
 
 START, END = date(2022, 6, 1), date(2024, 9, 30)
 MODELS = ["ST4000DM000", "TOSHIBA MG07ACA14TA", "WDC WUH721414ALE6L4", "HGST HMS5C4040BLE640"]
-VARCHAR_COLUMNS = ["smart_18_raw", "smart_23_raw"]
+VARCHAR_COLUMNS = ["smart_22_raw", "smart_23_normalized"]
 SEAGATE_ONLY = ["smart_187_raw", "smart_187_normalized", "smart_188_raw", "smart_188_normalized"]
 COUNTERS = ["smart_187_raw", "smart_188_raw", "smart_198_raw"]  # zero on a healthy drive
 
@@ -31,7 +31,7 @@ def silent(serial: str) -> bool:
     return int(serial[3:]) % 10 == 7
 
 
-def make_panel(columns: list[str], n_drives: int = 360, seed: int = 7) -> pd.DataFrame:
+def make_panel(columns: list[str], n_drives: int = 360, seed: int = 8) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     days = (END - START).days + 1
     rows = []
