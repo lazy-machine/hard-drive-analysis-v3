@@ -77,6 +77,11 @@ dependencies = [
     { name = "packaging" },
 ]
 
+[package.optional-dependencies]
+verify = [
+    { name = "data-verify" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "data-verify", marker = "extra == 'verify'", editable = "../data-pipeline/packages/data-verify" },
@@ -100,8 +105,8 @@ examples = [
 
 [[package]]
 name = "data-verify"
-version = "0.1.0"
-source = { editable = "../data-verify" }
+version = "0.4.0"
+source = { editable = "../data-pipeline/packages/data-verify" }
 dependencies = [
     { name = "numpy" },
     { name = "pandas" },
@@ -186,8 +191,7 @@ version = "3.0.0"
 source = { virtual = "." }
 default-groups = ["arena", "dev"]
 dependencies = [
-    { name = "data-pipeline" },
-    { name = "data-verify" },
+    { name = "data-pipeline", extra = ["verify"] },
     { name = "duckdb" },
     { name = "lightgbm" },
     { name = "matplotlib" },
@@ -213,8 +217,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "data-pipeline", editable = "../data-pipeline" },
-    { name = "data-verify", editable = "../data-verify" },
+    { name = "data-pipeline", extras = ["verify"], editable = "../data-pipeline" },
     { name = "duckdb", specifier = ">=2.0" },
     { name = "lightgbm", specifier = ">=4.6" },
     { name = "matplotlib", specifier = ">=3.10" },
