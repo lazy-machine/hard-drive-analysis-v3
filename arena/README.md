@@ -4,6 +4,9 @@ An experiment on the `rocm-engines` branch: many models compete on one dev split
 run at a time, on an AMD RX 7800 XT (16 GiB, ROCm 7.2) and a Ryzen 7 5700X (8 cores, 16
 threads) with 31 GiB of RAM.
 
+Install the engines with `uv sync --group arena`. A plain `uv sync` skips them, because the
+ROCm torch wheel is 5.8 GiB.
+
 A block is one idea for predicting drive failure. It can use any engine, and it does not have
 to be large. "We went big. What if we went small?" is a fair question to answer.
 

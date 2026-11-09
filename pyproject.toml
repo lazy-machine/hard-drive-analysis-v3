@@ -34,7 +34,9 @@ arena = [
 
 [tool.uv]
 package = false
-default-groups = ["dev", "arena"]
+# "arena" is not a default group: the ROCm torch wheel is 5.8 GiB, more than a CI runner has
+# free. Install it with `uv sync --group arena` (or `uv run --group arena ...`).
+default-groups = ["dev"]
 # ROCm wheels: Linux x86_64, CPython 3.13 is the interpreter this branch runs on.
 environments = ["sys_platform == 'linux' and platform_machine == 'x86_64' and python_version == '3.13'"]
 
