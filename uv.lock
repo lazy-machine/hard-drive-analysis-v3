@@ -189,7 +189,6 @@ wheels = [
 name = "hard-drive-analysis"
 version = "3.0.0"
 source = { virtual = "." }
-default-groups = ["arena", "dev"]
 dependencies = [
     { name = "data-pipeline", extra = ["verify"] },
     { name = "duckdb" },
