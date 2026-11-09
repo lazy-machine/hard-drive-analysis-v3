@@ -40,12 +40,13 @@ binary_horizon = 30
 raw = [4, 5, 9, 10, 12, 22, 183, 184, 187, 189, 190, 191, 192, 193,
        194, 196, 197, 198, 199, 200, 240, 241, 242]
 # Attributes whose raw value is vendor-packed or a placeholder: the normalized value is used
-# instead. 23 and 24 (mostly Toshiba) report raw = 0 in all 129.7M rows, but the normalized
-# value leaves 100 on a few drives (100 of 117,848; 51 of them failed). 18 (Seagate ST...G)
-# is 0 raw and 100 normalized in all 131.8M rows, so it carries nothing and is not a feature.
+# instead. 24 (mostly Toshiba) reports raw = 0 in all 129.7M rows, but its normalized value
+# leaves 100 on 99 of 117,848 drives (28 in train). 18 (Seagate ST...G) is 0 raw and 100
+# normalized in all 131.8M rows, and 23 (raw 0 as well) leaves 100 on 11 drives, one of them
+# in train, so neither can be learned and neither is a feature.
 # 188 (command timeout): Seagate packs several 16-bit fields into the raw value (2.9% of
 # Seagate snapshots are >= 65536, up to 3.4e12), and the other vendors report it as NULL.
-normalized = [1, 3, 5, 7, 23, 24, 187, 188, 197, 198]
+normalized = [1, 3, 5, 7, 24, 187, 188, 197, 198]
 # Raw values that keep only their low bits. Seagate's 240 (head flying hours) carries a
 # milliseconds field above bit 32 (smartctl's msec24hour32 format): 1.1% of Seagate
 # snapshots are >= 2^32, against a maximum of 75,184 hours on the other vendors.

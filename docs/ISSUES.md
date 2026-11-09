@@ -58,11 +58,11 @@ something surprises you, and close it with how it was verified.
   drives have no snapshot.
 
   Resolved on 2026-11-09 (issue #9): the three raw columns are a placeholder 0 in the
-  whole panel, so the cast loses nothing. 23 and 24 carry their signal in the normalized
-  value (100 drives leave 100; 51 failed), so they now enter as `smart_23_normalized` and
-  `smart_24_normalized`. 18 is constant in both forms and is no longer a feature. The
-  feature list is now 64 columns, so the committed full-scale results (65) predate it.
-  The gate check stays on.
+  whole panel, so the cast loses nothing. 24 carries its signal in the normalized value
+  (99 drives leave 100, 28 of them in train), so it now enters as `smart_24_normalized`.
+  23 leaves 100 on 11 drives (one in train) and 18 never does; neither is a feature any
+  more. The feature list is now 63 columns, so the committed full-scale results (65)
+  predate it. The gate check stays on.
 
 ### 2. A single GROUP BY over the whole panel spills tens of GB
 - **Tags:** SLOW, CONFUSE
