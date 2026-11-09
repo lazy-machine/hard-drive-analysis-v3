@@ -167,15 +167,20 @@ uv sync                          # Python 3.13, deps from uv.lock (data-pipeline
 uv run pytest                    # unit + end-to-end tests on a synthetic panel (~40 s)
 uv run ruff check steps tests    # lint (config in pyproject.toml)
 uv run data-pipeline -n          # what would run, and why
-uv run data-pipeline             # run everything that is out of date
+uv run data-pipeline             # run everything that is out of date (small scale: ~10 min, the first time)
 ```
+
+The committed scale is `small`. A first run takes about 6 minutes for `drive_index` plus about
+7 minutes for the rest. For the full-scale numbers, set `scale = "full"` in `config/sample.toml`
+(about 6 + 66 minutes, 11 GiB of memory; see Scales and hardware).
 
 The panel goes in `dataset/dataset.parquet` (21.8 GB, not in git). Results land in
 `build/report/results.md` (numbers) and `build/report/analysis.md` (explanation). Long steps log progress to `build/logs/<step>.log`.
 
 CI (`.github/workflows/test.yml`) runs the linter and the tests on every push and pull
 request. It checks out `data-pipeline` next to this repository from the repository
-variable `DATA_PIPELINE_REPO`, which has to be set first (docs/ISSUES.md #16).
+variable `DATA_PIPELINE_REPO` (secret `DATA_PIPELINE_TOKEN` while that repository is
+private), which have to be set first (docs/ISSUES.md #16).
 
 ## Scales and hardware
 
