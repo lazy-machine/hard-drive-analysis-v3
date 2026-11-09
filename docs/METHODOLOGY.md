@@ -132,17 +132,18 @@ Coefficients are stored in each model's metadata JSON and applied by `predict`.
 ## 5. Features
 
 Fixed in `study.toml` (not chosen from the data, so the schema never depends on the
-sample, review §4.5) and stored in `build/feature-schema.json`. 64 features:
+sample, review §4.5) and stored in `build/feature-schema.json`. 63 features:
 
-- **SMART values**: 23 raw attributes populated on HDDs (5, 9, 187, 197, 198, ...) and 10
+- **SMART values**: 23 raw attributes populated on HDDs (5, 9, 187, 197, 198, ...) and 9
   normalized values. For 1, 3, 7 and 188 the raw value is vendor-packed, so only the
   normalized value is used. 5, 187, 197 and 198 have both.
   - **18, 23 and 24**: the raw value is a placeholder, always 0 (checked on the whole
-    panel: 131.8M rows for 18, 129.7M for 23 and 24). 23 and 24 (mostly Toshiba) report
-    their health in the normalized value, which leaves 100 on 100 of 117,848 drives, and 51
-    of those failed. They enter as normalized values. 18 is 0 raw and 100 normalized
-    everywhere, so it is not a feature. (Until 2026-11-09 all three entered as raw
-    columns and triggered the gate's `features.constant` warning.)
+    panel: 131.8M rows for 18, 129.7M for 23 and 24). The signal, if any, is in the
+    normalized value. 24 (mostly Toshiba) leaves 100 on 99 of 117,848 drives (28 in train,
+    25 of them failing), so it enters as `smart_24_normalized`. 23 leaves 100 on 11 drives,
+    one of them in train, and 18 never leaves 100 (131.8M rows); neither can be learned, so
+    neither is a feature. (Until 2026-11-09 all three entered as raw columns and triggered
+    the gate's `features.constant` warning.)
   - **188 (command timeout)**: Seagate packs several 16-bit fields into the raw value
     (2.9% of Seagate snapshots are >= 65536, up to 3.4e12) and the other vendors report
     NULL. The raw value and its trends are not features.
