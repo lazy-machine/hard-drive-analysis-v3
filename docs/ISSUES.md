@@ -234,6 +234,9 @@ something surprises you, and close it with how it was verified.
 - **Tags:** OPEN
 - **Status:** CI and a linter added on 2026-10-26. `.github/workflows/test.yml` runs
   `uv run ruff check steps tests` and `uv run pytest -q` on every push and pull request.
+  It failed on every run until 2026-11-09, when `DATA_PIPELINE_REPO` and
+  `DATA_PIPELINE_TOKEN` were set and `data-verify` came from `data-pipeline[verify]`
+  (one editable source instead of two); it has been green on `main` since.
   The linter also runs locally (config in `pyproject.toml`). MIT licence added on
   2026-10-26 (`LICENSE`), the owner's choice.
 - **Detail:** `pyproject.toml` takes `data-pipeline` from `../data-pipeline` as an
