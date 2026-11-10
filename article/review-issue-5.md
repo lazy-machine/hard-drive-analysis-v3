@@ -6,7 +6,7 @@ The owner supplied the author line. No `[PREENCHER` placeholder remains. All 30 
 
 ## Results used by the article
 
-The issue originally named `results/full-2026-10-27/`. The article now explicitly uses `results/full-2026-11-09-leakfix/`, after the metadata leakage correction recorded in issue 18 of `docs/ISSUES.md`. The October run remains historical evidence, rather than the target for the current tables. For example, its seven-day SMART gain is 0.300, whereas the corrected run and article report 0.302.
+The issue originally named `results/full-2026-10-27/`. The article now explicitly uses `results/full-2026-11-09-leakfix/`, after the metadata leakage correction. The October run remains historical evidence, rather than the target for the current tables. For example, its seven-day SMART gain is 0.300, whereas the corrected run and article report 0.302.
 
 Both `results.md` and `analysis.md` in `build/report/` match their archived counterparts in `results/full-2026-11-09-leakfix/report/` byte for byte. The article's discrimination, alert, remaining-life, and calibration tables were compared with these reports. Checked values include the 8,981 test drives, 1,784 failures, 368 silent failures, the five horizons of ROC-AUC and PR-AUC, the 1.87% false-alarm rate and 3.82% precision, and the 2024/2025 calibration ratios of 1.18/2.18. Decimal commas and rounding explain presentation differences.
 
