@@ -1,0 +1,9 @@
+[     4.0s] batch 1/8
+[    10.3s] batch 2/8
+[    16.6s] batch 3/8
+[    23.1s] batch 4/8
+[    29.3s] batch 5/8
+[    35.7s] batch 6/8
+[    42.1s] batch 7/8
+[    48.4s] batch 8/8
+[    51.4s] {'test': 825321, 'val': 1077429, 'train': 7597961, 'events': 3215526, 'features': 64}

@@ -1,0 +1,104 @@
+{
+  "best_iteration": 535,
+  "bin_edges": [
+    0,
+    7,
+    14,
+    30,
+    60,
+    90,
+    180,
+    365
+  ],
+  "binary_horizon": 30,
+  "calibration": [
+    [
+      -1.3154823096035975,
+      1.0936011975799325
+    ],
+    [
+      -1.264948871436203,
+      1.100447625350546
+    ],
+    [
+      -1.5700152059543513,
+      1.0570057430665016
+    ],
+    [
+      -2.001443804321741,
+      0.9690459396647795
+    ],
+    [
+      -1.9229987982310779,
+      0.988944769852476
+    ],
+    [
+      -1.021848069306398,
+      0.968357252531596
+    ],
+    [
+      -0.877518047383594,
+      0.9968124135916646
+    ]
+  ],
+  "calibration_notes": {
+    "fallback_bins": [],
+    "fixed_slope_bins": []
+  },
+  "calibration_snapshots": 534083,
+  "categorical": [
+    "model_code",
+    "vendor_code"
+  ],
+  "exclude": [],
+  "feature_set": "context",
+  "features": [
+    "days_in_service",
+    "left_truncated",
+    "capacity_tb",
+    "model_code",
+    "vendor_code"
+  ],
+  "importance_gain": {
+    "bin_start": 14901105.041313648,
+    "capacity_tb": 889666.6646113396,
+    "days_in_service": 4476719.262431622,
+    "left_truncated": 373153.8864078522,
+    "model_code": 11289102.991867542,
+    "vendor_code": 429688.17765283585
+  },
+  "include": [],
+  "kind": "hazard",
+  "model_features": [
+    "days_in_service",
+    "left_truncated",
+    "capacity_tb",
+    "model_code",
+    "vendor_code",
+    "bin_start"
+  ],
+  "name": "train_hazard_nosmart",
+  "params": {
+    "bagging_fraction": 0.8,
+    "bagging_freq": 1,
+    "cat_smooth": 20,
+    "deterministic": true,
+    "feature_fraction": 1.0,
+    "force_row_wise": true,
+    "lambda_l2": 5.0,
+    "learning_rate": 0.03,
+    "metric": "binary_logloss",
+    "min_child_samples": 200,
+    "num_leaves": 31,
+    "num_threads": 0,
+    "objective": "binary",
+    "seed": 42,
+    "verbosity": -1
+  },
+  "train_events": 1440968,
+  "train_rows": 48083205,
+  "val_events": 105110,
+  "val_logloss": 0.042535761990936075,
+  "val_rows": 3435318,
+  "weight_power": 0.5
+}

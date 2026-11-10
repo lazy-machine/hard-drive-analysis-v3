@@ -2,9 +2,10 @@
 
 It reproduces the quirks the pipeline must handle: an SSD model, whitespace variants of a
 model name, gaps in daily reporting, same-day duplicate rows, a drive that keeps
-reporting after its failure, VARCHAR-typed SMART columns, and failures on both sides of
-the train/test cutoff. Failing drives show a rising reallocated-sector count (smart_5) in
-their last weeks, so a working model must find signal.
+reporting after its failure, VARCHAR-typed SMART columns, a day of rounded capacities, a
+model string that changes mid-life, and failures on both sides of the train/test cutoff.
+Failing drives show a rising reallocated-sector count (smart_5) in their last weeks, so a
+working model must find signal.
 
 Vendor quirks from the real panel: Seagate packs fields into the raw values of 188 and 240
 (huge numbers on a few rows), the other vendors report 187 and 188 as NULL, a VARCHAR
@@ -24,6 +25,9 @@ MODELS = ["ST4000DM000", "TOSHIBA MG07ACA14TA", "WDC WUH721414ALE6L4", "HGST HMS
 VARCHAR_COLUMNS = ["smart_22_raw", "smart_24_normalized"]
 SEAGATE_ONLY = ["smart_187_raw", "smart_187_normalized", "smart_188_raw", "smart_188_normalized"]
 COUNTERS = ["smart_187_raw", "smart_188_raw", "smart_198_raw"]  # zero on a healthy drive
+# After the invariance test's cutoff: one day of rounded capacities for every drive (the real
+# panel has one, 2018-02-25), and some drives that report a new model string from this day.
+ROUNDED_DAY = RENAME_DAY = date(2024, 6, 1)
 
 
 def silent(serial: str) -> bool:
@@ -73,8 +77,11 @@ def make_panel(columns: list[str], n_drives: int = 360, seed: int = 8) -> pd.Dat
             m = model
             if model.startswith("WDC") and d.year == 2022:
                 m = model.replace("WDC ", "WDC  ")     # whitespace variant of the same model
+            if model.startswith("HGST") and i % 8 == 7 and d >= RENAME_DAY:
+                m = "HGST HMS5C4040ALE640"             # model string changes mid-life
+            capacity = 4_000_787_030_016 if d != ROUNDED_DAY else 4_000_790_000_000
             rows.append({"date": d, "serial_number": serial, "model": m,
-                         "capacity_bytes": 4e12 if "SSD" not in m else 2.5e11,
+                         "capacity_bytes": capacity if "SSD" not in m else 2.5e11,
                          "failure": int(to_fail == 0), "filename": f"{d}.csv", **values})
             if rng.random() < 0.01:                    # same-day duplicate, less complete
                 dup = dict(rows[-1], filename=f"{d}-b.csv", smart_194_raw=None)

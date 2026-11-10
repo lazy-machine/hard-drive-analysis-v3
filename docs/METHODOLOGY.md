@@ -17,7 +17,8 @@ Quirks handled (`drive_index`, `cohort`, `extract`):
 | Quirk | Handling |
 |---|---|
 | Boot SSDs in the panel | Excluded by a model-name pattern (`study.toml: data.ssd_model_pattern`) |
-| Model names differ in whitespace across years (`WDC  WUH721414ALE6L4`) | Whitespace normalised. The latest name wins. Drives that report more than one model in a month are counted, and the gate warns about them |
+| Model names differ in whitespace across years (`WDC  WUH721414ALE6L4`) | Whitespace normalised. The first name a drive reports wins, so the feature never depends on later rows (7 drives change model string mid-life, e.g. `HGST HMS5C4040ALE640` to `...BLE640`). Drives that report more than one model in a month are counted, and the gate warns about them |
+| Capacity jitters by a few MB, and on 2018-02-25 alone every drive reports a rounded value (4,000,790,000,000 instead of 4,000,787,030,016) | Rounded to 10 GB, then the maximum over the drive's rows. Unrounded, the maximum marked every drive still alive on 2018-02-25, which leaked its future survival into `capacity_tb`. The 12 drives that briefly report 2^37 bytes do so after their true value, so the maximum is the nameplate from the first row |
 | Same-day duplicate rows | One row per drive-day: the most complete row, then the first filename |
 | Drives keep reporting after a failure. Measured on the panel: 710 drives (694 HDDs, 16 boot SSDs) have rows after their first failure row, 46 have two failure rows, and 561 of them are in the full-scale cohort | The first failure is the event, and rows after it are dropped |
 | Many SMART columns stored as VARCHAR | `TRY_CAST` to DOUBLE. Strings that fail the cast are counted per column and returned by `extract` (0 at medium scale, 11,775,008 rows) |
@@ -177,7 +178,7 @@ Calendar date is **not** a feature (review §4.1). Drive age comes from SMART 9
 |---|---|---|
 | `hazard_smart` | survival model, SMART + context | the model under test |
 | `hazard_nosmart` | same model, context only | **ablation**: what you know without `smartctl` metrics. The gain over this is the answer to the project's question |
-| `hazard_nocritical` | SMART + context without 5, 187, 188, 197, 198 (raw, normalized, trends) | **label circularity**: Backblaze replaces drives when these counters rise, so they partly define the failure label. The gain of `hazard_smart` over `hazard_nosmart` is an upper bound on what SMART adds beyond that policy |
+| `hazard_nocritical` | SMART + context without 5, 187, 188, 197, 198 (raw, normalized, trends) | **label circularity**: Backblaze replaces drives when these counters rise, so they partly define the failure label. This is a sensitivity check, not a clean split: removing the counters also removes physical signal, and the remaining features can still correlate with them |
 | `hazard_usage` | context + usage counters 4, 9, 12, 193, 240, 241, 242 | tests whether SMART helps only because it measures age and wear (power-on hours give the true age of left-truncated drives) |
 | `hazard_smart_w075`, `hazard_smart_w100` | `hazard_smart` with training weight power 0.75 / 1.0 | sensitivity to the weight power (§4) |
 | `hazard_smart_recent` | `hazard_smart`'s trees, calibrated on 2023 only | does a recent recalibration remove the drift? (§7.6) |
@@ -256,7 +257,11 @@ their 30-day risk, so they can be compared with the classifier on the same kind 
   counts those alerts as false.
 - **Remaining life, timing**: among snapshots whose predicted 10% / 50% / 90% failure
   day is within a year, the share that actually failed by that day (targets 10/50/90%).
-  This is calibration of the predicted days, with censoring respected.
+  A snapshot censored before its day has no known outcome. Dropping those favours
+  snapshots with an early day, so the headline share weights each known outcome by the
+  inverse probability of staying uncensored that long (IPCW, Kaplan-Meier of the
+  censoring time). The known-outcome share is reported next to it. Both assume that
+  censoring is unrelated to failure, which §9 questions.
 - **Remaining life, visibility**: for drives that do fail within a year, how often the
   predicted median is within a year, by how far away the failure really was. (Coverage
   of an interval *conditional on failing* is not a calibration measure: a perfect model
@@ -308,13 +313,17 @@ full panel (no look-ahead). The report is `build/verify-report.json`.
 
 ## 9. Limits
 
-- **Retirement is informative censoring.** Backblaze retires drives without failing them.
-  At medium scale, drives that leave carry 2-9x the predicted risk of drives that stay
-  in every validation year but 2019 (1.06), and 3.3x in 2024 (§7.7), so retirement is related to health and the observed failure risk is
-  underestimated. Treating "leaves the panel" as an event of its own was not tried.
+- **Retirement is probably informative censoring.** Backblaze retires drives without
+  failing them. At medium scale, drives that leave carry 2-9x the predicted risk of
+  drives that stay in every validation year but 2019 (1.06), and 3.3x in 2024 (§7.7). So
+  retirement is related to predicted health, and the observed failure risk is likely
+  too low. The check does not say how many retired drives would have failed, so the size
+  of that bias is unknown. Treating "leaves the panel" as an event of its own was not
+  tried.
 - **Label circularity.** Backblaze's replacement decisions use counters 5, 187, 188,
   197 and 198, so part of the SMART signal is the operator's policy. `hazard_nocritical`
-  bounds it: at medium scale about 62% of the SMART gain remains without those counters.
+  measures how much of the gain survives without those counters; it does not separate
+  policy from physics, since the counters also carry physical signal: at medium scale about 62% of the SMART gain remains without those counters.
   Silent failures (20% of failing test drives at medium scale) are ranked only a little
   better than chance (ROC-AUC 0.608).
 - **The 365-day horizon** is only measurable on test snapshots with a year of follow-up

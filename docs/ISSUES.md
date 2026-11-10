@@ -236,17 +236,42 @@ something surprises you, and close it with how it was verified.
   workflow works around it: it checks the orchestrator out into `data-pipeline/` next to
   this repository, from the repository variable `DATA_PIPELINE_REPO` (optional
   `DATA_PIPELINE_REF`, and the secret `DATA_PIPELINE_TOKEN` if the orchestrator is
-  private). The orchestrator has no remote yet (confirmed by the owner on 2026-10-26).
-  Until it has one and the variable is set, the job stops at its first step. Publishing
-  `data-pipeline`, or pinning it to a git URL with a commit, would let a fresh clone
-  `uv sync` on its own.
+  private). Since 2026-11-09 the orchestrator is at `lazy-machine/data-pipeline` and the
+  variable is set, so CI runs. `DATA_PIPELINE_REF` is unset, so CI tests against the
+  orchestrator's default branch, not a fixed commit; `results/README.md` records the
+  orchestrator commit of each full run. Pinning it to a git URL with a commit would let a
+  fresh clone `uv sync` on its own and make CI reproducible.
+- **Local race:** `uv run` reinstalls the editable `data-pipeline` whenever its
+  `pyproject.toml` is newer than the install. If that happens while a pipeline is running
+  (for example `uv run pytest` after editing the orchestrator), workers started during the
+  reinstall fail with `No module named data_pipeline`. Seen on 2026-11-09: 20 test setup
+  errors during a full run, gone on the next run. Run tests with `.venv/bin/python -m
+  pytest` while a pipeline is running, or don't edit the orchestrator during a run.
 
 ### 17. The article draft
 - **Tags:** OPEN
 - **Status:** draft committed on 2026-10-29 (`644ef26`).
 - **Detail:** `article/main-article.md` is a full draft of the technical report in pt-BR,
   written to `article/ARTICLE.md` and `article/writing-guide.md`. It quotes the
-  full-scale numbers with the fixes (`results/full-2026-10-27/`). The author line is still
+  full-scale numbers of `results/full-2026-11-09-leakfix/` (updated on 2026-11-09 from
+  `results/full-2026-10-27/`). The author line is still
   a `[PREENCHER: ...]` placeholder. The reference papers are listed in
   `article/references.md`; the local copies in `article/research/` are gitignored, so a
   fresh clone does not have them.
+
+### 18. Drive metadata leaked later rows into `capacity_tb` and `model_code`
+- **Tags:** CLOSED
+- **Status:** fixed on 2026-11-09. Found in a review; full-scale rerun on the same day
+  (`results/full-2026-11-09/`).
+- **Detail:** `drive_index` took each drive's maximum capacity and latest model over its
+  whole life, and both become snapshot features. On 2018-02-25 alone the panel reports a
+  rounded capacity for all 98,321 live drives (4,000,790,000,000 instead of
+  4,000,787,030,016 for a 4 TB drive), so the maximum marked every drive still alive on
+  that day. For a train snapshot before that date, `capacity_tb` told the model the drive
+  would survive until then. 100,258 drives had a capacity that varied at all, mostly this
+  rounding; 12 more briefly reported 2^37 bytes, always after their true value. 7 drives
+  change model string mid-life. The invariance test missed it because it holds the cohort
+  fixed. Now capacity is rounded to 10 GB before the maximum and the first model wins, and
+  `test_drive_metadata_does_not_see_the_future` runs `drive_index` on a panel cut at a
+  date (the synthetic panel has a rounded-capacity day and a model rename after the cut).
+  It fails on the old code.

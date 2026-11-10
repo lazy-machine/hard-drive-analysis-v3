@@ -564,19 +564,33 @@ def concordance_table(test, models, cap, rounds, seed, tau, binary_horizon, log)
     return out, len(sample), D.n
 
 
-def quantile_calibration(d, e, w, t) -> tuple[float | None, int]:
+def quantile_calibration(d, e, w, t, G=None) -> tuple[float | None, float | None, int]:
     """Weighted share of snapshots that failed before their predicted day t.
 
     Only snapshots with a finite t and a known outcome at t count: failed before t, or
     observed alive past t. For a calibrated q-quantile the share should be about q.
+
+    Returns (known-outcome share, IPCW share, known snapshots). The known-outcome share
+    drops snapshots censored before t. Those are more often the ones with a late t, which
+    are the ones least likely to have failed by t, so it can lean high even when censoring
+    is independent. The IPCW share weights a failure on day d by 1 / P(C >= d) and a
+    snapshot seen alive through t by 1 / P(C >= t), which removes that selection if
+    censoring is independent of failure. Neither corrects for informative censoring.
     """
+    d = np.asarray(d)
+    e = np.asarray(e)
+    w = np.asarray(w, dtype=float)
     finite = np.isfinite(t)
     failed = finite & (e == 1) & (d < t)
-    survived = finite & (d >= np.ceil(t))
+    survived = finite & (d >= np.ceil(np.where(finite, t, 0)))
     known = failed | survived
     if not known.any():
-        return None, 0
-    return float(np.sum(w[failed]) / np.sum(w[known])), int(known.sum())
+        return None, None, 0
+    share = float(np.sum(w[failed]) / np.sum(w[known]))
+    G = censoring_survival(d, e == 1, w) if G is None else G
+    wf = w[failed] / np.maximum(G(d[failed]), 1e-12)
+    ws = w[survived] / np.maximum(G(np.ceil(t[survived])), 1e-12)
+    return share, float(wf.sum() / (wf.sum() + ws.sum())), int(known.sum())
 
 
 def life(test, models, edges) -> tuple[list[dict], pd.DataFrame]:
@@ -585,6 +599,7 @@ def life(test, models, edges) -> tuple[list[dict], pd.DataFrame]:
     summary, table = [], []
     d, e, w = (test[c].to_numpy() for c in ("duration_days", "event", "weight"))
     status = known_status(d, e, edges[-1])
+    G = censoring_survival(d, e == 1, w)
     for name, info in models.items():
         if info["kind"] != "hazard":
             continue
@@ -600,8 +615,9 @@ def life(test, models, edges) -> tuple[list[dict], pd.DataFrame]:
 
         qcal = {}
         for q, col in ((0.1, q10), (0.5, med), (0.9, q90)):
-            share, n = quantile_calibration(d, e, w, col)
-            qcal[str(q)] = {"target": q, "share_failed_by_predicted_day": share, "snapshots": n}
+            share, share_ipcw, n = quantile_calibration(d, e, w, col, G)
+            qcal[str(q)] = {"target": q, "share_failed_by_predicted_day": share,
+                            "share_failed_by_predicted_day_ipcw": share_ipcw, "snapshots": n}
         summary.append({
             "model": name,
             "quantile_calibration": qcal,
