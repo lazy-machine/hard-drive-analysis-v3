@@ -18,7 +18,7 @@ Quirks handled (`drive_index`, `cohort`, `extract`):
 |---|---|
 | Boot SSDs in the panel | Excluded by a model-name pattern (`study.toml: data.ssd_model_pattern`) |
 | Model names differ in whitespace across years (`WDC  WUH721414ALE6L4`) | Whitespace normalised. The first name a drive reports wins, so the feature never depends on later rows (7 drives change model string mid-life, e.g. `HGST HMS5C4040ALE640` to `...BLE640`). Drives that report more than one model in a month are counted, and the gate warns about them |
-| Capacity jitters by a few MB, on 2018-02-25 alone every drive reports a rounded value (4,000,790,000,000 instead of 4,000,787,030,016), new drives report -1 on their first day, and 10 drives never report one | The first valid capacity, rounded to 10 GB, so the feature does not depend on how long the drive lives (a lifetime maximum leaked survival past 2018-02-25, docs/ISSUES.md #18). A first-day snapshot takes the next day's value: capacity is a nameplate fact known at install. Drives that never report one get their model's most common capacity; a NULL would mark them, since all 10 fail within days. That mapping counts all drives of the panel, which is safe here only because each model has a single rounded capacity (docs/ISSUES.md #18) |
+| Capacity jitters by a few MB, on 2018-02-25 alone every drive reports a rounded value (4,000,790,000,000 instead of 4,000,787,030,016), new drives report -1 on their first day, and 10 drives never report one | The first valid capacity, rounded to 10 GB, so the feature does not depend on how long the drive lives (a lifetime maximum leaked survival past 2018-02-25). A first-day snapshot takes the next day's value: capacity is a nameplate fact known at install. Drives that never report one get their model's most common capacity; a NULL would mark them, since all 10 fail within days. That mapping counts all drives of the panel, which is safe here only because each model has a single rounded capacity |
 | Same-day duplicate rows | One row per drive-day: the most complete row, then the first filename |
 | Drives keep reporting after a failure. Measured on the panel: 710 drives (694 HDDs, 16 boot SSDs) have rows after their first failure row, 46 have two failure rows, and 561 of them are in the full-scale cohort | The first failure is the event, and rows after it are dropped |
 | Many SMART columns stored as VARCHAR | `TRY_CAST` to DOUBLE. Strings that fail the cast are counted per column and returned by `extract` (0 at medium scale, 11,775,008 rows) |
@@ -107,7 +107,7 @@ weighs ~70x a failure row, the effective sample is tiny, and early stopping fire
 0.89 and nearly doubled PR-AUC. Two sensitivity steps report other powers on test
 (`hazard_smart_w075`, `hazard_smart_w100`). They are reported, not used to choose the
 power. At medium scale 0.75 ranks like 0.5 at 30 days, and 1.0 ranks worse and stops at
-iteration 11 (docs/ISSUES.md #8).
+iteration 11.
 
 Tempered weights distort the probability scale, and every variant was over-confident at
 long horizons: a high-risk snapshot gets a high hazard in every future bin, so its
@@ -279,7 +279,7 @@ records the band of the validation-year ratios, whether the last validation year
 already leaves the band of the earlier years (a warning that needs no test data), and
 which test years fall outside the band. The step log prints a `DRIFT` line for each model
 with a flagged year. The same table for `hazard_smart_recent` shows whether recalibrating
-on 2023 helps. At medium scale it doesn't (docs/ISSUES.md #9).
+on 2023 helps. At medium scale it doesn't.
 
 ### 7.7 Retirement
 
@@ -288,8 +288,7 @@ those that stop reporting before the end of Y+1 (left) and those still reporting
 (stayed). If leaving were unrelated to health, as the censoring assumption says, both
 groups would carry about the same predicted 30-day risk in Y. The report gives the ratio
 left / stayed and the share above the main alert threshold. The ratio has no interval:
-read it as a direction, not a test. At medium scale it is above 1 in every split-year
-(docs/ISSUES.md #7).
+read it as a direction, not a test. At medium scale it is above 1 in every split-year.
 
 ## 8. The verification gate (`verify`)
 
@@ -327,7 +326,7 @@ full panel (no look-ahead). The report is `build/verify-report.json`.
   drive-level bootstrap only resamples test drives. Two full runs that differed in 10
   of 7.6 million training snapshots moved the 30-day ROC-AUC by 0.002 and the
   survival-minus-classifier difference from -0.006 [-0.009, -0.002] to -0.001 [-0.004,
-  +0.002] (docs/ISSUES.md #18). Differences of a few thousandths between models are
+  +0.002]. Differences of a few thousandths between models are
   ties.
 - **Label circularity.** Backblaze's replacement decisions use counters 5, 187, 188,
   197 and 198, so part of the SMART signal is the operator's policy. `hazard_nocritical`
