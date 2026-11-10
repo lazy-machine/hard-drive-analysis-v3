@@ -15,8 +15,8 @@ CI (`.github/workflows/test.yml`) runs the lint and the tests on every push and 
 Note: To configure the size of the run, see `config/sample.toml`. Use `small` mode by default and `full` to get real results. `medium` sits in between.
 
 ## Conventions
-- Any text should be primarily written in English, so that the `unslop` skill can operate properly. Any text in another language is just a translation or has passed through an **insane** amount of reviews.
-- The one text of that kind is `article/main-article.md`, the FATEC technical report in Portuguese. It has already been through extensive rewrites and verification. Edit it only when asked, change only what was asked, and follow `article/ARTICLE.md` and `article/writing-guide.md`. Don't run `unslop` on it.
+- Any text should be primarily written in English, so that the `unslop` skill can operate properly. Any text in another language is just a translation or has passed through an **insane** number of reviews.
+- The only such text is `article/main-article.md`, the FATEC technical report in Portuguese. It has already been through extensive rewrites and verification. Edit it only when asked, change only what was asked, and follow `article/ARTICLE.md` and `article/writing-guide.md`. Don't run `unslop` on it.
 - Use the skill `unslop` to write documentation and research papers.
 - Don't modify or add code, unless it's necessary.
 - Every issue must be reported in the github repo of your current working branch.
