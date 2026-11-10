@@ -293,7 +293,7 @@ read it as a direction, not a test. At medium scale it is above 1 in every split
 
 ## 8. The verification gate (`verify`)
 
-Runs before any training and stops the pipeline on any error. 56 checks at full scale (and 14 skipped whose roles are not declared). It recomputes
+Runs before any training and stops the pipeline on any error. 56 checks at full scale; 14 more are skipped as not applicable, with the reason for each in the verification report. It recomputes
 every label from the cohort independently (both directions: no failure inside the window
 labelled healthy, no healthy row labelled failing), and checks drive and time
 disjointness of the splits, weights against the sampling config, the stable-bucket

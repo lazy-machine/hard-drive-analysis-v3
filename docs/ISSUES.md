@@ -101,7 +101,7 @@ something surprises you, and close it with how it was verified.
   date of the last known-healthy snapshot it uses. `evaluate` skips any horizon where the
   known-status rows are all one class and says so in the report.
 
-### 7. Retirement is informative censoring
+### 7. Retirement suggests informative censoring
 - **Tags:** LIMIT
 - **Status:** measured (`evaluate` retirement section; medium scale 2026-10-26, full
   scale 2026-10-27)

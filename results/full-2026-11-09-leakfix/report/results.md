@@ -13,7 +13,7 @@ Numbers only. What they mean, and the detailed tables behind them, are in [analy
 | test set | 8981 drives, 1784 fail (368 silent), 825321 snapshots |
 | reference model | survival model, SMART + context |
 | compared with | 8 models and baselines (rows of the tables below) |
-| verification gate | 55/56 checks passed (data-verify 0.4.0; 14 skipped: their roles are not declared); assert.cohort_drives_have_snapshots warned |
+| verification gate | 55/56 checks passed (data-verify 0.4.0; 14 skipped as not applicable; reasons in verify-report.md); assert.cohort_drives_have_snapshots warned |
 | intervals | 95% drive-level bootstrap, 200 rounds |
 
 ## Ranking (ROC-AUC)
