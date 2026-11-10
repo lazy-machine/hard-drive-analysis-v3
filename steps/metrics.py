@@ -223,6 +223,8 @@ def censoring_survival(duration: np.ndarray, event: np.ndarray, w: np.ndarray):
     def G(t):
         """P(C >= t) = P(C > t - 1) on whole days."""
         k = np.searchsorted(days, np.asarray(t) - 1, side="right") - 1
+        if days.size == 0:   # nothing censored
+            return np.ones(k.shape)
         return np.where(k >= 0, G_after[np.maximum(k, 0)], 1.0)
 
     return G

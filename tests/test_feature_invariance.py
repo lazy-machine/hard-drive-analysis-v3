@@ -10,6 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import duckdb
+import pytest
 
 CUTOFF = "2024-03-15"  # after test_start, so test drives and their trend history are covered
 
@@ -68,3 +69,34 @@ def test_features_do_not_see_the_future(pipeline_run, tmp_path):
         + f" FROM {both}").fetchall()[0]
     changed = {f: n for f, n in zip(features, diffs, strict=True) if n}
     assert not changed, f"features changed when later rows were removed: {changed}"
+
+
+@pytest.mark.parametrize("cutoff", ["2023-06-01", CUTOFF])
+def test_drive_metadata_does_not_see_the_future(pipeline_run, tmp_path, cutoff):
+    """Model and capacity come from drive_index and become features (model_code,
+    capacity_tb). The invariance test above holds the cohort fixed, so check them here:
+    removing rows after a cutoff must not change them for any drive seen before it."""
+    from drives import drive_index
+
+    project, _ = pipeline_run
+    full_panel = project / "dataset" / "dataset.parquet"
+    cut_panel = tmp_path / "cut.parquet"
+    con = duckdb.connect()
+    con.sql(f"""COPY (SELECT * FROM read_parquet('{full_panel}') WHERE date <= DATE '{cutoff}')
+                TO '{cut_panel}' (FORMAT PARQUET)""")
+    out = {}
+    for name, panel in (("full", full_panel), ("cut", cut_panel)):
+        work = tmp_path / name
+        work.mkdir()
+        out[name] = work / "drives.parquet"
+        drive_index(Ctx(work, "drive_index", {"panel": panel}, {"drives": out[name]}))
+
+    both = (f"read_parquet('{out['cut']}') a JOIN read_parquet('{out['full']}') b "
+            "USING (serial_number)")
+    n, model, capacity, missing = con.sql(
+        "SELECT count(*), count(*) FILTER (WHERE a.model IS DISTINCT FROM b.model), "
+        "count(*) FILTER (WHERE a.capacity_bytes IS DISTINCT FROM b.capacity_bytes), "
+        f"count(*) FILTER (WHERE b.capacity_bytes IS NULL) FROM {both}").fetchall()[0]
+    assert n > 100
+    assert (model, capacity) == (0, 0), f"{model} models, {capacity} capacities changed"
+    assert missing == 0, "a drive that never reports a capacity gets its model's"

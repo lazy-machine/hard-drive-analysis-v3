@@ -92,7 +92,45 @@ def test_quantile_calibration_counts_only_known_outcomes():
     t = np.array([10.0, 10.0, 10.0, 10.0, np.inf])
     # failed before day 10: row 0. survived past it: row 3. unknown: row 2 (censored at 5),
     # row 1 failed after day 10 -> survived past it. row 4 has no finite prediction.
-    share, n = quantile_calibration(d, e, np.ones(5), t)
+    share, _, n = quantile_calibration(d, e, np.ones(5), t)
+    assert n == 3 and np.isclose(share, 1 / 3)
+
+
+def test_quantile_calibration_ipcw_undoes_censoring_selection():
+    """True share failed by t is 50%: 80% of early-t snapshots, 20% of late-t ones.
+    Censoring removes half of the late-t snapshots, so the known-outcome share leans high
+    (about 60%); IPCW recovers 50%."""
+    from evaluate import quantile_calibration
+
+    rng = np.random.default_rng(0)
+    n = 40_000
+    t = np.where(rng.random(n) < 0.5, 5.0, 50.0)            # predicted day
+    p_fail = np.where(t == 5.0, 0.8, 0.2)
+    T = np.where(rng.random(n) < p_fail, t - 1, t + 100)    # fails before t, or long after
+    C = np.where(rng.random(n) < 0.5, 20, 10_000)           # independent of T
+    d, e = np.minimum(T, C), (T <= C).astype(int)
+    share, share_ipcw, _ = quantile_calibration(d, e, np.ones(n), t)
+    assert share > 0.55
+    assert abs(share_ipcw - 0.5) < 0.02
+    # with no censoring the two agree
+    s0, s1, _ = quantile_calibration(T, np.ones(n, dtype=int), np.ones(n), t)
+    assert np.isclose(s0, s1)
+
+
+def test_quantile_calibration_day_conventions_match_known_status():
+    """A snapshot censored on day ceil(t) - 1 is known not to have failed before t, as
+    known_status says for a horizon; a failure on day t is not before t."""
+    from evaluate import quantile_calibration
+    from survival import known_status
+
+    d, e, t = np.array([0, 0]), np.array([1, 0]), np.array([1.0, 1.0])
+    assert list(known_status(d, e, 1)) == [1, 0]
+    share, share_ipcw, n = quantile_calibration(d, e, np.ones(2), t)
+    assert n == 2 and share == share_ipcw == 0.5
+    # fractional day: t = 9.5 -> censored on day 8 unknown, on day 9 known; failure on 10
+    # is after t
+    d, e = np.array([8, 9, 10, 9]), np.array([0, 0, 1, 1])
+    share, _, n = quantile_calibration(d, e, np.ones(4), np.full(4, 9.5))
     assert n == 3 and np.isclose(share, 1 / 3)
 
 
