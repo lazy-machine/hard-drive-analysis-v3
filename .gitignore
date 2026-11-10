@@ -3,6 +3,7 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+.ruff_cache/
 
 # Data and everything the pipeline generates (outputs, checkpoints, logs, spill files)
 dataset
