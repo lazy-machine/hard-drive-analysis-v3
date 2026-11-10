@@ -57,6 +57,13 @@ something surprises you, and close it with how it was verified.
   `smart_18_raw`, `smart_23_raw` and `smart_24_raw` are constant in train, and 16 cohort
   drives have no snapshot.
 
+  Resolved on 2026-11-09 (issue #9): the three raw columns are a placeholder 0 in the
+  whole panel, so the cast loses nothing. 23 and 24 carry their signal in the normalized
+  value (11 and 99 drives leave 100; 1 and 28 of them in train), so they now enter as
+  `smart_23_normalized` and `smart_24_normalized`; the data is small and harmless. 18 is
+  constant in both forms and is no longer a feature. The feature list is now 64 columns.
+  Full-scale runs before `results/full-2026-11-09/` have 65. The gate check stays on.
+
 ### 2. A single GROUP BY over the whole panel spills tens of GB
 - **Tags:** SLOW, CONFUSE
 - **Status:** mitigated
@@ -94,7 +101,7 @@ something surprises you, and close it with how it was verified.
   date of the last known-healthy snapshot it uses. `evaluate` skips any horizon where the
   known-status rows are all one class and says so in the report.
 
-### 7. Retirement is informative censoring
+### 7. Retirement suggests informative censoring
 - **Tags:** LIMIT
 - **Status:** measured (`evaluate` retirement section; medium scale 2026-10-26, full
   scale 2026-10-27)
@@ -104,12 +111,14 @@ something surprises you, and close it with how it was verified.
   year with those that stay. At medium scale the drives that leave carry 2.2-9.0x the
   risk in every validation year from 2016 to 2023 except 2019 (1.06), and 3.3x in test
   year 2024 (94 left, 1,196 stayed). At full scale the ratio is 1.2-6.5x in every
-  validation year and 2.25x in test year 2024 (509 left, 5,809 stayed). So the censoring
-  is informative: Backblaze retires
-  drives that look unhealthy, the model sees fewer failures than really happen, and risk
-  is underestimated. If retirement became more aggressive over time, observed failures in
-  later years fall below what a model trained on earlier years expects, which matches
-  the drift in #9. The ratio has no interval. Treating "leaves the panel" as an event of
+  validation year and 2.25x in test year 2024 (509 left, 5,809 stayed); in the final run
+  of 2026-11-09 (`results/full-2026-11-09-leakfix/`), 0.88-3.17x (above 1 in 7 of 8
+  validation years) and 2.02x in 2024. This suggests the censoring is informative:
+  Backblaze may retire drives that look unhealthy before they fail. If so, the model sees
+  fewer failures than really happen and risk is underestimated, by an amount the check
+  cannot measure. If retirement became more aggressive over time, observed failures in
+  later years would fall below what a model trained on earlier years expects, which would
+  match the drift in #9. The ratio has no interval. Treating "leaves the panel" as an event of
   its own (a competing risk) was not tried.
 
 ### 8. Full inverse-probability weights starve training
@@ -179,8 +188,10 @@ something surprises you, and close it with how it was verified.
   replaced drive is recorded as failed, so these counters partly define the label.
   `hazard_nocritical` drops them (raw, normalized and trends). At 30 days it scores
   0.757 [0.730, 0.784] against 0.860 for `hazard_smart` and 0.592 without SMART: about
-  62% of the SMART gain (0.165 of 0.268) remains without them. The full gain is an upper
-  bound on what SMART adds beyond the replacement policy. 72 of the 359 failing test drives
+  62% of the SMART gain (0.165 of 0.268) remains without them. This is a sensitivity
+  check, not a split of policy from physics: the dropped counters also measure real
+  damage, and the other features can still track them. In the final run of 2026-11-09,
+  61% of the gain remains (0.167 of 0.273). 72 of the 359 failing test drives
   are silent (no critical counter above zero in any test snapshot). On them the SMART
   model's 30-day ROC-AUC is 0.608 [0.554, 0.668] (no SMART 0.529, rule 0.472), against
   0.924 on the other failing drives. At full scale `hazard_nocritical` scores 0.772
@@ -214,8 +225,8 @@ something surprises you, and close it with how it was verified.
 - **Status:** closed. Run by the owner on the 31 GB machine on 2026-10-26/27, with the step code
   of `9b77159` (the step code hashes in `.pipeline/state.json` match those of the medium
   run on this branch). Gate: 30 checks passed, one warning.
-- **Detail:** the small artifacts are in `results/full-2026-10-27/`, and the README's
-  results section quotes them. The run before the fixes stays in
+- **Detail:** the small artifacts are in `results/full-2026-10-27/`. The README's results
+  section quoted them until 2026-11-09; it now quotes `results/full-2026-11-09-leakfix/`. The run before the fixes stays in
   `results/full-2026-10-24/` for comparison.
 
 ### 16. `data-pipeline` is an editable sibling path
@@ -229,17 +240,53 @@ something surprises you, and close it with how it was verified.
   workflow works around it: it checks the orchestrator out into `data-pipeline/` next to
   this repository, from the repository variable `DATA_PIPELINE_REPO` (optional
   `DATA_PIPELINE_REF`, and the secret `DATA_PIPELINE_TOKEN` if the orchestrator is
-  private). The orchestrator has no remote yet (confirmed by the owner on 2026-10-26).
-  Until it has one and the variable is set, the job stops at its first step. Publishing
-  `data-pipeline`, or pinning it to a git URL with a commit, would let a fresh clone
-  `uv sync` on its own.
+  private). Since 2026-11-09 the orchestrator is at `lazy-machine/data-pipeline` and the
+  variable is set, so CI runs. `DATA_PIPELINE_REF` is unset, so CI tests against the
+  orchestrator's default branch, not a fixed commit; `results/README.md` records the
+  orchestrator commit of each full run. Pinning it to a git URL with a commit would let a
+  fresh clone `uv sync` on its own and make CI reproducible.
+- **Local race:** `uv run` reinstalls the editable `data-pipeline` whenever its
+  `pyproject.toml` is newer than the install. If that happens while a pipeline is running
+  (for example `uv run pytest` after editing the orchestrator), workers started during the
+  reinstall fail with `No module named data_pipeline`. Seen on 2026-11-09: 20 test setup
+  errors during a full run, gone on the next run. Run tests with `.venv/bin/python -m
+  pytest` while a pipeline is running, or don't edit the orchestrator during a run.
 
 ### 17. The article draft
 - **Tags:** OPEN
 - **Status:** draft committed on 2026-10-29 (`644ef26`).
 - **Detail:** `article/main-article.md` is a full draft of the technical report in pt-BR,
   written to `article/ARTICLE.md` and `article/writing-guide.md`. It quotes the
-  full-scale numbers with the fixes (`results/full-2026-10-27/`). The author line is still
+  full-scale numbers of `results/full-2026-11-09-leakfix/` (updated on 2026-11-09 from
+  `results/full-2026-10-27/`). The author line is still
   a `[PREENCHER: ...]` placeholder. The reference papers are listed in
   `article/references.md`; the local copies in `article/research/` are gitignored, so a
   fresh clone does not have them.
+
+### 18. Drive metadata leaked later rows into `capacity_tb` and `model_code`
+- **Tags:** CLOSED
+- **Status:** fixed on 2026-11-09 after two reviews; full-scale rerun the same day
+  (`results/full-2026-11-09-leakfix/`). `results/full-2026-11-09/` still has the leak.
+- **Detail:** `drive_index` took each drive's maximum capacity and latest model over its
+  whole life, and both become snapshot features. On 2018-02-25 alone the panel reports a
+  rounded capacity for all 98,321 live drives (4,000,790,000,000 instead of
+  4,000,787,030,016 for a 4 TB drive), so the maximum marked every drive still alive on
+  that day. For a train snapshot before that date, `capacity_tb` told the model the drive
+  would survive until then. 100,258 drives had a capacity that varied at all, mostly this
+  rounding; 12 more briefly reported 2^37 bytes, always after their true value. 7 drives
+  change model string mid-life. The invariance test missed it because it holds the cohort
+  fixed. The second review found that a rounded maximum still depends on the future in
+  principle, and that the 10 drives that never report a capacity got NULL; all 10 fail
+  within days, so NULL marked them (10 train snapshots).
+- **Fix:** model and capacity are the first ones a drive reports, capacity rounded to 10
+  GB. 94,816 drives report -1 on their first day only, so a first-day snapshot takes the
+  next day's capacity: a nameplate fact the operator knows at install. Drives that never
+  report one get their model's most common capacity, counted over all drives of the
+  panel. That mapping uses drives from every year, so it is point-in-time safe only
+  because each of the 157 models has a single rounded capacity in this panel (checked on
+  `build/drives.parquet`); a panel where a model's usual capacity changes over time would
+  need a mapping fitted before `train_end`. `drive_index` logs how many drives
+  have a varying rounded capacity. `test_drive_metadata_does_not_see_the_future` runs
+  `drive_index` on panels cut at two dates; the synthetic panel has a rounded-capacity
+  day, a capacity that grows and a model rename after the cuts, -1 on first days and a
+  drive that never reports a capacity. It fails on both earlier versions of the code.

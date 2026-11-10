@@ -1,0 +1,1154 @@
+{
+  "tool": "data-verify",
+  "version": "0.4.0",
+  "passed": true,
+  "fail_on": "error",
+  "blocking": [],
+  "warnings": [
+    "assert.cohort_drives_have_snapshots"
+  ],
+  "counts": {
+    "pass": 55,
+    "fail": 1,
+    "error": 0,
+    "skip": 14,
+    "off": 2
+  },
+  "splits": {
+    "train": {
+      "rows": 7597961,
+      "columns": 70
+    },
+    "val": {
+      "rows": 1077429,
+      "columns": 70
+    },
+    "test": {
+      "rows": 825321,
+      "columns": 70
+    }
+  },
+  "train_split": "train",
+  "roles": {
+    "label": [
+      "event",
+      "duration_days"
+    ],
+    "task": {
+      "event": "binary",
+      "duration_days": "regression"
+    },
+    "id": [],
+    "group": [
+      "serial_number"
+    ],
+    "time": "date",
+    "label_time": null,
+    "weight": "weight",
+    "split_column": "split",
+    "features": [
+      "days_in_service",
+      "left_truncated",
+      "capacity_tb",
+      "model_code",
+      "vendor_code",
+      "smart_4_raw",
+      "smart_5_raw",
+      "smart_9_raw",
+      "smart_10_raw",
+      "smart_12_raw",
+      "smart_22_raw",
+      "smart_183_raw",
+      "smart_184_raw",
+      "smart_187_raw",
+      "smart_189_raw",
+      "smart_190_raw",
+      "smart_191_raw",
+      "smart_192_raw",
+      "smart_193_raw",
+      "smart_194_raw",
+      "smart_196_raw",
+      "smart_197_raw",
+      "smart_198_raw",
+      "smart_199_raw",
+      "smart_200_raw",
+      "smart_240_raw",
+      "smart_241_raw",
+      "smart_242_raw",
+      "smart_1_normalized",
+      "smart_3_normalized",
+      "smart_5_normalized",
+      "smart_7_normalized",
+      "smart_23_normalized",
+      "smart_24_normalized",
+      "smart_187_normalized",
+      "smart_188_normalized",
+      "smart_197_normalized",
+      "smart_198_normalized",
+      "smart_1_normalized_d7",
+      "smart_5_raw_d7",
+      "smart_7_normalized_d7",
+      "smart_10_raw_d7",
+      "smart_183_raw_d7",
+      "smart_184_raw_d7",
+      "smart_187_raw_d7",
+      "smart_189_raw_d7",
+      "smart_193_raw_d7",
+      "smart_197_raw_d7",
+      "smart_198_raw_d7",
+      "smart_199_raw_d7",
+      "smart_1_normalized_d30",
+      "smart_5_raw_d30",
+      "smart_7_normalized_d30",
+      "smart_10_raw_d30",
+      "smart_183_raw_d30",
+      "smart_184_raw_d30",
+      "smart_187_raw_d30",
+      "smart_189_raw_d30",
+      "smart_193_raw_d30",
+      "smart_197_raw_d30",
+      "smart_198_raw_d30",
+      "smart_199_raw_d30",
+      "window_days_7",
+      "window_days_30"
+    ],
+    "features_mode": "declared"
+  },
+  "datasets": {
+    "cohort": {
+      "path": "build/cohort.parquet",
+      "bytes": 565814,
+      "sha256": "99da9837465bc1920a5fe1f338a93fe8dc2fa24cb360bf1a507d22fb4ec91206",
+      "role": "auxiliary"
+    },
+    "sample": {
+      "path": "config/sample.toml",
+      "bytes": 1771,
+      "sha256": "9bc4b866e45ecbfd96db496191d4c0070a6b3c5a43d9d854e4b82d9b0c0e8830",
+      "role": "config"
+    },
+    "schema": {
+      "path": "build/feature-schema.json",
+      "bytes": 4264,
+      "sha256": "7ff4b1a8d6ee958dad9876413fbefdbe5146571079e8e6629899460deac7f891",
+      "role": "config"
+    },
+    "snapshots": {
+      "path": "build/snapshots.parquet",
+      "bytes": 148717847,
+      "sha256": "7bffde722026c5539e120a9415cb6da8d748fdd80017ad0a3b539df2c6c1fe09",
+      "role": "table"
+    },
+    "study": {
+      "path": "config/study.toml",
+      "bytes": 5224,
+      "sha256": "7690e585a38f3503ec854eb30770593dd14801e628905201ddf7cc1dd62bfcff",
+      "role": "config"
+    }
+  },
+  "checks": [
+    {
+      "id": "integrity.pins",
+      "category": "integrity",
+      "severity": "error",
+      "status": "skip",
+      "title": "Pinned inputs are byte-identical",
+      "message": "no params.pins; pin raw inputs to detect tampering",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "schema.splits_present",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "Every split has rows",
+      "message": "3 split(s): train=7597961, val=1077429, test=825321",
+      "hint": "",
+      "details": {
+        "rows": {
+          "train": 7597961,
+          "val": 1077429,
+          "test": 825321
+        }
+      },
+      "blocking": false
+    },
+    {
+      "id": "schema.roles",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "Declared columns exist in every split",
+      "message": "64 features and 6 role columns present",
+      "hint": "",
+      "details": {
+        "features": 64
+      },
+      "blocking": false
+    },
+    {
+      "id": "schema.consistent",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "Splits share the same columns and types",
+      "message": "70 columns, same types in 3 splits",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "schema.expected",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "Columns match params.schema.columns",
+      "message": "70 columns as declared",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "schema.dtypes",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "Column types match params.schema.dtypes",
+      "message": "3 column types as declared",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "schema.ranges",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "Values stay within params.schema.ranges",
+      "message": "2 column range(s) respected",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "schema.allowed",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "Values are in params.schema.allowed",
+      "message": "1 column(s) within allowed values",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "schema.not_null",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "Columns in params.schema.not_null have no nulls",
+      "message": "6 column(s) complete",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "schema.unique",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "Keys in params.schema.unique are unique",
+      "message": "1 key(s) unique",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "features.non_finite",
+      "category": "integrity",
+      "severity": "error",
+      "status": "pass",
+      "title": "No infinite feature values",
+      "message": "64 numeric features finite",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "features.empty",
+      "category": "integrity",
+      "severity": "warn",
+      "status": "pass",
+      "title": "No feature is empty in train",
+      "message": "64 features have values",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "features.constant",
+      "category": "integrity",
+      "severity": "warn",
+      "status": "pass",
+      "title": "No feature is constant in train",
+      "message": "64 features vary",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "split.id_unique",
+      "category": "split",
+      "severity": "error",
+      "status": "skip",
+      "title": "Row ids are unique within each split",
+      "message": "no params.id",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "split.id_overlap",
+      "category": "split",
+      "severity": "error",
+      "status": "skip",
+      "title": "No row id is in two splits",
+      "message": "no params.id",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "split.group_overlap",
+      "category": "split",
+      "severity": "error",
+      "status": "pass",
+      "title": "No entity (group) is in two splits",
+      "message": "group disjoint across 3 splits",
+      "hint": "",
+      "details": {
+        "distinct": {
+          "train": 42316,
+          "val": 5996,
+          "test": 8981
+        }
+      },
+      "blocking": false
+    },
+    {
+      "id": "split.rule",
+      "category": "split",
+      "severity": "error",
+      "status": "pass",
+      "title": "Split assignment follows params.split_rule",
+      "message": "57293 serial_number value(s) in the split their sha256 rule assigns",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "split.ratios",
+      "category": "split",
+      "severity": "warn",
+      "status": "skip",
+      "title": "Split sizes match params.split_ratios",
+      "message": "no params.split_ratios",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "split.conservation",
+      "category": "split",
+      "severity": "error",
+      "status": "skip",
+      "title": "Splits come from params.source, nothing added",
+      "message": "no params.source (the pre-split data)",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "split.undeclared_group",
+      "category": "split",
+      "severity": "warn",
+      "status": "skip",
+      "title": "Entity-like columns crossing splits are declared as params.group",
+      "message": "params.group is set (split.group_overlap checks it)",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "temporal.parse",
+      "category": "temporal",
+      "severity": "error",
+      "status": "pass",
+      "title": "Time columns parse",
+      "message": "time ranges train 2016-01-01 00:00:00..2023-12-31 00:00:00, val 2016-01-01 00:00:00..2023-12-31 00:00:00, test 2024-01-01 00:00:00..2025-12-31 00:00:00",
+      "hint": "",
+      "details": {
+        "ranges": {
+          "train": [
+            "2016-01-01 00:00:00",
+            "2023-12-31 00:00:00"
+          ],
+          "val": [
+            "2016-01-01 00:00:00",
+            "2023-12-31 00:00:00"
+          ],
+          "test": [
+            "2024-01-01 00:00:00",
+            "2025-12-31 00:00:00"
+          ]
+        }
+      },
+      "blocking": false
+    },
+    {
+      "id": "temporal.bounds",
+      "category": "temporal",
+      "severity": "error",
+      "status": "pass",
+      "title": "Each split stays inside params.time_bounds",
+      "message": "3 split(s) within bounds",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "temporal.order",
+      "category": "temporal",
+      "severity": "error",
+      "status": "pass",
+      "title": "Earlier splits end before later ones start",
+      "message": "time order holds: train < test, val < test",
+      "hint": "",
+      "details": {
+        "pairs": {
+          "train<test": {
+            "end_train": "2023-12-31 00:00:00",
+            "start_test": "2024-01-01 00:00:00",
+            "gap": "1 days 00:00:00"
+          },
+          "val<test": {
+            "end_val": "2023-12-31 00:00:00",
+            "start_test": "2024-01-01 00:00:00",
+            "gap": "1 days 00:00:00"
+          }
+        }
+      },
+      "blocking": false
+    },
+    {
+      "id": "temporal.overlap",
+      "category": "temporal",
+      "severity": "warn",
+      "status": "skip",
+      "title": "Splits of time-stamped data do not overlap",
+      "message": "time_order / time_bounds are declared and checked instead",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "temporal.rows_after_outcome",
+      "category": "temporal",
+      "severity": "error",
+      "status": "skip",
+      "title": "No row is dated after its outcome",
+      "message": "no params.label_time",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "temporal.label_after_cutoff",
+      "category": "temporal",
+      "severity": "error",
+      "status": "skip",
+      "title": "Training labels were known before the evaluation period",
+      "message": "no params.label_time",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "temporal.point_in_time",
+      "category": "temporal",
+      "severity": "error",
+      "status": "skip",
+      "title": "Features were observed by the row's time",
+      "message": "no params.point_in_time",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "temporal.undeclared_time",
+      "category": "temporal",
+      "severity": "warn",
+      "status": "skip",
+      "title": "Date-like columns are declared as params.time",
+      "message": "params.time is set",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "duplicates.cross_split",
+      "category": "duplicates",
+      "severity": "error",
+      "status": "pass",
+      "title": "No example appears in two splits",
+      "message": "duplicates within tolerance: train/val 818 rows (0.08%), train/test 61 rows (0.01%), val/test 59 rows (0.01%); no more than different train entities share by chance (0.101%)",
+      "hint": "",
+      "details": {
+        "pairs": {
+          "train/val": {
+            "rows": 818,
+            "fraction": 0.000759215,
+            "example_rows_of_val": [
+              1050,
+              5209,
+              6774,
+              9014,
+              9712
+            ]
+          },
+          "train/test": {
+            "rows": 61,
+            "fraction": 7.39106e-05,
+            "example_rows_of_test": [
+              31620,
+              34041,
+              34543,
+              34743,
+              36748
+            ]
+          },
+          "val/test": {
+            "rows": 59,
+            "fraction": 7.14873e-05,
+            "example_rows_of_test": [
+              31620,
+              34041,
+              34543,
+              34743,
+              36748
+            ]
+          }
+        },
+        "compared_columns": 64,
+        "max_fraction": 0.0,
+        "cross_group_rate_in_train": 0.00101132,
+        "allowed": 0.00202265
+      },
+      "blocking": false
+    },
+    {
+      "id": "duplicates.near_cross_split",
+      "category": "duplicates",
+      "severity": "warn",
+      "status": "pass",
+      "title": "No near-copy of an example appears in two splits",
+      "message": "near-duplicates within tolerance: train/val 1698 rows (0.16%), train/test 7 rows (0.00%), val/test 7 rows (0.00%); no more than different train entities share by chance (0.266%)",
+      "hint": "",
+      "details": {
+        "pairs": {
+          "train/val": {
+            "rows": 1698,
+            "fraction": 0.00157597,
+            "example_rows_of_val": [
+              1989,
+              1991,
+              10147,
+              10149,
+              12308
+            ]
+          },
+          "train/test": {
+            "rows": 7,
+            "fraction": 8.48155e-06,
+            "example_rows_of_test": [
+              267988,
+              448333,
+              448736,
+              448737,
+              448738
+            ]
+          },
+          "val/test": {
+            "rows": 7,
+            "fraction": 8.48155e-06,
+            "example_rows_of_test": [
+              346729,
+              346730,
+              346740,
+              346747,
+              346749
+            ]
+          }
+        },
+        "compared_columns": 64,
+        "max_fraction": 0.0,
+        "cross_group_rate_in_train": 0.00265716,
+        "allowed": 0.00531432
+      },
+      "blocking": false
+    },
+    {
+      "id": "duplicates.repeated_across_splits",
+      "category": "duplicates",
+      "severity": "warn",
+      "status": "skip",
+      "title": "Rows that repeat across splits are not called copies",
+      "message": "no key column, or nothing left to compare once the keys are ignored",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "duplicates.text_cross_split",
+      "category": "duplicates",
+      "severity": "error",
+      "status": "skip",
+      "title": "No text appears in two splits",
+      "message": "no text features (average length >= 30 characters)",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "duplicates.within_split",
+      "category": "duplicates",
+      "severity": "warn",
+      "status": "pass",
+      "title": "Training data is not dominated by repeated rows",
+      "message": "0.06% repeated rows, largest copy count 174",
+      "hint": "",
+      "details": {
+        "repeat_fraction": 0.000589237,
+        "largest_copy_count": 174,
+        "rows": 7597961,
+        "repeat_fraction_by_label": {
+          "event": {
+            "0": 0.000744815,
+            "1": 0.000293331
+          }
+        }
+      },
+      "blocking": false
+    },
+    {
+      "id": "duplicates.conflicting_labels",
+      "category": "duplicates",
+      "severity": "warn",
+      "status": "pass",
+      "title": "Identical training examples agree on their label",
+      "message": "rows whose identical copies carry another label: event 944 (0.01%) <= 1%",
+      "hint": "",
+      "details": {
+        "minority_rows": {
+          "event": 944
+        }
+      },
+      "blocking": false
+    },
+    {
+      "id": "target.forbidden_features",
+      "category": "target",
+      "severity": "error",
+      "status": "pass",
+      "title": "No label, key, time or forbidden column is used as a feature",
+      "message": "64 features, none forbidden",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "target.suspicious_names",
+      "category": "target",
+      "severity": "warn",
+      "status": "pass",
+      "title": "No feature name hints at the answer",
+      "message": "64 feature names look neutral",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "target.label_copy",
+      "category": "target",
+      "severity": "error",
+      "status": "pass",
+      "title": "No feature is a copy of the label",
+      "message": "no feature copies event, duration_days",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "target.perfect_predictor",
+      "category": "target",
+      "severity": "error",
+      "status": "pass",
+      "title": "No single feature (or its missingness) determines the label",
+      "message": "no feature reaches 0.99; strongest: event: model_code AUC 0.707917; duration_days: smart_242_raw |Spearman| 0.44829",
+      "hint": "",
+      "details": {
+        "top": {
+          "event": {
+            "model_code": 0.707917,
+            "capacity_tb": 0.652803,
+            "smart_193_raw": 0.643813,
+            "smart_187_normalized": 0.635377,
+            "smart_187_raw": 0.635372
+          },
+          "duration_days": {
+            "smart_242_raw": 0.44829,
+            "smart_241_raw": 0.372748,
+            "capacity_tb": 0.363165,
+            "model_code": 0.328388,
+            "smart_4_raw": 0.321728
+          }
+        }
+      },
+      "blocking": false
+    },
+    {
+      "id": "target.strong_predictor",
+      "category": "target",
+      "severity": "warn",
+      "status": "pass",
+      "title": "No single feature is suspiciously predictive",
+      "message": "no feature reaches 0.95; strongest: event: model_code AUC 0.707917; duration_days: smart_242_raw |Spearman| 0.44829",
+      "hint": "",
+      "details": {
+        "top": {
+          "event": {
+            "model_code": 0.707917,
+            "capacity_tb": 0.652803,
+            "smart_193_raw": 0.643813,
+            "smart_187_normalized": 0.635377,
+            "smart_187_raw": 0.635372
+          },
+          "duration_days": {
+            "smart_242_raw": 0.44829,
+            "smart_241_raw": 0.372748,
+            "capacity_tb": 0.363165,
+            "model_code": 0.328388,
+            "smart_4_raw": 0.321728
+          }
+        }
+      },
+      "blocking": false
+    },
+    {
+      "id": "target.score_gap",
+      "category": "target",
+      "severity": "warn",
+      "status": "pass",
+      "title": "Features predict the label equally well in every split",
+      "message": "single-feature scores agree across splits",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "target.id_like",
+      "category": "target",
+      "severity": "warn",
+      "status": "pass",
+      "title": "No feature looks like a row identifier",
+      "message": "no identifier-like features",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "preprocessing.global_scaling",
+      "category": "preprocessing",
+      "severity": "error",
+      "status": "pass",
+      "title": "Scalers were fitted on the training split only",
+      "message": "no feature is standardised or min-max scaled over evaluation rows (64 numeric features tested)",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "preprocessing.global_scaling_near",
+      "category": "preprocessing",
+      "severity": "warn",
+      "status": "pass",
+      "title": "No feature is almost scaled over evaluation rows",
+      "message": "no feature is nearly standardised over evaluation rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "preprocessing.fitted_levels",
+      "category": "preprocessing",
+      "severity": "error",
+      "status": "pass",
+      "title": "Fitted vocabularies come from training data only",
+      "message": "1 fitted vocabulary(ies) come from training data",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "labels.valid",
+      "category": "labels",
+      "severity": "error",
+      "status": "pass",
+      "title": "Labels are present and valid",
+      "message": "2 label(s) valid in 3 splits",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "labels.unseen_classes",
+      "category": "labels",
+      "severity": "error",
+      "status": "pass",
+      "title": "Evaluation classes exist in training",
+      "message": "every evaluation class occurs in training",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "labels.class_presence",
+      "category": "labels",
+      "severity": "warn",
+      "status": "pass",
+      "title": "Each class is represented in each split",
+      "message": "every class present in every split",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "labels.shift",
+      "category": "labels",
+      "severity": "off",
+      "status": "off",
+      "title": "Label distribution is similar across splits",
+      "message": "turned off in params.checks",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "weights.valid",
+      "category": "weights",
+      "severity": "error",
+      "status": "pass",
+      "title": "Sample weights are finite and non-negative",
+      "message": "weights valid in 3 split(s)",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "weights.concentration",
+      "category": "weights",
+      "severity": "warn",
+      "status": "pass",
+      "title": "No few rows dominate the weights",
+      "message": "top 1% of rows hold 1.8% of the weight",
+      "hint": "",
+      "details": {
+        "top1pct_share": 0.0180565,
+        "max_over_median": 1.0
+      },
+      "blocking": false
+    },
+    {
+      "id": "poisoning.outliers",
+      "category": "poisoning",
+      "severity": "warn",
+      "status": "pass",
+      "title": "Training data has no excess of extreme values",
+      "message": "extreme rows: train 50.15%, held-out 48.77%",
+      "hint": "",
+      "details": {
+        "train_extreme_rows": 0.501548,
+        "reference_extreme_rows": 0.487686,
+        "features": {}
+      },
+      "blocking": false
+    },
+    {
+      "id": "poisoning.spurious_association",
+      "category": "poisoning",
+      "severity": "warn",
+      "status": "pass",
+      "title": "No rare value or token ties to one class in training only",
+      "message": "no training-only value/class associations found",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "poisoning.label_consistency",
+      "category": "poisoning",
+      "severity": "warn",
+      "status": "pass",
+      "title": "Training labels fit the features as well as evaluation labels",
+      "message": "training labels fit the features as well as evaluation labels (4 comparison(s))",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "drift.features",
+      "category": "drift",
+      "severity": "off",
+      "status": "off",
+      "title": "Feature distributions are stable across splits",
+      "message": "turned off in params.checks",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "drift.unseen_categories",
+      "category": "drift",
+      "severity": "warn",
+      "status": "skip",
+      "title": "Evaluation categories were seen in training",
+      "message": "needs categorical features and two splits",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.cohort_serials_unique",
+      "category": "assert",
+      "severity": "error",
+      "status": "pass",
+      "title": "cohort_serials_unique",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.snapshot_split_matches_cohort",
+      "category": "split",
+      "severity": "error",
+      "status": "pass",
+      "title": "snapshot_split_matches_cohort",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.cohort_weights_match_sampling",
+      "category": "weights",
+      "severity": "error",
+      "status": "pass",
+      "title": "cohort_weights_match_sampling",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.one_model_per_drive",
+      "category": "assert",
+      "severity": "warn",
+      "status": "pass",
+      "title": "one_model_per_drive",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.no_snapshot_after_failure",
+      "category": "temporal",
+      "severity": "error",
+      "status": "pass",
+      "title": "A snapshot after the drive failed would describe the failure itself",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.labels_match_cohort",
+      "category": "labels",
+      "severity": "error",
+      "status": "pass",
+      "title": "event and duration_days recomputed from the cohort, censored at train_end for train/val",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.train_labels_do_not_see_test_period",
+      "category": "temporal",
+      "severity": "error",
+      "status": "pass",
+      "title": "A train/val failure after train_end must be censored, not labelled",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.no_visible_failure_labelled_censored",
+      "category": "labels",
+      "severity": "error",
+      "status": "pass",
+      "title": "no_visible_failure_labelled_censored",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.snapshot_weights_valid",
+      "category": "weights",
+      "severity": "error",
+      "status": "pass",
+      "title": "Each snapshot weighs drive_weight (dense days) or drive_weight * stride",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.dense_rows_before_visible_failure",
+      "category": "weights",
+      "severity": "error",
+      "status": "pass",
+      "title": "Rows at full weight (every day kept) only in the dense window before a visible failure",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.cohort_drives_have_snapshots",
+      "category": "assert",
+      "severity": "warn",
+      "status": "fail",
+      "title": "Expected only for drives with fewer than stride_days rows in their split window (the offset is random, so weights stay unbiased)",
+      "message": "query returned 16 violating row(s)",
+      "hint": "Expected only for drives with fewer than stride_days rows in their split window (the offset is random, so weights stay unbiased)",
+      "details": {
+        "violations": 16,
+        "examples": [
+          {
+            "serial_number": "2JJ18M7B",
+            "split": "train"
+          },
+          {
+            "serial_number": "38F0A00DF97G",
+            "split": "train"
+          },
+          {
+            "serial_number": "38F0A05HF97G",
+            "split": "train"
+          },
+          {
+            "serial_number": "38M0A00KF97G",
+            "split": "train"
+          },
+          {
+            "serial_number": "38M0A00MF97G",
+            "split": "train"
+          }
+        ],
+        "sql": "SELECT c.serial_number, c.split FROM cohort c\n         WHERE c.serial_number NOT IN (SELECT DISTINCT serial_number FROM snapshots)"
+      },
+      "blocking": false
+    },
+    {
+      "id": "assert.failures_present_in_every_split",
+      "category": "labels",
+      "severity": "error",
+      "status": "pass",
+      "title": "failures_present_in_every_split",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "assert.enough_failures_per_split",
+      "category": "labels",
+      "severity": "warn",
+      "status": "pass",
+      "title": "Fewer failing drives than evaluation.min_failing_drives makes metrics noisy",
+      "message": "query returned no violating rows",
+      "hint": "",
+      "details": {},
+      "blocking": false
+    },
+    {
+      "id": "custom.stride_rows_on_stride_days",
+      "category": "weights",
+      "severity": "error",
+      "status": "pass",
+      "title": "stride_rows_on_stride_days",
+      "message": "0 rows with weight drive_weight * 7 off the drive's stride day",
+      "hint": "The snapshot step and the cohort disagree on the stride offset.",
+      "details": {
+        "rows": 0
+      },
+      "blocking": false
+    },
+    {
+      "id": "custom.cohort_split_matches_stable_bucket",
+      "category": "split",
+      "severity": "error",
+      "status": "pass",
+      "title": "cohort_split_matches_stable_bucket",
+      "message": "0 of 57309 cohort drives in the wrong split",
+      "hint": "The cohort step and the split rule in config/study.toml disagree.",
+      "details": {
+        "drives": 0,
+        "examples": []
+      },
+      "blocking": false
+    },
+    {
+      "id": "custom.features_are_float",
+      "category": "schema",
+      "severity": "error",
+      "status": "pass",
+      "title": "features_are_float",
+      "message": "0 non-float32 feature(s): {}",
+      "hint": "",
+      "details": {
+        "columns": {}
+      },
+      "blocking": false
+    },
+    {
+      "id": "custom.few_sparse_features",
+      "category": "features",
+      "severity": "warn",
+      "status": "pass",
+      "title": "few_sparse_features",
+      "message": "0 feature(s) < 1% filled in train: []",
+      "hint": "",
+      "details": {
+        "sparse": []
+      },
+      "blocking": false
+    }
+  ]
+}
