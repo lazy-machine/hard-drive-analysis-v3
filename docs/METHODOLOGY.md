@@ -18,7 +18,7 @@ Quirks handled (`drive_index`, `cohort`, `extract`):
 |---|---|
 | Boot SSDs in the panel | Excluded by a model-name pattern (`study.toml: data.ssd_model_pattern`) |
 | Model names differ in whitespace across years (`WDC  WUH721414ALE6L4`) | Whitespace normalised. The first name a drive reports wins, so the feature never depends on later rows (7 drives change model string mid-life, e.g. `HGST HMS5C4040ALE640` to `...BLE640`). Drives that report more than one model in a month are counted, and the gate warns about them |
-| Capacity jitters by a few MB, on 2018-02-25 alone every drive reports a rounded value (4,000,790,000,000 instead of 4,000,787,030,016), new drives report -1 on their first day, and 10 drives never report one | The first valid capacity, rounded to 10 GB, so the feature does not depend on how long the drive lives (a lifetime maximum leaked survival past 2018-02-25, docs/ISSUES.md #18). A first-day snapshot takes the next day's value: capacity is a nameplate fact known at install. Drives that never report one get their model's most common capacity; a NULL would mark them, since all 10 fail within days |
+| Capacity jitters by a few MB, on 2018-02-25 alone every drive reports a rounded value (4,000,790,000,000 instead of 4,000,787,030,016), new drives report -1 on their first day, and 10 drives never report one | The first valid capacity, rounded to 10 GB, so the feature does not depend on how long the drive lives (a lifetime maximum leaked survival past 2018-02-25, docs/ISSUES.md #18). A first-day snapshot takes the next day's value: capacity is a nameplate fact known at install. Drives that never report one get their model's most common capacity; a NULL would mark them, since all 10 fail within days. That mapping counts all drives of the panel, which is safe here only because each model has a single rounded capacity (docs/ISSUES.md #18) |
 | Same-day duplicate rows | One row per drive-day: the most complete row, then the first filename |
 | Drives keep reporting after a failure. Measured on the panel: 710 drives (694 HDDs, 16 boot SSDs) have rows after their first failure row, 46 have two failure rows, and 561 of them are in the full-scale cohort | The first failure is the event, and rows after it are dropped |
 | Many SMART columns stored as VARCHAR | `TRY_CAST` to DOUBLE. Strings that fail the cast are counted per column and returned by `extract` (0 at medium scale, 11,775,008 rows) |
@@ -205,7 +205,7 @@ per-drive ROC-AUC are per drive.
 - **Per-drive ROC-AUC**: one random snapshot per drive, weighted per drive, so drives
   with many snapshots don't dominate. The point estimate averages 20 draws.
 - **Brier score and Brier skill** = 1 - Brier / Brier of always predicting the base rate.
-  At these base rates the skill is small (about 0.01 at 30 days) and says little.
+  At these base rates the skill is small (0.042 at 30 days in the final full run) and says little.
 - **The 365-day caveat.** A horizon of H days needs H days of follow-up to know that a
   drive survived it, and the panel ends 2025-12-31. The 365-day row uses roughly the 2024
   snapshots only, so the horizons are measured on different calendar cohorts and are not
@@ -293,7 +293,7 @@ read it as a direction, not a test. At medium scale it is above 1 in every split
 
 ## 8. The verification gate (`verify`)
 
-Runs before any training and stops the pipeline on any error. 30 checks. It recomputes
+Runs before any training and stops the pipeline on any error. 56 checks at full scale (and 14 skipped whose roles are not declared). It recomputes
 every label from the cohort independently (both directions: no failure inside the window
 labelled healthy, no healthy row labelled failing), and checks drive and time
 disjointness of the splits, weights against the sampling config, the stable-bucket

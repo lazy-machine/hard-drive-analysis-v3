@@ -603,7 +603,7 @@ XU, Y. *et al.* **Pitfalls of administrative censoring in survival models with t
 
 Este apêndice descreve como reproduzir os resultados do capítulo 4 a partir do repositório do projeto.
 
-a) **requisitos**: computador com Linux, Python 3.13 e o gerenciador *uv*; para a escala completa, cerca de 31 GB de memória; o executor *data-pipeline* deve estar no diretório vizinho ao do projeto;
+a) **requisitos**: computador com Linux, Python 3.13 e o gerenciador *uv*; para a escala completa, ao menos 15 GiB de memória (a execução deste relatório usou 31 GB; uma execução completa em 15 GiB atingiu pico de 11,0 GiB, com pouca folga); o executor *data-pipeline* deve estar no diretório vizinho ao do projeto;
 
 b) **dados**: o painel Drive Stats de 2016 a 2025, convertido para um único arquivo Parquet, deve ser colocado em `dataset/dataset.parquet`; a primeira etapa confere seu resumo SHA-256 contra o valor registrado em `pipeline.toml`;
 
