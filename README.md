@@ -109,7 +109,8 @@ the panel's end. Leaving out the snapshots without a known outcome instead gives
 **8. One survival model or a dedicated 30-day classifier: a tie.** At 30 days the
 paired difference in ROC-AUC, survival model minus the plain yes/no classifier, is
 -0.001 [-0.004, +0.002], and +0.005 [-0.005, +0.015] in PR-AUC. In the run before the
-last fix it was -0.006 [-0.009, -0.002], so the sign depends on training noise. Over the
+last fix it was -0.006 [-0.009, -0.002]: the apparent classifier advantage disappeared
+after a change to 10 training snapshots, so it was training noise. Over the
 whole future the classifier's concordance is a little higher (Harrell's C on the
 predicted 30-day risk: 0.777 vs 0.771). What the survival model adds is one consistent
 answer for every horizon and a remaining-life estimate.
@@ -232,7 +233,7 @@ dataset.parquet ─► drive_index ─► cohort ─► extract ─► snapshots
 | `cohort` | `build/cohort.parquet` | HDDs only. Stable sha256 split by drive (70/10/20). Stratified, weighted sample |
 | `extract` | `build/panel/` | The cohort's daily rows: curated SMART columns, deduplicated, cut at the first failure. Counts strings that fail the numeric cast |
 | `snapshots` | `build/snapshots.parquet` | Sampled snapshots, date-keyed trend features, right-censored labels |
-| `verify` | `build/verify-report.json` | The gate (30 checks): recomputes every label, checks splits, time windows, weights, sampling density, schema, leaks |
+| `verify` | `build/verify-report.json` | The gate (56 checks at full scale): recomputes every label, checks splits, time windows, weights, sampling density, schema, leaks |
 | `explore` | `build/explore/` | Failure rate per model, single-attribute signal, correlations, survival by counters |
 | `train_*` | `build/models/` | LightGBM text models + metadata (features, params, calibration, importance). `hazard_smart` is the model under test; `hazard_nosmart`, `hazard_nocritical` and `hazard_usage` are ablations; `binary_30d` is the fixed-horizon baseline; `hazard_smart_w075` / `_w100` test the training weight power |
 | `predict` | `build/predictions.parquet` | Survival curves → P(fail within 7/30/90/180/365 d), median remaining life, interval. Adds `hazard_smart_recent` (same trees, calibrated on the last validation year) and the rule score |

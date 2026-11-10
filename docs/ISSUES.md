@@ -111,12 +111,14 @@ something surprises you, and close it with how it was verified.
   year with those that stay. At medium scale the drives that leave carry 2.2-9.0x the
   risk in every validation year from 2016 to 2023 except 2019 (1.06), and 3.3x in test
   year 2024 (94 left, 1,196 stayed). At full scale the ratio is 1.2-6.5x in every
-  validation year and 2.25x in test year 2024 (509 left, 5,809 stayed). So the censoring
-  is informative: Backblaze retires
-  drives that look unhealthy, the model sees fewer failures than really happen, and risk
-  is underestimated. If retirement became more aggressive over time, observed failures in
-  later years fall below what a model trained on earlier years expects, which matches
-  the drift in #9. The ratio has no interval. Treating "leaves the panel" as an event of
+  validation year and 2.25x in test year 2024 (509 left, 5,809 stayed); in the final run
+  of 2026-11-09 (`results/full-2026-11-09-leakfix/`), 0.88-3.17x (above 1 in 7 of 8
+  validation years) and 2.02x in 2024. This suggests the censoring is informative:
+  Backblaze may retire drives that look unhealthy before they fail. If so, the model sees
+  fewer failures than really happen and risk is underestimated, by an amount the check
+  cannot measure. If retirement became more aggressive over time, observed failures in
+  later years would fall below what a model trained on earlier years expects, which would
+  match the drift in #9. The ratio has no interval. Treating "leaves the panel" as an event of
   its own (a competing risk) was not tried.
 
 ### 8. Full inverse-probability weights starve training
@@ -186,8 +188,10 @@ something surprises you, and close it with how it was verified.
   replaced drive is recorded as failed, so these counters partly define the label.
   `hazard_nocritical` drops them (raw, normalized and trends). At 30 days it scores
   0.757 [0.730, 0.784] against 0.860 for `hazard_smart` and 0.592 without SMART: about
-  62% of the SMART gain (0.165 of 0.268) remains without them. The full gain is an upper
-  bound on what SMART adds beyond the replacement policy. 72 of the 359 failing test drives
+  62% of the SMART gain (0.165 of 0.268) remains without them. This is a sensitivity
+  check, not a split of policy from physics: the dropped counters also measure real
+  damage, and the other features can still track them. In the final run of 2026-11-09,
+  61% of the gain remains (0.167 of 0.273). 72 of the 359 failing test drives
   are silent (no critical counter above zero in any test snapshot). On them the SMART
   model's 30-day ROC-AUC is 0.608 [0.554, 0.668] (no SMART 0.529, rule 0.472), against
   0.924 on the other failing drives. At full scale `hazard_nocritical` scores 0.772
@@ -221,8 +225,8 @@ something surprises you, and close it with how it was verified.
 - **Status:** closed. Run by the owner on the 31 GB machine on 2026-10-26/27, with the step code
   of `9b77159` (the step code hashes in `.pipeline/state.json` match those of the medium
   run on this branch). Gate: 30 checks passed, one warning.
-- **Detail:** the small artifacts are in `results/full-2026-10-27/`, and the README's
-  results section quotes them. The run before the fixes stays in
+- **Detail:** the small artifacts are in `results/full-2026-10-27/`. The README's results
+  section quoted them until 2026-11-09; it now quotes `results/full-2026-11-09-leakfix/`. The run before the fixes stays in
   `results/full-2026-10-24/` for comparison.
 
 ### 16. `data-pipeline` is an editable sibling path
@@ -277,7 +281,11 @@ something surprises you, and close it with how it was verified.
 - **Fix:** model and capacity are the first ones a drive reports, capacity rounded to 10
   GB. 94,816 drives report -1 on their first day only, so a first-day snapshot takes the
   next day's capacity: a nameplate fact the operator knows at install. Drives that never
-  report one get their model's most common capacity. `drive_index` logs how many drives
+  report one get their model's most common capacity, counted over all drives of the
+  panel. That mapping uses drives from every year, so it is point-in-time safe only
+  because each of the 157 models has a single rounded capacity in this panel (checked on
+  `build/drives.parquet`); a panel where a model's usual capacity changes over time would
+  need a mapping fitted before `train_end`. `drive_index` logs how many drives
   have a varying rounded capacity. `test_drive_metadata_does_not_see_the_future` runs
   `drive_index` on panels cut at two dates; the synthetic panel has a rounded-capacity
   day, a capacity that grows and a model rename after the cuts, -1 on first days and a
