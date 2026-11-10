@@ -186,7 +186,7 @@ uv run data-pipeline -n          # what would run, and why
 uv run data-pipeline             # run everything that is out of date
 ```
 
-The panel goes in `dataset/dataset.parquet` (21.8 GB, not in git). Results land in
+The panel goes in `dataset/dataset.parquet` (21.8 GiB, not in git). Results land in
 `build/report/results.md` (numbers) and `build/report/analysis.md` (explanation). Long steps log progress to `build/logs/<step>.log`.
 
 CI (`.github/workflows/test.yml`) runs the linter and the tests on every push and pull

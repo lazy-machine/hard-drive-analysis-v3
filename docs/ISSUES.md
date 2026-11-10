@@ -20,7 +20,8 @@ something surprises you, and close it with how it was verified.
   It took 3,935 s with `drive_index` cached. The largest training estimate was 11.5 GiB
   against an 11.9-12.1 GiB budget. Used memory, sampled every 15 s, peaked at 11.0 GiB,
   and available memory never fell below 4.7 GiB. Every metric in `build/metrics.json`
-  matches `results/full-2026-10-27/` within 5e-7, with the same best iterations. Earlier
+  matches `results/full-2026-10-27/` within 4e-5 (all but 12 values within 5e-7; the
+  largest gap is a mean absolute error in days), with the same best iterations. Earlier
   runs were on the 31 GB machine (`info/hwspec-archmachine-20261021.md`) on
   2026-10-24 (`398f421`, three models) and on 2026-10-26/27 with the audit fixes (seven
   train steps, gate 30 checks with one warning; `results/full-2026-10-27/`).
@@ -254,14 +255,24 @@ something surprises you, and close it with how it was verified.
 
 ### 17. The article draft
 - **Tags:** OPEN
-- **Status:** draft committed on 2026-10-29 (`644ef26`).
-- **Detail:** `article/main-article.md` is a full draft of the technical report in pt-BR,
-  written to `article/ARTICLE.md` and `article/writing-guide.md`. It quotes the
-  full-scale numbers of `results/full-2026-11-09-leakfix/` (updated on 2026-11-09 from
-  `results/full-2026-10-27/`). The author line is still
-  a `[PREENCHER: ...]` placeholder. The reference papers are listed in
-  `article/references.md`; the local copies in `article/research/` are gitignored, so a
-  fresh clone does not have them.
+- **Status:** draft committed on 2026-10-29 (`644ef26`), revised on 2026-11-09 after
+  review and moved to the leak-fix numbers on 2026-11-10.
+- **Detail:** `article/main-article.md` is the technical report in pt-BR, written to
+  `article/ARTICLE.md` and `article/writing-guide.md`. It quotes the full-scale numbers
+  of `results/full-2026-11-09-leakfix/` (before 2026-11-09, those of
+  `results/full-2026-10-27/`). The author line is still a
+  `[PREENCHER: ...]` placeholder. Figures 2-4 are drawn in Portuguese from the saved
+  artifacts by `article/figures/figuras.py`. The reference papers are listed in
+  `article/references.md` (first-party sources only, one row per work); the local copies
+  in `article/research/` are gitignored, so a fresh clone does not have them.
+- **Found while revising, not fixed in code:** the main discrimination estimator keeps
+  snapshots whose status at the horizon is known. For a horizon H it keeps failures from
+  snapshots dated within H days of the panel end and drops the matching survivors, so the
+  share of positives is too high at long horizons (365 days: 2.272% against a
+  Kaplan-Meier risk of 1.56% for 2024 snapshots), and PR-AUC with it (0.312 against 0.229
+  with IPCW). ROC-AUC moves by at most 0.012. The article reports both estimators and
+  rests its conclusions on horizons up to 90 days. Restricting each horizon to snapshots
+  with H days of possible follow-up would remove the bias; `evaluate` does not do it.
 
 ### 18. Drive metadata leaked later rows into `capacity_tb` and `model_code`
 - **Tags:** CLOSED
