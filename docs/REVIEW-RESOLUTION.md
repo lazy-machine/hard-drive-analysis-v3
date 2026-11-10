@@ -18,7 +18,7 @@ one exists.
 | Next-failure semantics | First failure is the event. Rows after it are dropped (documented in METHODOLOGY §1) |
 | Missing values as `NaN` | Kept: features are FLOAT with NULL → NaN for LightGBM |
 | Model list from config | One `train_*` step per model in `pipeline.toml`. `predict` discovers models from its inputs |
-| Verification gate framework | `steps/verify.py`, with checks rewritten (§3.4 below) |
+| Verification gate framework | `data_verify:verify`, with project checks in `steps/hdd_checks.py` (§3.4 below) |
 | Imbalance handling | Replaced by inverse-probability sampling weights (tempered for training) plus per-bin calibration on validation drives, so probabilities are on the real-world scale |
 | Test metric suite, DeLong | Metrics rebuilt around censoring and weights. DeLong replaced by a drive-level bootstrap (§4.3) |
 | Issue-log habit | `docs/ISSUES.md` uses the same format |

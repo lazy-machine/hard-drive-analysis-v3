@@ -20,14 +20,13 @@ Model files (`build/models/*.txt`) and parquet tables are not included.
 All runs keep their numeric tables, model metadata and verification results. The runs
 from 2026-10-27 onward also keep the feature schema and two small `explore` tables.
 
-Only `full-2026-11-09-leakfix/`, the current reference run, keeps local figures and all
-step logs. Older reports link to their original figures at commit
+Only `full-2026-11-09-leakfix/`, the current reference run, keeps local figures and a complete set of
+step logs. Older reports provide clickable links to their original figure pages at commit
 `2dc47742252d827c7ce3c5927efa19dc95424bcc`; the images and superseded logs remain in git history.
 The 2026-10-27 `logs/drive_index.log` stays here as the dataset checksum record.
 
 In the 2026-10-30 and 2026-11-09 runs, `drive_index` was cached. The 2026-11-09 run
-was interrupted twice by a server restart and resumed from checkpoints, so its step
-times are not one continuous run.
+was interrupted twice by a server restart and resumed from checkpoints, so the step times in its archived logs are not one continuous run.
 
 Known defects of the run of 2026-10-24, fixed on `audit-fixes`: the archived `report/importance.png`
 lists the first 20 features alphabetically instead of the top 20 by gain, and the rule
