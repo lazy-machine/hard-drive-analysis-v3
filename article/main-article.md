@@ -55,6 +55,7 @@ Tabela 7 – Risco de falha em 30 dias previsto e observado, por conjunto e ano
 | Sigla | Significado |
 |---|---|
 | F1 | Medida F1 (média harmônica entre precisão e revocação) |
+| GB | *Gigabyte* |
 | GiB | *Gibibyte* |
 | HDD | *Hard Disk Drive* (disco rígido) |
 | IPCW | *Inverse Probability of Censoring Weighting* (ponderação pelo inverso da probabilidade de censura) |
@@ -183,7 +184,7 @@ A avaliação de modelos de sobrevivência também exige cuidados com a censura.
 
 ## 2.5 AMOSTRAGEM, PONDERAÇÃO E CALIBRAÇÃO
 
-Com eventos raros e dados volumosos, é comum amostrar todos os eventos e uma fração dos não eventos, corrigindo depois as estimativas por ajuste das probabilidades a priori ou por ponderação pelo inverso da probabilidade de inclusão (KING; ZENG, 2001). Sugiyama *et al.* (2007), no contexto de mudança na distribuição das covariáveis, observam que a ponderação completa é consistente, mas pode ter variância elevada, e propõem elevar os pesos de importância a um expoente entre 0 e 1, que controla a troca entre viés e variância; os autores recomendam escolher esse expoente por validação cruzada ponderada.
+Com eventos raros e dados volumosos, é comum amostrar todos os eventos e uma fração dos não eventos, corrigindo depois as estimativas por ajuste das probabilidades a priori ou por ponderação pelo inverso da probabilidade de inclusão (KING; ZENG, 2001). Sugiyama *et al.* (2007), no contexto de mudança na distribuição das covariáveis, observam que a ponderação completa é consistente, mas pode ser instável, e descrevem uma variante que eleva os pesos de importância a um expoente entre 0 e 1, que controla a troca entre consistência e estabilidade; os autores propõem escolher esse expoente por validação cruzada ponderada pela importância.
 
 Alterar o peso relativo das classes tem custo na calibração: Van den Goorbergh *et al.* (2022) verificaram que correções de desbalanceamento levaram a superestimação acentuada das probabilidades sem melhorar a ROC-AUC. Uma recalibração posterior pode corrigir a distorção. Niculescu-Mizil e Caruana (2005) mostram que árvores com *boosting* produzem distorção em forma sigmoide, corrigida pelo escalonamento de Platt, um ajuste logístico de dois parâmetros.
 
@@ -228,7 +229,7 @@ O Quadro 1 apresenta os atributos SMART mais relevantes para a análise. A lista
 | 4, 12, 193 | partidas e paradas, ciclos de energia, ciclos de carga do cabeçote | uso |
 | 240, 241, 242 | horas de voo do cabeçote, blocos lógicos gravados e lidos | uso |
 
-Fonte: Elaborado pelos autores com base em Beach (2014) e no arquivo de configuração `config/study.toml` do projeto.
+Fonte: Elaborado pelo autor com base em Beach (2014) e no arquivo de configuração `config/study.toml` do projeto.
 
 Na preparação, foram tratadas as seguintes particularidades do painel:
 
@@ -254,7 +255,7 @@ Utilizou-se a linguagem Python 3.13, com dependências fixadas pelo gerenciador 
 
 ![Fluxo das etapas](figures/figura-1-fluxo.svg)
 
-Fonte: Elaborado pelos autores (2026).
+Fonte: Elaborado pelo autor (2026).
 
 As etapas são descritas a seguir:
 
@@ -291,11 +292,11 @@ O passo de amostragem, a fração de 10% de discos saudáveis, a janela diária 
 | Teste | 1.784 | 7.198 | 1.784 | 825.321 |
 | Total | 22.230 | 35.079 | 15.776 | 9.500.711 |
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026), no resumo da coorte e no relatório do portão de verificação.
+Fonte: Elaborado pelo autor com base em Backblaze (2026), no resumo da coorte e no relatório do portão de verificação.
 
 A diferença entre a primeira e a terceira coluna decorre da divisão temporal: um disco de treino que falha em 2024 pertence ao estrato dos que falham, mas, para o treino, é uma observação censurada em 31 de dezembro de 2023. Dos 26.679 números de série com registro de falha no painel bruto, 22.230 estão na coorte; os demais 4.449 são SSD ou discos sem registros na janela de seu conjunto. Dezesseis discos da coorte (14 de treino, 1 de validação e 1 de teste) não geraram retrato, situação que o portão de verificação registra como aviso e atribui a discos com menos de sete linhas na janela de seu conjunto; por isso, o teste avaliado tem 8.981 discos, e não 8.982.
 
-Para isolar o efeito dos atributos SMART, foram treinados os modelos apresentados no Quadro 2. Todos usam o mesmo algoritmo, os mesmos retratos e os mesmos hiperparâmetros, com uma exceção: o modelo apenas com contexto, que tem só cinco variáveis, usa todas elas em cada árvore (fração de variáveis 1,0 em vez de 0,8). A tolerância da parada antecipada é de 100 iterações sem melhora no modelo principal e no modelo apenas com contexto e, para reduzir o tempo de treino, menor nos demais (60 iterações no classificador, 40 no modelo sem contadores críticos, 30 no de contexto com uso e 20 nos de expoente 0,75 e 1,0); na versão anterior do *pipeline*, executada com as duas configurações, essa redução não alterou a melhor iteração de nenhum modelo.
+Para isolar o efeito dos atributos SMART, foram treinados os modelos apresentados no Quadro 2. Todos usam o mesmo algoritmo, os mesmos retratos e os mesmos hiperparâmetros, com uma exceção: o modelo apenas com contexto, que tem só cinco variáveis, usa todas elas em cada árvore (fração de variáveis 1,0 em vez de 0,8). A tolerância da parada antecipada é de 100 iterações sem melhora no modelo principal e no modelo apenas com contexto e, para reduzir o tempo de treino, menor nos demais (60 iterações no classificador, 40 no modelo sem contadores críticos, 30 no de contexto com uso e 20 nos de expoente 0,75 e 1,0); na versão anterior do *pipeline*, executada com as duas configurações, essa redução não alterou a melhor iteração de nenhum modelo. A verificação não foi repetida na execução que origina os resultados, de modo que, nela, os modelos não foram comparados sob regra de parada idêntica.
 
 **Quadro 2 – Modelos comparados**
 
@@ -311,7 +312,7 @@ Para isolar o efeito dos atributos SMART, foram treinados os modelos apresentado
 | Classificador de 30 dias | variáveis do modelo principal; rótulo "falha em até 30 dias" | se o modelo de sobrevivência perde discriminação em relação a um classificador dedicado |
 | Regra dos contadores críticos | soma de log(1 + x) dos valores brutos de 5, 187, 197 e 198, sem treino | desempenho de uma heurística simples baseada nos contadores de setores e de erros não corrigidos |
 
-Fonte: Elaborado pelos autores (2026).
+Fonte: Elaborado pelo autor (2026).
 
 A regra dos contadores críticos é uma heurística construída para este estudo, e não a regra de substituição efetivamente aplicada pelo operador. Ela exclui o atributo 188 porque, na execução preliminar de 24 de outubro de 2026, os valores compactados desse atributo nos discos Seagate consumiam 89% de seu orçamento de falsos alarmes. Pelo mesmo motivo, os contadores críticos usados na regra e na definição de falha silenciosa são os atributos 5, 187, 197 e 198, enquanto a ablação sem contadores críticos retira também o 188.
 
@@ -351,7 +352,7 @@ A Tabela 2 compara o modelo principal com o modelo sem SMART, com o modelo sem o
 | 180 dias | 0,606 | 0,813 [0,801; 0,825] | +0,207 [0,194; 0,221] | 0,720 | 0,755 | 0,809 |
 | 365 dias | 0,585 | 0,787 [0,777; 0,801] | +0,203 [0,188; 0,219] | 0,712 | 0,722 | 0,775 |
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026). O ganho é a diferença pareada entre o modelo com SMART e o modelo sem SMART, calculada antes do arredondamento.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). O ganho é a diferença pareada entre o modelo com SMART e o modelo sem SMART, calculada antes do arredondamento.
 
 Verifica-se que os atributos SMART elevam a ROC-AUC em todos os horizontes, com intervalos de confiança que excluem zero. O modelo sem SMART, que conhece apenas as cinco variáveis de contexto, ordena pouco melhor que o acaso (0,58 a 0,61). O ganho é maior em 7 dias (+0,302) do que em um ano (+0,203); uma vez que os horizontes usam retratos diferentes (ver o parágrafo após a Figura 2), essa diferença não constitui tendência medida, e é compatível tanto com a degradação física quanto com a política de substituição descrita na seção 2.2. O modelo também supera a regra dos contadores críticos em todos os horizontes: a diferença pareada vai de +0,052 [0,045; 0,060] em 7 dias a +0,066 [0,057; 0,077] em 365 dias. A Figura 2 apresenta os mesmos resultados com os intervalos de confiança.
 
@@ -359,7 +360,7 @@ Verifica-se que os atributos SMART elevam a ROC-AUC em todos os horizontes, com 
 
 ![ROC-AUC por horizonte](figures/figura-2-roc-auc.svg)
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026).
+Fonte: Elaborado pelo autor com base em Backblaze (2026).
 
 As linhas da Tabela 2 não são uma tendência medida sobre os mesmos retratos: cada horizonte usa um subconjunto diferente de retratos. Um horizonte de H dias exige H dias de acompanhamento para confirmar que o disco sobreviveu, de modo que os negativos do horizonte de 365 dias vêm apenas de retratos datados até 1º de janeiro de 2025, enquanto os positivos vêm de todo o período de teste. O estimador IPCW compensa essa assimetria sob a hipótese de censura independente e altera pouco a ROC-AUC: a maior diferença, calculada antes do arredondamento, é de 0,012, em 365 dias. Essa proximidade mede a sensibilidade numérica ao estimador, e não demonstra robustez a censura informativa. Com um retrato por disco, a ROC-AUC do modelo principal é de 0,862 [0,838; 0,886] em 30 dias.
 
@@ -375,7 +376,7 @@ A assimetria afeta mais as medidas que dependem da prevalência. A Tabela 3 comp
 | 180 dias | 0,865% | 0,808% | 0,631% | 0,2194 [0,1957; 0,2474] | 0,1892 [0,1674; 0,2162] |
 | 365 dias | 2,272% | 1,562% | 1,085% | 0,3117 [0,2888; 0,3389] | 0,2292 [0,2066; 0,2576] |
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026). Nos retratos de 2025, o acompanhamento disponível é inferior a 180 dias para cerca de metade dos retratos e inferior a 365 dias para quase todos, de modo que os riscos desses horizontes dependem dos retratos do início do ano e são apenas indicativos.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). Nos retratos de 2025, o acompanhamento disponível é inferior a 180 dias para cerca de metade dos retratos e inferior a 365 dias para quase todos, de modo que os riscos desses horizontes dependem dos retratos do início do ano e são apenas indicativos.
 
 Até 90 dias, a proporção de positivos entre os retratos de situação conhecida fica entre os riscos observados nos dois anos, e os dois estimadores de PR-AUC diferem pouco. Em 180 dias, essa proporção já supera os dois riscos observados; em 365 dias, chega a 2,272%, contra 1,562% em 2024 e 1,085% em 2025, e a PR-AUC cai de 0,3117 para 0,2292 com o estimador IPCW. Por isso, as conclusões deste relatório apoiam-se nos horizontes de até 90 dias, e os valores de 180 e 365 dias obtidos com o estimador de situação conhecida devem ser lidos como otimistas.
 
@@ -400,7 +401,7 @@ A Tabela 4 detalha o resultado em 30 dias. Retirados os atributos 5, 187, 188, 1
 | Capacidade de 16 TB ou mais | 530 | 0,814 [0,792; 0,835] | 0,585 | 0,754 |
 | Capacidade abaixo de 16 TB | 1.254 | 0,902 [0,890; 0,912] | 0,528 | 0,850 |
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026). Nas linhas 2 a 4, apenas os positivos são restritos, e todos os negativos são mantidos; nas linhas de fabricante e capacidade, positivos e negativos pertencem ao recorte.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). Nas linhas 2 a 4, apenas os positivos são restritos, e todos os negativos são mantidos; nas linhas de fabricante e capacidade, positivos e negativos pertencem ao recorte.
 
 Dos 1.784 discos que falharam no teste, 368 (20,6%) são falhas silenciosas: nenhum dos contadores 5, 187, 197 e 198 ficou acima de zero em seus retratos de teste. Quando apenas esses discos contam como positivos, a ROC-AUC do modelo cai para 0,638, ainda acima do acaso, e sua PR-AUC é de 0,0007, para uma proporção de positivos de 0,025%. O valor da regra nesse recorte (0,473) decorre da própria seleção, e não mede desempenho: todos os positivos têm escore zero e empatam com os negativos sem contagem. A proporção de falhas silenciosas é próxima dos 23,3% relatados por Klein (2016) para a Backblaze, que usou definição semelhante com cinco atributos (incluindo o 188), e inferior aos mais de 56% observados por Pinheiro *et al.* (2007) na Google com quatro sinais semelhantes. As definições de falha silenciosa não são idênticas e as populações diferem em idade e geração de discos, de modo que a comparação é apenas indicativa.
 
@@ -425,7 +426,7 @@ A Tabela 5 traduz o modelo em regras de alerta. O limiar de cada orçamento foi 
 | 1% | Regra | 1,74% [1,48; 2,01] | 3,1% [2,7; 3,6] | 45,5% [43,2; 47,6] | 1.051 (59%) | 874 (49%) |
 | 1% | Sem SMART | 2,55% [2,31; 2,87] | 0,3% [0,3; 0,4] | 7,0% [5,9; 8,3] | 141 (8%) | 135 (8%) |
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026). Falsos alarmes: proporção dos retratos saudáveis com alerta. Precisão: proporção dos retratos alertados, de desfecho conhecido, que antecedem uma falha em até 30 dias. Revocação por retrato: proporção dos retratos que antecedem uma falha em até 30 dias e recebem alerta. Discos alertados: de um total de 1.784.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). Falsos alarmes: proporção dos retratos saudáveis com alerta. Precisão: proporção dos retratos alertados, de desfecho conhecido, que antecedem uma falha em até 30 dias. Revocação por retrato: proporção dos retratos que antecedem uma falha em até 30 dias e recebem alerta. Discos alertados: de um total de 1.784.
 
 Nos limiares do orçamento de 1%, o modelo alerta 340 discos a mais que a regra (1.391 contra 1.051) e 61,3% dos retratos que antecedem uma falha em até 30 dias, contra 45,5% da regra. A comparação é feita nos pontos de operação escolhidos na validação, cujas taxas de falsos alarmes no teste diferem (1,87% e 1,74%); não é, portanto, uma comparação à mesma taxa de falsos alarmes, ressalva que vale também para o classificador de 30 dias, que alerta 35 discos a mais que o modelo de sobrevivência com 2,22% de falsos alarmes. A vantagem do modelo sobre a regra não depende, porém, dessa diferença de taxas: no limiar do orçamento de 0,3%, o modelo alerta 1.246 discos com 0,57% de falsos alarmes no teste, mais que os 1.051 que a regra alerta no limiar do orçamento de 1%, com 1,74%. Como a contagem inclui o dia da falha, a proporção relevante para uma intervenção planejada é a de discos alertados com 7 dias ou mais de antecedência: 67% para o modelo e 49% para a regra. Discos que falham nas primeiras semanas de 2024 têm poucos retratos de teste antes da falha, o que reduz essas proporções.
 
@@ -437,7 +438,7 @@ Duas ressalvas condicionam a leitura da Tabela 5. A primeira é que nenhum orça
 
 ![Alertas por dias até a falha](figures/figura-3-alertas.svg)
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026).
+Fonte: Elaborado pelo autor com base em Backblaze (2026).
 
 A proporção de retratos alertados cai de 69% na última semana antes da falha para 23% entre 180 e 364 dias antes. Entre 30 e 59 dias antes da falha, 49% dos retratos já recebem alerta, o que mostra que parte dos falsos alarmes da Tabela 5 recai sobre discos que falham depois do horizonte de 30 dias.
 
@@ -457,7 +458,7 @@ Para cada retrato, o modelo informa o dia em que a probabilidade acumulada de fa
 | 90 a 179 | 18.146 | 12,5% |
 | 180 a 364 | 25.961 | 6,9% |
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026). A coluna de retratos traz contagens não ponderadas; a amostragem é diária nos 90 dias anteriores à falha e semanal antes disso.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). A coluna de retratos traz contagens não ponderadas; a amostragem é diária nos 90 dias anteriores à falha e semanal antes disso.
 
 Constata-se que o modelo ajustado raramente atribui mais de 50% de probabilidade de falha em um ano a um disco que vem a falhar: mesmo na última semana, isso ocorre em menos da metade dos retratos. Esse resultado não demonstra ausência de sinal nos atributos SMART, pois um modelo calibrado pode atribuir probabilidade inferior a 50% a um disco que depois falha, e a discriminação em 180 e 365 dias é superior ao acaso nos dois estimadores (0,813 e 0,787 no estimador principal; 0,809 e 0,775 com ponderação IPCW, Tabela 2). Mostra, porém, que o modelo não fornece datas individuais de falha, em linha com a conclusão de Pinheiro *et al.* (2007) sobre modelos baseados somente em SMART.
 
@@ -471,7 +472,7 @@ A Figura 4 compara, por decil de risco, a probabilidade prevista com a proporç�
 
 ![Calibração por decil](figures/figura-4-calibracao.svg)
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026).
+Fonte: Elaborado pelo autor com base em Backblaze (2026).
 
 Os pontos acompanham a diagonal ao longo de três ordens de grandeza, mas com desvio sistemático. Do terceiro ao último decil, o previsto supera o observado em todos os horizontes; no decil de maior risco, em 1,6 a 1,8 vez (em 30 dias, 1,52% previsto contra 0,89% observado). Nos dois decis de menor risco, a partir de 90 dias, o observado supera o previsto, e o desvio cresce com o horizonte (em 365 dias, 0,38% observado contra 0,21% previsto no primeiro decil). Os decis não têm intervalo de confiança, e os desvios nos de menor risco, de valores absolutos muito pequenos, são apenas descritivos. Nos retratos de situação conhecida, a redução do escore de Brier em relação a uma previsão constante igual à proporção ponderada de positivos desse mesmo subconjunto foi de 4,2% em 30 dias e de 9,0% em 90 dias; em 7 dias, o escore foi 0,3% maior que o da constante. Essa comparação é descritiva, está sujeita à seleção pelo acompanhamento disponível e não separa calibração de discriminação.
 
@@ -492,7 +493,7 @@ A Tabela 7 mostra a razão entre o risco previsto e o observado em 30 dias, por 
 | Teste | 2024 | 422.201 | 0,133% | 0,157% | 1,18 [1,09; 1,28] |
 | Teste | 2025 | 403.120 | 0,103% | 0,225% | 2,18 [1,89; 2,51] |
 
-Fonte: Elaborado pelos autores com base em Backblaze (2026). Observado: estimativa de Kaplan-Meier. A razão foi calculada antes do arredondamento.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). Observado: estimativa de Kaplan-Meier. A razão foi calculada antes do arredondamento.
 
 Nos anos de validação, a razão variou de 0,86 a 1,38, e em 2020, 2022 e 2023 o intervalo de confiança exclui 1: uma calibração única não acompanha a variação anual da taxa de falhas nem dentro do período de treino. Em 2024, a razão ficou dentro dessa faixa (1,18); em 2025, o modelo previu mais que o dobro das falhas observadas (2,18). A recalibração com dados de 2023 não reduziu o desvio: o modelo recalibrado obteve razões de 1,42 e 2,64. Entre os demais modelos, o modelo sem SMART teve as menores razões (1,07 e 1,66); o modelo de contexto com uso teve razões pouco menores que as do principal (1,16 e 2,03), e o classificador de 30 dias, maiores (1,34 e 2,82).
 
@@ -502,9 +503,9 @@ A análise de retirada é um diagnóstico dessa última hipótese. Entre discos 
 
 ## 4.6 COMPARAÇÕES COMPLEMENTARES E SENSIBILIDADE
 
-Em 30 dias, a diferença de ROC-AUC entre o modelo de sobrevivência e o classificador dedicado é de −0,001 [−0,004; 0,002], e a de PR-AUC, de +0,0053 [−0,0049; 0,0147]: nenhum dos dois ordena claramente melhor. Em uma execução anterior, que diferia desta apenas em 10 dos 7,6 milhões de retratos de treino, a diferença de ROC-AUC foi de −0,006 [−0,009; −0,002]. Os intervalos por *bootstrap* cobrem a amostragem dos discos de teste, mas não a variação do treino, de modo que diferenças de poucos milésimos entre modelos devem ser lidas como empate. Na estatística C de Harrell sobre o risco em 30 dias, o classificador tem valor pontual maior (0,777 contra 0,771), sem intervalo para a diferença. A vantagem do modelo de sobrevivência está em fornecer, a partir de um único modelo, respostas coerentes para todos os horizontes, além de tratar a censura de forma explícita.
+Em 30 dias, a diferença de ROC-AUC entre o modelo de sobrevivência e o classificador dedicado é de −0,001 [−0,004; 0,002], e a de PR-AUC, de +0,0053 [−0,0049; 0,0147]: nenhum dos dois ordena claramente melhor. Em uma execução anterior, que diferia desta apenas em 10 dos 7,6 milhões de retratos de treino, a ROC-AUC em 30 dias do modelo principal foi 0,002 menor, e a diferença de ROC-AUC entre os dois modelos foi de −0,006 [−0,009; −0,002]. Os intervalos por *bootstrap* cobrem a amostragem dos discos de teste, mas não a variação do treino, de modo que diferenças de poucos milésimos entre modelos devem ser lidas como empate. Na estatística C de Harrell sobre o risco em 30 dias, o classificador tem valor pontual maior (0,777 contra 0,771), sem intervalo para a diferença. A vantagem do modelo de sobrevivência está em fornecer, a partir de um único modelo, respostas coerentes para todos os horizontes, além de tratar a censura de forma explícita.
 
-O expoente dos pesos de treino teve pouco efeito sobre a ordenação nesta escala, na qual os pesos menos atenuados não interromperam o treino tão cedo quanto nos testes preliminares (seção 3.2, item i): a melhor iteração foi a 213 com expoente 0,75 e a 191 com expoente 1,0, contra a 419 com 0,5. Em 30 dias, a ROC-AUC foi de 0,880 com expoente 0,75 e de 0,876 com 1,0, contra 0,877 com 0,5. O expoente 0,75 ficou à frente do 0,5 por 0,003 em 30 dias e por 0,005 em 90 dias, com intervalos que excluem zero ([0,0002; 0,0063] e [0,002; 0,008]), mas dentro da variação do treino descrita acima; os intervalos das diferenças entre os expoentes 1,0 e 0,5 incluem zero nos cinco horizontes. Na PR-AUC, o expoente 0,5 superou o 1,0 nos cinco horizontes, com intervalo acima de zero em todos, e teve valor pontual maior que o do 0,75 também nos cinco, com intervalo acima de zero apenas em 90 e 180 dias.
+O expoente dos pesos de treino teve pouco efeito sobre a ordenação nesta escala, na qual os pesos menos atenuados não interromperam o treino tão cedo quanto nos testes preliminares (seção 3.2, item i): a melhor iteração foi a 213 com expoente 0,75 e a 191 com expoente 1,0, contra a 419 com 0,5, comparação sujeita à tolerância de parada menor desses dois modelos (seção 3.2). Em 30 dias, a ROC-AUC foi de 0,880 com expoente 0,75 e de 0,876 com 1,0, contra 0,877 com 0,5. O expoente 0,75 ficou à frente do 0,5 por 0,003 em 30 dias e por 0,005 em 90 dias, com intervalos que excluem zero ([0,0002; 0,0063] e [0,002; 0,008]), mas dentro da variação do treino descrita acima; os intervalos das diferenças entre os expoentes 1,0 e 0,5 incluem zero nos cinco horizontes. Na PR-AUC, o expoente 0,5 superou o 1,0 nos cinco horizontes, com intervalo acima de zero em todos, e teve valor pontual maior que o do 0,75 também nos cinco, com intervalo acima de zero apenas em 90 e 180 dias.
 
 As estatísticas C de Harrell e de Uno do modelo principal são 0,762 [0,739; 0,779] e 0,756 [0,733; 0,774]. Os valores pontuais são próximos, mas as duas estatísticas diferem quanto à ponderação da censura e à restrição temporal dos eventos, de modo que essa comparação não isola a sensibilidade à censura.
 
@@ -548,11 +549,11 @@ e) **perda de calibração ao longo do tempo**: o modelo foi treinado uma única
 
 f) **unidade das métricas de alerta**: a precisão e a taxa de falsos alarmes foram medidas por dia de disco, e não por disco ou por intervenção, de modo que não equivalem à carga de trabalho de uma equipe de operação;
 
-g) **escolhas fixadas**: o expoente dos pesos de treino, a fração de discos saudáveis amostrados, os intervalos de tempo e os hiperparâmetros foram fixados, e não ajustados por validação, e cada modelo foi treinado com uma única semente;
+g) **escolhas fixadas**: o expoente dos pesos de treino, a fração de discos saudáveis amostrados, os intervalos de tempo e os hiperparâmetros foram fixados, e não ajustados por validação; a tolerância da parada antecipada difere entre os modelos, e seu efeito não foi verificado na execução deste relatório;
 
-h) **intervalos de confiança**: o *bootstrap* por disco é condicional aos modelos treinados e não captura a correlação entre discos de um mesmo servidor ou de um mesmo dia, de modo que os intervalos podem subestimar a incerteza total;
+h) **intervalos de confiança**: o *bootstrap* por disco não captura a correlação entre discos de um mesmo servidor ou de um mesmo dia, de modo que os intervalos podem subestimar a incerteza total;
 
-i) **variação do treino**: cada modelo foi treinado uma única vez, e os intervalos de confiança não incluem a variação do treino; alterar 10 dos 7,6 milhões de retratos de treino mudou a ROC-AUC em 30 dias em 0,002, de modo que diferenças de poucos milésimos entre modelos não são conclusivas;
+i) **variação do treino**: cada modelo foi treinado uma única vez, com semente fixa, e os intervalos de confiança não incluem a variação do treino; alterar 10 dos 7,6 milhões de retratos de treino mudou a ROC-AUC em 30 dias em 0,002, de modo que diferenças de poucos milésimos entre modelos não são conclusivas;
 
 j) **semântica dos atributos**: o significado e a codificação dos atributos SMART variam entre fabricantes e modelos; modelos raros foram agrupados, e novos atributos exigiriam a mesma verificação de valores compactados.
 
@@ -638,8 +639,8 @@ f) **verificação**: executar `uv run pytest` para os testes sobre um painel si
 
 g) **execução**: executar `uv run data-pipeline`; o progresso das etapas longas é registrado em `build/logs/`;
 
-h) **resultados**: o relatório gerado fica em `build/report/` (`results.md` com os números e `analysis.md` com a explicação e as tabelas detalhadas); a cópia da execução usada neste relatório está em `results/full-2026-11-09-leakfix/`, e as das execuções anteriores citadas na seção 3.2, em `results/full-2026-10-27/` e `results/full-2026-10-30/`;
+h) **resultados**: o relatório gerado fica em `build/report/` (`results.md` com os números e `analysis.md` com a explicação e as tabelas detalhadas); a cópia da execução usada neste relatório está em `results/full-2026-11-09-leakfix/`, e as das execuções anteriores citadas na seção 3.2, em `results/full-2026-10-24/`, `results/full-2026-10-27/` e `results/full-2026-10-30/`; a execução anterior citada na seção 4.6 está apenas no histórico do repositório;
 
-i) **figuras deste relatório**: as Figuras 2 a 4 são geradas a partir dos arquivos de `results/full-2026-11-09-leakfix/` por `python3 article/figures/figuras.py`.
+i) **figuras deste relatório**: as Figuras 2 a 4 são geradas a partir dos arquivos de `results/full-2026-11-09-leakfix/` por `uv run python article/figures/figuras.py`.
 
 As regras compartilhadas entre etapas (divisão dos conjuntos, intervalos de tempo, variáveis e parâmetros de avaliação) ficam em `config/study.toml`, e os hiperparâmetros de cada modelo, em `pipeline.toml`.
