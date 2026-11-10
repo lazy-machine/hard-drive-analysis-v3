@@ -1,22 +1,22 @@
-[     2.3s] 825321 test snapshots of 8981 drives; 534083 validation snapshots for alert thresholds
-[    14.5s] discrimination at 7 days: 8 models
-[    31.7s] discrimination at 30 days: 9 models
-[    46.1s] discrimination at 90 days: 8 models
-[    60.0s] discrimination at 180 days: 8 models
-[    71.1s] discrimination at 365 days: 8 models
-[    94.0s] slices at 7 days
-[   183.5s] slices at 30 days
-[   221.8s] slices at 90 days
-[   257.5s] slices at 180 days
-[   284.1s] slices at 365 days
-[   321.9s] concordance on 299930 rows of 3267 drives
-[   337.6s] alerting done
-[   350.4s] calibration over time and retirement done
-[   350.5s] DRIFT binary_30d: test years outside the validation band 0.93-1.36: [2025]; last validation year outside the earlier band: True
-[   350.5s] DRIFT hazard_nocritical: test years outside the validation band 0.84-1.33: [2025]; last validation year outside the earlier band: False
-[   350.5s] DRIFT hazard_nosmart: test years outside the validation band 0.87-1.32: [2025]; last validation year outside the earlier band: False
-[   350.5s] DRIFT hazard_smart: test years outside the validation band 0.86-1.35: [2025]; last validation year outside the earlier band: True
-[   350.5s] DRIFT hazard_smart_recent: test years outside the validation band 1.04-1.63: [2025]; last validation year outside the earlier band: True
-[   350.5s] DRIFT hazard_smart_w075: test years outside the validation band 0.86-1.46: [2025]; last validation year outside the earlier band: False
-[   350.5s] DRIFT hazard_smart_w100: test years outside the validation band 0.79-1.52: [2025]; last validation year outside the earlier band: False
-[   350.5s] DRIFT hazard_usage: test years outside the validation band 0.84-1.39: [2025]; last validation year outside the earlier band: False
+[     2.4s] 825321 test snapshots of 8981 drives; 534083 validation snapshots for alert thresholds
+[    14.0s] discrimination at 7 days: 8 models
+[    30.0s] discrimination at 30 days: 9 models
+[    42.8s] discrimination at 90 days: 8 models
+[    55.3s] discrimination at 180 days: 8 models
+[    65.2s] discrimination at 365 days: 8 models
+[    84.3s] slices at 7 days
+[   170.0s] slices at 30 days
+[   204.0s] slices at 90 days
+[   236.7s] slices at 180 days
+[   261.7s] slices at 365 days
+[   302.1s] concordance on 299930 rows of 3267 drives
+[   319.3s] alerting done
+[   332.6s] calibration over time and retirement done
+[   332.6s] DRIFT binary_30d: test years outside the validation band 0.94-1.32: [2024, 2025]; last validation year outside the earlier band: True
+[   332.6s] DRIFT hazard_nocritical: test years outside the validation band 0.84-1.34: [2025]; last validation year outside the earlier band: False
+[   332.7s] DRIFT hazard_nosmart: test years outside the validation band 0.86-1.33: [2025]; last validation year outside the earlier band: False
+[   332.7s] DRIFT hazard_smart: test years outside the validation band 0.86-1.38: [2025]; last validation year outside the earlier band: True
+[   332.7s] DRIFT hazard_smart_recent: test years outside the validation band 1.04-1.67: [2025]; last validation year outside the earlier band: True
+[   332.7s] DRIFT hazard_smart_w075: test years outside the validation band 0.85-1.48: [2025]; last validation year outside the earlier band: False
+[   332.7s] DRIFT hazard_smart_w100: test years outside the validation band 0.80-1.52: [2025]; last validation year outside the earlier band: False
+[   332.7s] DRIFT hazard_usage: test years outside the validation band 0.84-1.41: [2025]; last validation year outside the earlier band: False

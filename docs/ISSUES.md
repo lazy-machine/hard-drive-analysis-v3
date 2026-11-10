@@ -61,8 +61,8 @@ something surprises you, and close it with how it was verified.
   whole panel, so the cast loses nothing. 23 and 24 carry their signal in the normalized
   value (11 and 99 drives leave 100; 1 and 28 of them in train), so they now enter as
   `smart_23_normalized` and `smart_24_normalized`; the data is small and harmless. 18 is
-  constant in both forms and is no longer a feature. The feature list is now 64 columns, so
-  the committed full-scale results (65) predate it. The gate check stays on.
+  constant in both forms and is no longer a feature. The feature list is now 64 columns.
+  Full-scale runs before `results/full-2026-11-09/` have 65. The gate check stays on.
 
 ### 2. A single GROUP BY over the whole panel spills tens of GB
 - **Tags:** SLOW, CONFUSE
@@ -261,8 +261,8 @@ something surprises you, and close it with how it was verified.
 
 ### 18. Drive metadata leaked later rows into `capacity_tb` and `model_code`
 - **Tags:** CLOSED
-- **Status:** fixed on 2026-11-09. Found in a review; full-scale rerun on the same day
-  (`results/full-2026-11-09/`).
+- **Status:** fixed on 2026-11-09 after two reviews; full-scale rerun the same day
+  (`results/full-2026-11-09-leakfix/`). `results/full-2026-11-09/` still has the leak.
 - **Detail:** `drive_index` took each drive's maximum capacity and latest model over its
   whole life, and both become snapshot features. On 2018-02-25 alone the panel reports a
   rounded capacity for all 98,321 live drives (4,000,790,000,000 instead of
@@ -271,7 +271,14 @@ something surprises you, and close it with how it was verified.
   would survive until then. 100,258 drives had a capacity that varied at all, mostly this
   rounding; 12 more briefly reported 2^37 bytes, always after their true value. 7 drives
   change model string mid-life. The invariance test missed it because it holds the cohort
-  fixed. Now capacity is rounded to 10 GB before the maximum and the first model wins, and
-  `test_drive_metadata_does_not_see_the_future` runs `drive_index` on a panel cut at a
-  date (the synthetic panel has a rounded-capacity day and a model rename after the cut).
-  It fails on the old code.
+  fixed. The second review found that a rounded maximum still depends on the future in
+  principle, and that the 10 drives that never report a capacity got NULL; all 10 fail
+  within days, so NULL marked them (10 train snapshots).
+- **Fix:** model and capacity are the first ones a drive reports, capacity rounded to 10
+  GB. 94,816 drives report -1 on their first day only, so a first-day snapshot takes the
+  next day's capacity: a nameplate fact the operator knows at install. Drives that never
+  report one get their model's most common capacity. `drive_index` logs how many drives
+  have a varying rounded capacity. `test_drive_metadata_does_not_see_the_future` runs
+  `drive_index` on panels cut at two dates; the synthetic panel has a rounded-capacity
+  day, a capacity that grows and a model rename after the cuts, -1 on first days and a
+  drive that never reports a capacity. It fails on both earlier versions of the code.

@@ -25,7 +25,7 @@
 | pass | `duplicates.cross_split` | duplicates within tolerance: train/val 840 rows (0.08%), train/test 61 rows (0.01%), val/test 59 rows (0.01%); no more than different train entities share by chance (0.106%) |
 | pass | `duplicates.near_cross_split` | near-duplicates within tolerance: train/val 1676 rows (0.16%), train/test 7 rows (0.00%), val/test 7 rows (0.00%); no more than different train entities share by chance (0.266%) |
 | pass | `duplicates.within_split` | 0.06% repeated rows, largest copy count 174 |
-| pass | `duplicates.conflicting_labels` | rows whose identical copies carry another label: event 1101 (0.01%) <= 1% |
+| pass | `duplicates.conflicting_labels` | rows whose identical copies carry another label: event 1107 (0.01%) <= 1% |
 | pass | `target.forbidden_features` | 64 features, none forbidden |
 | pass | `target.suspicious_names` | 64 feature names look neutral |
 | pass | `target.label_copy` | no feature copies event, duration_days |

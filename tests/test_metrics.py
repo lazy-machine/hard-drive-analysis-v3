@@ -117,6 +117,23 @@ def test_quantile_calibration_ipcw_undoes_censoring_selection():
     assert np.isclose(s0, s1)
 
 
+def test_quantile_calibration_day_conventions_match_known_status():
+    """A snapshot censored on day ceil(t) - 1 is known not to have failed before t, as
+    known_status says for a horizon; a failure on day t is not before t."""
+    from evaluate import quantile_calibration
+    from survival import known_status
+
+    d, e, t = np.array([0, 0]), np.array([1, 0]), np.array([1.0, 1.0])
+    assert list(known_status(d, e, 1)) == [1, 0]
+    share, share_ipcw, n = quantile_calibration(d, e, np.ones(2), t)
+    assert n == 2 and share == share_ipcw == 0.5
+    # fractional day: t = 9.5 -> censored on day 8 unknown, on day 9 known; failure on 10
+    # is after t
+    d, e = np.array([8, 9, 10, 9]), np.array([0, 0, 1, 1])
+    share, _, n = quantile_calibration(d, e, np.ones(4), np.full(4, 9.5))
+    assert n == 3 and np.isclose(share, 1 / 3)
+
+
 @pytest.fixture
 def survival_data():
     rng = np.random.default_rng(3)
