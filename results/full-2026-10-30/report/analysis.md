@@ -65,7 +65,7 @@ A horizon of H days needs H days of follow-up to know that a drive survived it, 
 | 365 d | survival model, context only (no SMART) | 0.575 [0.561, 0.593] | 0.0191 [0.0177, 0.0216] | 0.599 [0.585, 0.616] | -0.004 |
 | 365 d | rule: critical SMART counters (5, 187, 197, 198) | 0.710 [0.699, 0.720] | 0.1497 [0.1253, 0.1765] | 0.768 [0.755, 0.781] | n/a |
 
-![AUC by horizon](auc_by_horizon.png)
+![AUC by horizon](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-30/report/auc_by_horizon.png)
 
 ## Ablations and sensitivity
 
@@ -230,7 +230,7 @@ By actual time to failure (survival model, SMART + context). Shares are of the f
 | 90-179 | 18146 | 14.6% | > 1 year |
 | 180-364 | 25961 | 8.5% | > 1 year |
 
-![remaining life](remaining_life.png)
+![remaining life](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-30/report/remaining_life.png)
 
 ## Early warning
 
@@ -256,13 +256,13 @@ Each alert threshold is set on validation drives so that a given share of health
 
 At the main budget the test false-alarm rate is above the budget, with an interval that excludes it, for survival model, SMART + context, 30-day yes/no classifier (SMART + context), rule: critical SMART counters (5, 187, 197, 198), survival model, SMART + context, recalibrated on the last year: healthy test drives score higher than the validation drives the threshold was set on. This is the same shift over time that Calibration over time shows (drift).
 
-![detection](detection.png)
+![detection](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-30/report/detection.png)
 
 ## Calibration
 
 Mean predicted failure probability vs the Kaplan-Meier observed share, by decile of predicted risk. Points on the diagonal mean that a predicted 5% really fails 5% of the time.
 
-![calibration](calibration.png)
+![calibration](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-30/report/calibration.png)
 
 **Calibration over time** (mean predicted vs observed risk of failing within 30 days; ratio = predicted / observed with a 95% drive bootstrap). Validation drives are from the training era, test from 2024 on. A gap that appears only in the test years is drift. "Outside band" = the test year's ratio is outside the range of the validation-year ratios. Reference = survival model, SMART + context; recalibrated = survival model, SMART + context, recalibrated on the last year.
 
@@ -322,7 +322,7 @@ Single-attribute ROC-AUC on train snapshots (fails within 30 days), computed onl
 | smart_5_raw_d7 | 0.589 | 100% |
 | smart_196_raw | 0.589 | 36% |
 
-![importance](importance.png)
+![importance](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-30/report/importance.png)
 
 Also see `build/explore/km_by_counters.png` and `build/explore/models.csv`.
 

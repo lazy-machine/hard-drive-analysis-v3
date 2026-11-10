@@ -17,7 +17,8 @@ These numbers come from the full-scale run of 2026-11-09 after the drive-metadat
 [`results/full-2026-11-09-leakfix/report/`](results/full-2026-11-09-leakfix/report/):
 `results.md` has the headline numbers, `analysis.md` the explanation and the detailed
 tables. `build/report/` holds the last local run, whatever its scale. Earlier full runs
-stay in `results/` for comparison (index in [`results/README.md`](results/README.md)).
+keep their tables and reports in `results/` for comparison
+(index in [`results/README.md`](results/README.md)).
 What changed against the previous README numbers is at the end of this section.
 
 Cohort: every failing HDD plus a 10% sample of healthy ones, 57,309 drives. Test set:
@@ -254,7 +255,7 @@ config/sample.toml   scales
 steps/
   drives.py          drive_index, cohort
   panel.py           extract, snapshots
-  verify.py          the gate
+  hdd_checks.py      project checks used by the data-verify gate
   explore.py         explore
   model.py           train (every train_* step)
   predict.py         predict
