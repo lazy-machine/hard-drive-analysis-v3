@@ -257,14 +257,16 @@ something surprises you, and close it with how it was verified.
   pytest` while a pipeline is running, or don't edit the orchestrator during a run.
 
 ### 17. The article draft
-- **Tags:** OPEN
+- **Tags:** RESOLVED
 - **Status:** draft committed on 2026-10-29 (`644ef26`), revised on 2026-11-09 after
   review and moved to the leak-fix numbers on 2026-11-10.
 - **Detail:** `article/main-article.md` is the technical report in pt-BR, written to
   `article/ARTICLE.md` and `article/writing-guide.md`. It quotes the full-scale numbers
   of `results/full-2026-11-09-leakfix/` (before 2026-11-09, those of
-  `results/full-2026-10-27/`). The author line is still a
-  `[PREENCHER: ...]` placeholder. Figures 2-4 are drawn in Portuguese from the saved
+  `results/full-2026-10-27/`). The owner supplied the author line on 2026-11-10; no
+  `[PREENCHER: ...]` placeholder remains. The citation index now includes the
+  report-specific sources and the published Kvamme and Borgan version. See
+  `article/review-issue-5.md` for verification and source-access limitations. Figures 2-4 are drawn in Portuguese from the saved
   artifacts by `article/figures/figuras.py`. The reference papers are listed in
   `article/references.md` (first-party sources only, one row per work); the local copies
   in `article/research/` are gitignored, so a fresh clone does not have them.
