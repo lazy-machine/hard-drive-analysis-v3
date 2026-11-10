@@ -434,11 +434,13 @@ def _results(metrics, cohort, gate, preds, ref, labels) -> list[str]:
         qc = life["quantile_calibration"]
         lines += ["", "## Remaining life", "",
                   "> For each snapshot the model names the day by which the failure "
-                  "probability reaches 10%, 50% and 90%. If the timing is right, the share "
-                  "that failed by that day matches the target. Below target = too "
-                  "pessimistic, above = too optimistic. \"Known outcomes\" drops snapshots "
-                  "censored before their day, which favours early days; \"IPCW\" reweights "
-                  "them instead. Both assume retirement is unrelated to failure.", ""]
+                  "probability reaches 10%, 50% and 90%. If the timing is right, the weighted "
+                  "share of snapshots that failed by that day matches the target. Below target "
+                  "= too pessimistic, above = too optimistic. \"Known outcomes\" drops "
+                  "snapshots censored before their outcome is known, which favours early days; "
+                  "\"IPCW\" reweights the known ones instead, assuming censoring is unrelated "
+                  "to both the failure time and the predicted day. Neither corrects for "
+                  "retirement related to health.", ""]
         lines += table(["predicted day", "target", "failed by then (IPCW)",
                         "failed by then (known outcomes)", "snapshots"],
                        [[{"0.1": "10% day", "0.5": "median", "0.9": "90% day"}[q],
@@ -611,12 +613,17 @@ def _life(metrics, life_table, ref, labels) -> list[str]:
                       f"the predicted median of {_label(ref, labels)} is within a year; "
                       "otherwise the answer is \"more than a year\".")
     lines += ["", "**Are the predicted days right?** Among snapshots whose predicted day falls "
-              "within a year, the share that actually failed by that day should be close to "
-              "the target. A snapshot censored before its predicted day has no known outcome. "
-              "Dropping those favours snapshots with an early day, so each share is weighted "
-              "by the inverse probability of staying uncensored (IPCW); the share over known "
-              "outcomes only is in brackets. Both assume that retirement is unrelated to "
-              "failure, which the retirement check below questions.", ""]
+              "within a year, the weighted share of snapshots that actually failed by that "
+              "day should be close to the target. A snapshot censored before its outcome is "
+              "known is dropped, which favours snapshots with an early day. So the first "
+              "share is IPCW: each known failure is weighted by 1 / P(still uncensored on its "
+              "failure day) and each known survivor by 1 / P(still uncensored the day before "
+              "its predicted day), from one Kaplan-Meier curve of the censoring time. That is "
+              "unbiased only if censoring is unrelated to both the failure time and the "
+              "predicted day; most censoring is the panel's end, which depends on the "
+              "snapshot date, so read it as an adjusted estimate. The share over known "
+              "outcomes only is in brackets. Neither corrects for retirement related to "
+              "health, which the retirement check below questions.", ""]
     body = []
     for r in life:
         cells = [_label(r["model"], labels)]
@@ -906,13 +913,14 @@ def _answer(disc, gains, metrics, ref, labels, tolerance) -> list[str]:
         qc = life["quantile_calibration"]
         out.append(
             f"- **When will it probably fail?** {_timing_verdict(qc, tolerance)} "
-            f"{_pct(_share(qc['0.1']))} of drives failed by their "
+            f"{_pct(_share(qc['0.1']))} of the weighted snapshots had failed by their "
             f"predicted 10% day, {_pct(_share(qc['0.5']))} by the "
             f"predicted median and {_pct(_share(qc['0.9']))} by the "
-            "predicted 90% day (targets 10/50/90%; censoring-weighted, assuming retirement "
-            "is unrelated to failure). For drives that do fail within a year it "
-            f"names a median within a year only {_pct(life['share_median_within_horizon'])} of "
-            "the time: most failures are not visible in SMART long in advance. For healthy "
+            "predicted 90% day (targets 10/50/90%; IPCW, assuming censoring is unrelated to "
+            "the failure time and to the predicted day). For drives that do fail within a "
+            f"year it names a median within a year only "
+            f"{_pct(life['share_median_within_horizon'])} of the time: the model rarely "
+            "names a failure day months in advance. For healthy "
             f"drives it says \"more than a year\" "
             f"{_pct(life['healthy_share_median_beyond_horizon'])} of the time.")
     b = _gain_row(gains, "binary_30d", H)

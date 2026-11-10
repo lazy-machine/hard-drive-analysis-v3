@@ -567,29 +567,38 @@ def concordance_table(test, models, cap, rounds, seed, tau, binary_horizon, log)
 def quantile_calibration(d, e, w, t, G=None) -> tuple[float | None, float | None, int]:
     """Weighted share of snapshots that failed before their predicted day t.
 
-    Only snapshots with a finite t and a known outcome at t count: failed before t, or
-    observed alive past t. For a calibrated q-quantile the share should be about q.
+    For a calibrated q-quantile the share should be about q. "Failed before t" is a
+    failure on a day d < t. Day conventions follow known_status: a snapshot censored on day
+    d is seen alive through day d, so it is known not to have failed before t once
+    d >= ceil(t) - 1; a failure on a day >= t is known too.
 
-    Returns (known-outcome share, IPCW share, known snapshots). The known-outcome share
-    drops snapshots censored before t. Those are more often the ones with a late t, which
-    are the ones least likely to have failed by t, so it can lean high even when censoring
-    is independent. The IPCW share weights a failure on day d by 1 / P(C >= d) and a
-    snapshot seen alive through t by 1 / P(C >= t), which removes that selection if
-    censoring is independent of failure. Neither corrects for informative censoring.
+    Returns (known-outcome share, IPCW share, snapshots with a known outcome). The
+    known-outcome share drops snapshots censored before their outcome is known; those
+    tend to have a late t and a low chance of failing by it, so the share leans high.
+    The IPCW share weights a failure on day d by 1 / G(d) and a known survivor by
+    1 / G(ceil(t) - 1), as ipcw_weights does for a fixed horizon, then normalizes.
+
+    G is one Kaplan-Meier curve of the censoring time for all snapshots. The IPCW share
+    is therefore unbiased only if censoring is independent of both the failure time and
+    the predicted day. Here most censoring is the panel's end, so it depends on the
+    snapshot date, and predicted days can depend on the date too (drift): read the IPCW
+    share as a censoring-adjusted estimate under that assumption, not an exact one.
+    Neither share corrects for retirement related to health.
     """
     d = np.asarray(d)
-    e = np.asarray(e)
+    e = np.asarray(e) == 1
     w = np.asarray(w, dtype=float)
     finite = np.isfinite(t)
-    failed = finite & (e == 1) & (d < t)
-    survived = finite & (d >= np.ceil(np.where(finite, t, 0)))
+    last = np.ceil(np.where(finite, t, 0)) - 1   # last whole day before t
+    failed = finite & e & (d < t)
+    survived = finite & ~failed & ((e & (d >= t)) | (~e & (d >= last)))
     known = failed | survived
     if not known.any():
         return None, None, 0
     share = float(np.sum(w[failed]) / np.sum(w[known]))
-    G = censoring_survival(d, e == 1, w) if G is None else G
+    G = censoring_survival(d, e, w) if G is None else G
     wf = w[failed] / np.maximum(G(d[failed]), 1e-12)
-    ws = w[survived] / np.maximum(G(np.ceil(t[survived])), 1e-12)
+    ws = w[survived] / np.maximum(G(last[survived]), 1e-12)
     return share, float(wf.sum() / (wf.sum() + ws.sum())), int(known.sum())
 
 

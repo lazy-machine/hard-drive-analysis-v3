@@ -19,13 +19,22 @@ from common import (
 def drive_index(ctx):
     """One row per serial number: model, capacity, observed span and first failure.
 
-    Model and capacity become snapshot features, so neither may depend on rows after a
-    snapshot. The model is the first one the drive reported (7 drives change model string
-    mid-life). Capacity is rounded to 10 GB before taking the maximum: on 2018-02-25 alone
-    the panel reports rounded capacities (4,000,790,000,000 instead of 4,000,787,030,016),
-    so an unrounded maximum would mark every drive alive on that day. The few lower values
-    (2^37 bytes, a reporting glitch) always come after the true ones, so the maximum is the
-    nameplate from a drive's first row on.
+    Model and capacity become snapshot features, so neither may depend on how long the
+    drive lives. Both are read from the drive's first rows:
+
+    - model: the first one the drive reported (7 drives change model string mid-life).
+    - capacity: the first valid value, rounded to 10 GB. Rounding absorbs a few MB of
+      jitter and the rounded values of 2018-02-25 (4,000,790,000,000 instead of
+      4,000,787,030,016 for every live drive); a lifetime maximum of the unrounded value
+      told the model which drives were alive on that day. 94,816 drives report -1 on
+      their first day and a valid capacity from the next, so a first-day snapshot takes
+      the next day's value: capacity is a nameplate fact the operator knows at install.
+      The 10 drives that never report one all fail within days, so they get their
+      model's most common capacity instead of a NULL that would mark them.
+
+    The log counts drives whose rounded capacity varies, to catch a dataset where the
+    first value is not the nameplate (12 drives briefly report 2^37 bytes, always after
+    their true value).
 
     The panel is sorted by date, so it is aggregated one calendar chunk at a time and
     the partial aggregates are merged. A single GROUP BY over all 646M rows spills tens
@@ -42,43 +51,72 @@ def drive_index(ctx):
 
     con.sql("""CREATE TABLE part (
         serial_number VARCHAR, model VARCHAR, model_date DATE, n_models BIGINT,
-        capacity_bytes DOUBLE, first_date DATE, last_date DATE, n_rows BIGINT,
+        capacity_bytes DOUBLE, capacity_date DATE, capacity_min DOUBLE, capacity_max DOUBLE,
+        first_date DATE, last_date DATE, n_rows BIGINT,
         n_failure_rows BIGINT, first_failure DATE, last_failure DATE)""")
     for i, (a, b) in enumerate(chunks, 1):
         con.sql(f"""
             INSERT INTO part
+            WITH r AS (
+                SELECT *, {MODEL_SQL} AS m,
+                       CASE WHEN capacity_bytes > 0
+                            THEN round(capacity_bytes / 1e10) * 1e10 END AS cap
+                FROM read_parquet({q(src)})
+                WHERE date >= DATE '{a}' AND date < DATE '{b}')
             SELECT serial_number,
-                   arg_min({MODEL_SQL}, date), min(date), count(DISTINCT {MODEL_SQL}),
-                   max(CASE WHEN capacity_bytes > 0 THEN round(capacity_bytes / 1e10) * 1e10 END),
+                   arg_min(m, {{'d': date, 'm': m}}), min(date), count(DISTINCT m),
+                   arg_min(cap, {{'d': date, 'c': cap}}) FILTER (WHERE cap IS NOT NULL),
+                   min(date) FILTER (WHERE cap IS NOT NULL), min(cap), max(cap),
                    min(date), max(date), count(*), sum(failure),
                    min(CASE WHEN failure = 1 THEN date END),
                    max(CASE WHEN failure = 1 THEN date END)
-            FROM read_parquet({q(src)})
-            WHERE date >= DATE '{a}' AND date < DATE '{b}'
+            FROM r
             GROUP BY serial_number""")
         if i % 12 == 0 or i == len(chunks):
             log(f"chunk {i}/{len(chunks)} ({a})")
 
+    con.sql("""
+        CREATE TABLE merged AS
+        SELECT serial_number,
+               arg_min(model, {'d': model_date, 'm': model}) AS model,
+               max(n_models) AS n_models_per_month,
+               arg_min(capacity_bytes, {'d': capacity_date, 'c': capacity_bytes})
+                   AS capacity_bytes,
+               min(capacity_min) AS capacity_min, max(capacity_max) AS capacity_max,
+               min(first_date) AS first_date,
+               max(last_date) AS last_date,
+               sum(n_rows)::BIGINT AS n_rows,
+               sum(n_failure_rows)::BIGINT AS n_failure_rows,
+               min(first_failure) AS first_failure,
+               max(last_failure) AS last_failure
+        FROM part GROUP BY serial_number""")
+    varies, missing = con.sql("""SELECT count(*) FILTER (WHERE capacity_min <> capacity_max),
+                                        count(*) FILTER (WHERE capacity_bytes IS NULL)
+                                 FROM merged""").fetchall()[0]
+    log(f"rounded capacity varies on {varies} drives; {missing} report none (model's used)")
     con.sql(f"""
         COPY (
-            SELECT serial_number,
-                   arg_min(model, model_date) AS model,
-                   max(n_models) AS n_models_per_month,
-                   max(capacity_bytes) AS capacity_bytes,
-                   min(first_date) AS first_date,
-                   max(last_date) AS last_date,
-                   sum(n_rows)::BIGINT AS n_rows,
-                   sum(n_failure_rows)::BIGINT AS n_failure_rows,
-                   min(first_failure) AS first_failure,
-                   max(last_failure) AS last_failure
-            FROM part GROUP BY serial_number ORDER BY serial_number
+            WITH counts AS (
+                SELECT model, capacity_bytes, count(*) AS n FROM merged
+                WHERE capacity_bytes IS NOT NULL GROUP BY ALL
+            ), usual AS (
+                SELECT model, arg_max(capacity_bytes, {{'n': n, 'c': capacity_bytes}}) AS cap
+                FROM counts GROUP BY model
+            )
+            SELECT m.serial_number, m.model, m.n_models_per_month,
+                   coalesce(m.capacity_bytes, u.cap) AS capacity_bytes,
+                   m.first_date, m.last_date, m.n_rows, m.n_failure_rows,
+                   m.first_failure, m.last_failure
+            FROM merged m LEFT JOIN usual u USING (model)
+            ORDER BY m.serial_number
         ) TO {q(ctx.outputs['drives'])} (FORMAT PARQUET, COMPRESSION ZSTD)""")
     out = q(ctx.outputs["drives"])
     n, failed = con.sql(f"""SELECT count(*), count(first_failure)
                            FROM read_parquet({out})""").fetchall()[0]
     rows = scalar(con, f"SELECT sum(n_rows) FROM read_parquet({out})")
     log(f"{n} drives, {failed} with a failure, {rows} rows")
-    return {"drives": n, "failed": failed, "rows": rows}
+    return {"drives": n, "failed": failed, "rows": rows, "capacity_varies": varies,
+            "capacity_missing": missing}
 
 
 def _check_sha256(path, expected: str, log, chunk: int = 8 * 2**20) -> None:

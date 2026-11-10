@@ -18,7 +18,7 @@ Quirks handled (`drive_index`, `cohort`, `extract`):
 |---|---|
 | Boot SSDs in the panel | Excluded by a model-name pattern (`study.toml: data.ssd_model_pattern`) |
 | Model names differ in whitespace across years (`WDC  WUH721414ALE6L4`) | Whitespace normalised. The first name a drive reports wins, so the feature never depends on later rows (7 drives change model string mid-life, e.g. `HGST HMS5C4040ALE640` to `...BLE640`). Drives that report more than one model in a month are counted, and the gate warns about them |
-| Capacity jitters by a few MB, and on 2018-02-25 alone every drive reports a rounded value (4,000,790,000,000 instead of 4,000,787,030,016) | Rounded to 10 GB, then the maximum over the drive's rows. Unrounded, the maximum marked every drive still alive on 2018-02-25, which leaked its future survival into `capacity_tb`. The 12 drives that briefly report 2^37 bytes do so after their true value, so the maximum is the nameplate from the first row |
+| Capacity jitters by a few MB, on 2018-02-25 alone every drive reports a rounded value (4,000,790,000,000 instead of 4,000,787,030,016), new drives report -1 on their first day, and 10 drives never report one | The first valid capacity, rounded to 10 GB, so the feature does not depend on how long the drive lives (a lifetime maximum leaked survival past 2018-02-25, docs/ISSUES.md #18). A first-day snapshot takes the next day's value: capacity is a nameplate fact known at install. Drives that never report one get their model's most common capacity; a NULL would mark them, since all 10 fail within days |
 | Same-day duplicate rows | One row per drive-day: the most complete row, then the first filename |
 | Drives keep reporting after a failure. Measured on the panel: 710 drives (694 HDDs, 16 boot SSDs) have rows after their first failure row, 46 have two failure rows, and 561 of them are in the full-scale cohort | The first failure is the event, and rows after it are dropped |
 | Many SMART columns stored as VARCHAR | `TRY_CAST` to DOUBLE. Strings that fail the cast are counted per column and returned by `extract` (0 at medium scale, 11,775,008 rows) |
@@ -257,11 +257,14 @@ their 30-day risk, so they can be compared with the classifier on the same kind 
   counts those alerts as false.
 - **Remaining life, timing**: among snapshots whose predicted 10% / 50% / 90% failure
   day is within a year, the share that actually failed by that day (targets 10/50/90%).
-  A snapshot censored before its day has no known outcome. Dropping those favours
-  snapshots with an early day, so the headline share weights each known outcome by the
-  inverse probability of staying uncensored that long (IPCW, Kaplan-Meier of the
-  censoring time). The known-outcome share is reported next to it. Both assume that
-  censoring is unrelated to failure, which §9 questions.
+  Shares are of weighted snapshots. A snapshot censored before its outcome is known is
+  left out, which favours snapshots with an early day, so the headline share is IPCW: a
+  known failure is weighted by 1 / P(uncensored on its failure day), a known survivor by
+  1 / P(uncensored the day before its predicted day), from one Kaplan-Meier curve of the
+  censoring time. That is unbiased only if censoring is unrelated to both the failure
+  time and the predicted day. Most censoring is the panel's end, which depends on the
+  snapshot date, so it is an adjusted estimate, not an exact one. The known-outcome share
+  is reported next to it. Neither corrects for retirement related to health (§9).
 - **Remaining life, visibility**: for drives that do fail within a year, how often the
   predicted median is within a year, by how far away the failure really was. (Coverage
   of an interval *conditional on failing* is not a calibration measure: a perfect model
@@ -320,6 +323,12 @@ full panel (no look-ahead). The report is `build/verify-report.json`.
   too low. The check does not say how many retired drives would have failed, so the size
   of that bias is unknown. Treating "leaves the panel" as an event of its own was not
   tried.
+- **Training noise is not in the intervals.** Each model is trained once, and the
+  drive-level bootstrap only resamples test drives. Two full runs that differed in 10
+  of 7.6 million training snapshots moved the 30-day ROC-AUC by 0.002 and the
+  survival-minus-classifier difference from -0.006 [-0.009, -0.002] to -0.001 [-0.004,
+  +0.002] (docs/ISSUES.md #18). Differences of a few thousandths between models are
+  ties.
 - **Label circularity.** Backblaze's replacement decisions use counters 5, 187, 188,
   197 and 198, so part of the SMART signal is the operator's policy. `hazard_nocritical`
   measures how much of the gain survives without those counters; it does not separate

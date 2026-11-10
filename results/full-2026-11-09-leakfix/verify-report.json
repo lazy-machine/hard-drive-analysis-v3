@@ -117,8 +117,8 @@
   "datasets": {
     "cohort": {
       "path": "build/cohort.parquet",
-      "bytes": 563384,
-      "sha256": "ad0f60cd72db078a1584902285561c9156d79f2e71804436193a261957a929af",
+      "bytes": 563357,
+      "sha256": "ac6d46612aff1168ca0d366e6e8d8ea682bdb16078aad9251e2f61c7401fb911",
       "role": "auxiliary"
     },
     "sample": {
@@ -135,8 +135,8 @@
     },
     "snapshots": {
       "path": "build/snapshots.parquet",
-      "bytes": 148709981,
-      "sha256": "0f6f2a32fea6a2eccf15635593a5a755461f0ad84e08d2bf1bb1ae3e20f7de55",
+      "bytes": 148709924,
+      "sha256": "e7cd3624a7b1a3c5a876c9151654a5798721641dbc8b62e252a0c5c6b54a900a",
       "role": "table"
     },
     "study": {
@@ -543,8 +543,8 @@
         },
         "compared_columns": 64,
         "max_fraction": 0.0,
-        "cross_group_rate_in_train": 0.00105581,
-        "allowed": 0.00211162
+        "cross_group_rate_in_train": 0.00105634,
+        "allowed": 0.00211267
       },
       "blocking": false
     },
@@ -594,8 +594,8 @@
         },
         "compared_columns": 64,
         "max_fraction": 0.0,
-        "cross_group_rate_in_train": 0.00265742,
-        "allowed": 0.00531485
+        "cross_group_rate_in_train": 0.00265795,
+        "allowed": 0.0053159
       },
       "blocking": false
     },
@@ -630,13 +630,13 @@
       "message": "0.06% repeated rows, largest copy count 174",
       "hint": "",
       "details": {
-        "repeat_fraction": 0.000613191,
+        "repeat_fraction": 0.000613717,
         "largest_copy_count": 174,
         "rows": 7597961,
         "repeat_fraction_by_label": {
           "event": {
-            "0": 0.000762085,
-            "1": 0.000329998
+            "0": 0.000762286,
+            "1": 0.000331143
           }
         }
       },
@@ -648,11 +648,11 @@
       "severity": "warn",
       "status": "pass",
       "title": "Identical training examples agree on their label",
-      "message": "rows whose identical copies carry another label: event 1101 (0.01%) <= 1%",
+      "message": "rows whose identical copies carry another label: event 1107 (0.01%) <= 1%",
       "hint": "",
       "details": {
         "minority_rows": {
-          "event": 1101
+          "event": 1107
         }
       },
       "blocking": false
@@ -703,7 +703,7 @@
           "event": {
             "model_code": 0.707912,
             "smart_193_raw": 0.643813,
-            "capacity_tb": 0.640283,
+            "capacity_tb": 0.640277,
             "smart_187_normalized": 0.635377,
             "smart_187_raw": 0.635372
           },
@@ -731,7 +731,7 @@
           "event": {
             "model_code": 0.707912,
             "smart_193_raw": 0.643813,
-            "capacity_tb": 0.640283,
+            "capacity_tb": 0.640277,
             "smart_187_normalized": 0.635377,
             "smart_187_raw": 0.635372
           },
