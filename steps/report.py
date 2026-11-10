@@ -374,7 +374,7 @@ def _results(metrics, cohort, gate, preds, ref, labels) -> list[str]:
         ["compared with", f"{len(trained)} models and baselines (rows of the tables below)"],
         ["verification gate", f"{len(ran) - len(failed)}/{len(ran)} checks passed "
                               f"(data-verify {gate['version']}; {gate['counts']['skip']} "
-                              "skipped: their roles are not declared)"
+                              "skipped as not applicable; reasons in verify-report.md)"
                               + "".join(f"; {c['id']} "
                                         + ("warned" if c["severity"] == "warn" else "failed")
                                         for c in failed)],
