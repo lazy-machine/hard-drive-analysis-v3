@@ -10,6 +10,9 @@ dataset
 build/
 build-arch/
 
+# Local directories for agents to work with each other
+docs/audit/
+
 # Another agent's harness state
 .pi-glla/
 

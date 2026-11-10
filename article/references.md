@@ -1,6 +1,6 @@
 # Research sources: offline copies
 
-Local copies of the sources cited in the five notes under `research_notes/SMART failure prediction methodology debate/`. Files were downloaded on 2026-10-25 from publishers, USENIX, arXiv, PubMed Central, JMLR, PMLR, IJCAI, university repositories and authors' pages. No shadow-library site was used. The copies live in `article/research/`, which git ignores, so the file links only resolve in a local checkout.
+Local copies of the sources cited in the five notes under `article/research_notes/SMART failure prediction methodology debate/`. Files were downloaded on 2026-10-25 from publishers, USENIX, arXiv, PubMed Central, JMLR, PMLR, IJCAI, university repositories and authors' pages. No shadow-library site was used. The copies live in `article/research/`, which git ignores, so the file links only resolve in a local checkout.
 
 How to read the table:
 

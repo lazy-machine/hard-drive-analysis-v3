@@ -31,8 +31,8 @@ stride_days = 7
 dense_days = 90
 
 [scales.full]
-# Every failing HDD plus a 10% weighted sample of healthy ones. Sized for the 31 GB machine
-# in info/. Measured there on 2026-10-24: 22,230 failing and 35,079 healthy drives, 8.7M
+# Every failing HDD plus a 10% weighted sample of healthy ones. Sized for a 31 GB machine.
+# Measured there on 2026-10-24: 22,230 failing and 35,079 healthy drives, 8.7M
 # train+val snapshots, 55M survival rows (48.2M train), 17.8 GiB training estimate with 23 GiB
 # available (about 3 GiB under the memory guard), ~30 min end to end. Healthy drives are
 # subsampled even here: the full daily panel expanded into survival rows would need
