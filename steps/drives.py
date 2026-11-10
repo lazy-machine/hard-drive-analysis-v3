@@ -19,6 +19,14 @@ from common import (
 def drive_index(ctx):
     """One row per serial number: model, capacity, observed span and first failure.
 
+    Model and capacity become snapshot features, so neither may depend on rows after a
+    snapshot. The model is the first one the drive reported (7 drives change model string
+    mid-life). Capacity is rounded to 10 GB before taking the maximum: on 2018-02-25 alone
+    the panel reports rounded capacities (4,000,790,000,000 instead of 4,000,787,030,016),
+    so an unrounded maximum would mark every drive alive on that day. The few lower values
+    (2^37 bytes, a reporting glitch) always come after the true ones, so the maximum is the
+    nameplate from a drive's first row on.
+
     The panel is sorted by date, so it is aggregated one calendar chunk at a time and
     the partial aggregates are merged. A single GROUP BY over all 646M rows spills tens
     of GB on a 15 GB machine, while monthly chunks take a few seconds each.
@@ -40,8 +48,8 @@ def drive_index(ctx):
         con.sql(f"""
             INSERT INTO part
             SELECT serial_number,
-                   arg_max({MODEL_SQL}, date), max(date), count(DISTINCT {MODEL_SQL}),
-                   max(CASE WHEN capacity_bytes > 0 THEN capacity_bytes END),
+                   arg_min({MODEL_SQL}, date), min(date), count(DISTINCT {MODEL_SQL}),
+                   max(CASE WHEN capacity_bytes > 0 THEN round(capacity_bytes / 1e10) * 1e10 END),
                    min(date), max(date), count(*), sum(failure),
                    min(CASE WHEN failure = 1 THEN date END),
                    max(CASE WHEN failure = 1 THEN date END)
@@ -54,7 +62,7 @@ def drive_index(ctx):
     con.sql(f"""
         COPY (
             SELECT serial_number,
-                   arg_max(model, model_date) AS model,
+                   arg_min(model, model_date) AS model,
                    max(n_models) AS n_models_per_month,
                    max(capacity_bytes) AS capacity_bytes,
                    min(first_date) AS first_date,

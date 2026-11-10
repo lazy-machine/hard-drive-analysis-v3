@@ -10,22 +10,20 @@ information against a model that doesn't see it. It rebuilds
 resolves the v2 project review (see [docs/REVIEW-RESOLUTION.md](docs/REVIEW-RESOLUTION.md))
 and the 2026-10 audit (see [docs/AUDIT-RESOLUTION.md](docs/AUDIT-RESOLUTION.md)).
 
-## Results (full scale, 2026-10-27)
+## Results (full scale, 2026-11-09)
 
-These numbers come from the full-scale run of 2026-10-26/27 with the audit fixes (branch
-`audit-fixes`, the step code of `9b77159`). Its full tables are in
-[`results/full-2026-10-27/report/report.md`](results/full-2026-10-27/report/report.md), a
-committed copy of that run (the original `build-arch/` is local and gitignored).
-`build/report/` holds the last local run, whatever its scale: `results.md` has the
-headline numbers, `analysis.md` the explanation and the detailed tables. The committed
-runs predate this split and keep everything in one `report.md`. The run before
-the fixes (2026-10-24, `398f421`) is kept in `results/full-2026-10-24/`. What changed
-between the two is at the end of this section.
+These numbers come from the full-scale run of 2026-11-09 after the drive-metadata fix
+(docs/ISSUES.md #18). Its tables are committed in
+[`results/full-2026-11-09-leakfix/report/`](results/full-2026-11-09-leakfix/report/):
+`results.md` has the headline numbers, `analysis.md` the explanation and the detailed
+tables. `build/report/` holds the last local run, whatever its scale. Earlier full runs
+stay in `results/` for comparison (index in [`results/README.md`](results/README.md)).
+What changed against the previous README numbers is at the end of this section.
 
 Cohort: every failing HDD plus a 10% sample of healthy ones, 57,309 drives. Test set:
 8,981 drives never seen in training, observed 2024-2025, of which 1,784 fail (825,321
-snapshots). The gate ran 30 checks and passed, with one warning (16 cohort drives with
-too few rows in their split window for a snapshot). All numbers are weighted back to
+snapshots). The gate ran 56 checks: 55 passed, one warned (16 cohort drives with too few
+rows in their split window for a snapshot). All numbers are weighted back to
 real prevalence. The weights do not correct ROC-AUC for prevalence (AUC doesn't change
 when every row of a class gets the same weight). They change the mix of drives and days
 within each class, and they make PR-AUC, precision, the base rate and calibration
@@ -38,29 +36,30 @@ every horizon:
 
 | fails within | no SMART | SMART + context | gain | rule on counters 5, 187, 197, 198 |
 |---|---|---|---|---|
-| 7 days | 0.606 | **0.906** | +0.300 [0.282, 0.314] | 0.853 |
-| 30 days | 0.604 | **0.876** | +0.273 [0.260, 0.288] | 0.823 |
-| 90 days | 0.601 | **0.843** | +0.241 [0.225, 0.259] | 0.786 |
-| 180 days | 0.593 | **0.814** | +0.221 [0.208, 0.236] | 0.755 |
-| 365 days | 0.574 | **0.786** | +0.211 [0.197, 0.228] | 0.722 |
+| 7 days | 0.606 | **0.904** | +0.297 [0.280, 0.310] | 0.853 |
+| 30 days | 0.604 | **0.875** | +0.271 [0.257, 0.287] | 0.823 |
+| 90 days | 0.606 | **0.840** | +0.234 [0.218, 0.252] | 0.786 |
+| 180 days | 0.600 | **0.810** | +0.210 [0.195, 0.224] | 0.755 |
+| 365 days | 0.578 | **0.785** | +0.208 [0.189, 0.224] | 0.722 |
 
 The model beats the classic "any reallocated / pending / uncorrectable sector" rule at
-every horizon (+0.053 [0.046, 0.061] at 7 days).
+every horizon (+0.051 [0.043, 0.059] at 7 days).
 
-**2. Part of it is the replacement policy.** Backblaze replaces drives when counters 5,
-187, 188, 197 or 198 rise, so those counters partly define the failure label. A model
-without them (`hazard_nocritical`) still reaches 0.772 [0.760, 0.786] at 30 days. The
-full model is ahead by +0.104 [0.096, 0.112], and about 62% of the SMART gain (0.168 of
-0.273) remains without those counters. The +0.273 is an upper bound on what SMART adds
-beyond the policy.
+**2. Part of it may be the replacement policy.** Backblaze replaces drives when counters
+5, 187, 188, 197 or 198 rise, so those counters partly define the failure label. A model
+without them (`hazard_nocritical`) still reaches 0.774 [0.761, 0.788] at 30 days. The
+full model is ahead by +0.101 [0.092, 0.109], and about 63% of the SMART gain (0.170 of
+0.271) remains without those counters. This is a sensitivity check, not a split of policy
+from physics: the dropped counters also measure real damage, and the remaining features
+can still track them.
 
 **3. Silent failures are ranked much worse.** 368 of the 1,784 failing test drives never
 show counter 5, 187, 197 or 198 above zero in their test snapshots. On them the SMART
-model scores 0.639 [0.608, 0.666] at 30 days (no SMART 0.549, rule 0.473), against 0.938
+model scores 0.634 [0.601, 0.660] at 30 days (no SMART 0.558, rule 0.473), against 0.937
 on the failures with a counter above zero.
 
 **4. It isn't only age and wear.** Context plus the usage counters (4, 9, 12, 193,
-240-242) scores 0.654. The full SMART model is ahead by +0.222 [0.211, 0.236].
+240-242) scores 0.655. The full SMART model is ahead by +0.219 [0.209, 0.233].
 
 **5. It works as an early warning, not as an oracle.** Alarm thresholds are set on
 validation drives for a false-alarm budget. False alarms and precision are per
@@ -68,96 +67,101 @@ drive-day; failing drives count as alerted if they get an alert in their last 30
 
 | budget | model | false alarms on test | precision | failing drives alerted | of them >= 7 days early |
 |---|---|---|---|---|---|
-| 0.1% | SMART model | 0.22% | 14.6% | 1,021 / 1,784 (57%) | 782 |
-| 0.3% | SMART model | 0.61% | 8.3% | 1,264 / 1,784 (71%) | 1,028 |
-| 1% | SMART model | 1.55% | 4.4% | 1,372 / 1,784 (77%) | 1,181 |
-| 1% | 30-day classifier | 1.88% | 3.8% | 1,412 / 1,784 (79%) | 1,216 |
+| 0.1% | SMART model | 0.22% | 14.6% | 1,017 / 1,784 (57%) | 760 |
+| 0.3% | SMART model | 0.57% | 8.7% | 1,241 / 1,784 (70%) | 1,006 |
+| 1% | SMART model | 1.95% | 3.7% | 1,396 / 1,784 (78%) | 1,209 |
+| 1% | 30-day classifier | 2.00% | 3.6% | 1,421 / 1,784 (80%) | 1,226 |
 | 1% | rule | 1.74% | 3.1% | 1,051 / 1,784 (59%) | 874 |
 
-At the 1% budget the SMART model flags 321 more failing drives than the rule, at fewer
-false alarms. Its precision of 4.4% is about 36x the 0.12% base rate, so most alerts are
-still false: failures are that rare. The classifier flags 40 more drives than the
-survival model but also raises more false alarms, so the two are not compared at the
-same rate. About 7% of the alerts fall where the panel ends before the outcome is known;
-the report gives precision both without them and with them counted as false. Every test
-false-alarm rate is above its budget because of the drift in point 9.
+At the 1% budget the SMART model flags 345 more failing drives than the rule, with a
+little more false alarms (1.95% vs 1.74%). Its precision of 3.7% is about 30x the 0.12%
+base rate, so most alerts are still false: failures are that rare. The classifier flags
+25 more drives than the survival model at about the same false-alarm rate. About 6% of
+the alerts fall where the panel ends before the outcome is known; the report gives
+precision both without them and with them counted as false. Every test false-alarm rate
+is above its budget because of the drift in point 9.
 
 **6. The last days carry much of the precision.** Counting as positives only snapshots
-at least 7 days before failure, the 30-day ROC-AUC is 0.868 and the PR-AUC 0.079 [0.066,
+at least 7 days before failure, the 30-day ROC-AUC is 0.866 and the PR-AUC 0.079 [0.067,
 0.097] instead of 0.124.
 
 **7. "When will it fail?" can only be answered close to the end.** For drives that fail
-within a year, the model puts the median remaining life inside that year in 48% of
-snapshots taken in the last week, and in only 8.5% of snapshots 6-12 months out. Most
+within a year, the model puts the median remaining life inside that year in 49% of
+snapshots taken in the last week, and in only 7.4% of snapshots 6-12 months out. Most
 failures leave no SMART trace that early. For healthy drives it says "more than a year"
-99.8% of the time. When it does name a day, it is too pessimistic on the test years: 33%
-(not 50%) of drives had failed by their predicted median, 6.5% by the 10% day and 76.5%
-by the 90% day.
+99.8% of the time. When it does name a day, it is too pessimistic on the test years:
+30.6% (not 50%) of drives had failed by their predicted median, 5.9% by the 10% day and
+75.5% by the 90% day. These shares weight each snapshot by the inverse probability of
+staying uncensored until its predicted day; dropping the censored snapshots instead gives
+35.2%, 6.9% and 79.2%. Both assume retirement is unrelated to failure (point 10).
 
-**8. The survival model's value is the curve, not better ranking.** At 30 days the
-paired difference in ROC-AUC, survival model minus the plain yes/no classifier, is
--0.001 [-0.004, +0.002]; the survival model is not better in 72% of bootstrap rounds.
-Neither ranks clearly better. Over the whole future the classifier's concordance is a
-little higher (Harrell's C on the predicted 30-day risk: 0.783 vs 0.773). What the
-survival model adds is one consistent answer for every horizon and a remaining-life
-estimate.
+**8. A dedicated 30-day classifier ranks a little better at 30 days.** The paired
+difference in ROC-AUC, survival model minus the plain yes/no classifier, is -0.006
+[-0.009, -0.002]; the classifier is ahead in every bootstrap round. In PR-AUC there is no
+clear difference (-0.003 [-0.010, +0.004]). Over the whole future the classifier's
+concordance is also a little higher (Harrell's C on the predicted 30-day risk: 0.779 vs
+0.771). What the survival model adds is one consistent answer for every horizon and a
+remaining-life estimate, at a small cost in 30-day ranking.
 
 **9. Drift in 2025, not fixed by recalibrating on the last year.** Predicted / observed
-30-day risk is 0.89-1.44 over the validation years (2016-2023), 0.92 in 2023. On test it
-is 1.21 [1.11, 1.30] in 2024, inside that band, and 2.28 [1.97, 2.67] in 2025, outside
+30-day risk is 0.86-1.35 over the validation years (2016-2023), 0.86 in 2023. On test it
+is 1.17 [1.09, 1.28] in 2024, inside that band, and 2.28 [1.98, 2.65] in 2025, outside
 it. `hazard_smart_recent`, the same trees recalibrated on the 2023 validation snapshots,
-gives 1.36 and 2.55, so it makes the drift worse. Of the other feature sets, only the model without
-SMART drifts clearly less (1.10 / 1.73). The usage-counter model drifts like the SMART model (1.32 / 2.46) and the
-classifier more (1.46 / 3.19). A deployed model would need a different fix
+gives 1.42 and 2.76, so it makes the drift worse. The model without SMART drifts least
+(1.06 / 1.65), then the usage-counter model (1.13 / 1.91); the classifier drifts more
+than the SMART model (1.31 / 2.56). A deployed model would need a different fix
 (docs/ISSUES.md #9).
 
-**10. Retirement is informative censoring.** Among drives that never fail, the ones that
-leave the panel by the end of the next year carry 1.2-6.5x the mean predicted 30-day risk
-of the ones that stay, in every validation year, and 2.25x in test year 2024 (509 drives
-left, 5,809 stayed). Drives look riskier before they leave, so the observed failure risk
-is an underestimate, and stronger retirement in later years would explain part of the
-drift.
+**10. Retirement looks related to health.** Among drives that never fail, the ones that
+leave the panel by the end of the next year carry 1.0-3.3x the mean predicted 30-day risk
+of the ones that stay in the validation years (above 1 in 7 of 8), and 2.08x in test
+year 2024 (509 drives left, 5,809 stayed). Drives look riskier before they leave, which
+suggests censoring is informative: the observed failure risk is then too low, by an
+amount this check cannot measure, and stronger retirement in later years could explain
+part of the drift.
 
-**Slices** (30 days). By vendor: HGST 0.923, Seagate 0.895, Toshiba 0.792, WDC 0.827. By
-capacity: 0.815 on drives of 16 TB and more, 0.901 below (rule 0.754 vs 0.850); large
+**Slices** (30 days). By vendor: HGST 0.927, Seagate 0.895, Toshiba 0.784, WDC 0.823. By
+capacity: 0.810 on drives of 16 TB and more, 0.901 below (rule 0.754 vs 0.850); large
 drives are rare in training (docs/ISSUES.md #13). Only 5 failing test drives were in
 service before the panel starts, too few to measure.
 
 **Training weight power.** At this scale the full inverse-probability weights no longer
-starve training: weight power 1.0 stops at iteration 237 (0.5: 595, 0.75: 194) and ranks
-like 0.5 (30-day ROC-AUC 0.878 vs 0.876; ahead by 0.006 [0.002, 0.009] at 90 days only).
-Power 0.5 keeps the higher PR-AUC: by 0.008-0.031 against 1.0, with an interval above
-zero at 4 of 5 horizons.
+starve training: weight power 1.0 stops at iteration 184 (0.5: 545, 0.75: 230) and ranks
+like 0.5 (30-day ROC-AUC 0.877 vs 0.875, no interval excludes zero). Power 0.75 ranks a
+little better than 0.5 (0.880 at 30 days, +0.004 to +0.007, an interval above zero at 4
+of 5 horizons). Power 0.5 keeps the higher PR-AUC against 1.0: by 0.007-0.035, with an
+interval above zero at 3 of 5 horizons.
 
 **Robustness.** ROC-AUC with inverse-probability-of-censoring weights differs from the
-known-status ROC-AUC by at most 0.012 (at 365 days: 0.774 vs 0.786). ROC-AUC on one
-snapshot per drive is 0.862 at 30 days (0.901 at 7 days). Harrell's / Uno's C on the
-expected days survived within a year is 0.766 / 0.760. The Brier skill against a
-base-rate forecast is 0.027 at 30 days: at this prevalence Brier says little.
+known-status ROC-AUC by at most 0.012 (at 365 days: 0.773 vs 0.785). ROC-AUC on one
+snapshot per drive is 0.860 at 30 days (0.899 at 7 days). Harrell's / Uno's C on the
+expected days survived within a year is 0.759 / 0.752. The Brier skill against a
+base-rate forecast is 0.033 at 30 days: at this prevalence Brier says little.
 
 **What matters most:** by share of the total gain in the SMART model, the horizon bin
-(21%), capacity (10%), reallocated sectors 5 (10%), pending sectors 197 (9%), the drive
-model (8%), uncorrectable errors 187 (7%) and the 30-day growth of counter 5 (4%). The
-usage counters 240, 242, 193 and 241 add about 2% each. The ranking is `importance_gain`
-in `results/full-2026-10-27/models/hazard_smart.json` and `report/importance.png`.
+(22%), the drive model (11%), reallocated sectors 5 (11%), uncorrectable errors 187
+(9.5%), pending sectors 197 (9.4%) and the 30-day growth of counters 187 and 5 (4% each).
+Capacity is down to 1.3% (see below). The ranking is `importance_gain` in
+`results/full-2026-11-09-leakfix/models/hazard_smart.json` and `report/importance.png`.
 
-### What changed since the run before the fixes
+### What changed since the previous README numbers
 
-Against `results/full-2026-10-24/` (`398f421`):
+The previous numbers came from `results/full-2026-10-27/` (65 features). Two changes
+since:
 
-- The SMART model ranks the same: 30-day ROC-AUC 0.875 then, 0.876 now; 365 days 0.788
-  and 0.786.
-- The rule is stronger without Seagate's packed 188 values. At the 1% budget it now flags
-  1,051 failing drives instead of 661, so the model's lead shrinks from 718 drives to
-  321.
-- Survival model vs classifier at 30 days: -0.0043 [-0.0083, +0.0003] then, -0.001
-  [-0.004, +0.002] now. Early stopping and calibration now use separate halves of the
-  validation drives.
-- Drift: validation band 0.85-1.32 then, 0.89-1.44 now; test 1.15 / 2.2 then, 1.21 / 2.28
-  now.
-- The 349 silent failures measured during the audit counted counter 188 too. With
-  counters 5, 187, 197 and 198, both runs have 368.
-- The importance figure is now sorted by gain.
+- **Feature list** (2026-11-09, `results/full-2026-11-09/`): `smart_18/23/24_raw`, always
+  0, replaced by `smart_23_normalized` and `smart_24_normalized` (64 features). 30-day
+  ROC-AUC 0.876 to 0.879.
+- **Drive-metadata leak** (this run, docs/ISSUES.md #18): capacity was the maximum over a
+  drive's whole life, and a single day of rounded capacities in 2018 made it reveal
+  whether the drive was still alive then. Fixed, the 30-day ROC-AUC goes from 0.879 to
+  0.875 and capacity's share of the gain from 10.6% to 1.3%. Test snapshots are from
+  2024 on, so the leak shaped what the model learned from 2016-2018 train rows rather
+  than leaking test labels directly.
+- Net effect against 2026-10-27: the SMART gain over no SMART is about the same (+0.273
+  then, +0.271 now). The survival model vs classifier difference at 30 days moved from
+  -0.001 [-0.004, +0.002] to -0.006 [-0.009, -0.002], so the classifier is now clearly,
+  if slightly, ahead. The remaining-life shares are now censoring-weighted (point 7).
 
 ## Quick start
 
