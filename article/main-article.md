@@ -8,7 +8,7 @@ RELATÓRIO TÉCNICO
 
 **PREVISÃO DE FALHAS EM DISCOS RÍGIDOS COM ATRIBUTOS SMART: análise de sobrevivência sobre o *dataset* Drive Stats da Backblaze**
 
-[PREENCHER: Nome do autor (Titulação, Instituição) e-mail@fatec.sp.gov.br]
+Kauan Toledo Camargo (Graduando em Ciência de Dados, Fatec Rubens Lara) kauan.camargo01@aluno.cps.sp.gov.br
 
 SANTOS
 

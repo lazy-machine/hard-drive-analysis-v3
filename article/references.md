@@ -11,6 +11,16 @@ How to read the table:
 - Only first-party sources are listed: the original publication by the people who produced the result, the data or the software. A work with several versions (preprint, conference paper, journal paper) has one row, under its published version, with the other versions named in the citation. Pages that only report, summarize or restate someone else's work were removed on 2026-11-09: encyclopedia articles, press releases, news reports, commentary blogs, lecture slides about other authors' papers, calculator and vendor help pages, mailing-list threads, and package documentation for methods published elsewhere. Their local copies, if any, stay in `article/research/` but are no longer indexed.
 - Years in file names for undated web pages (repositories, dataset pages) are the year of retrieval.
 
+## Sources added by the technical report
+
+The bibliography in `main-article.md` also cites these sources, which were not in the original research notes. Use the publication links in a fresh clone; local copies are optional and are not distributed by this repository.
+
+| file | citation | link | type | aspect |
+|---|---|---|---|---|
+| — | Harrell, F. E., et al. "Evaluating the yield of medical tests." JAMA 247(18):2543–2546, 1982 | https://doi.org/10.1001/jama.1982.03320430047030 | peer-reviewed; local full text not obtained | evaluation/leakage |
+| — | Ke, G., et al. "LightGBM: A Highly Efficient Gradient Boosting Decision Tree." NeurIPS 30, 2017, pp. 3146–3154 | https://proceedings.neurips.cc/paper/2017/hash/6449f44a102fde848669bdd9eb6b76fa-Abstract.html | peer-reviewed; publisher provides PDF | modeling |
+| — | Smartmontools. "smartctl(8)" and "drivedb.h", version 7.5, 2025 | https://www.smartmontools.org/ | software manual and drive database; website access denied during the 2026-11-10 check | SMART encoding |
+
 ## SMART signal
 
 | file | citation | link | type | stance | aspect |
@@ -55,7 +65,7 @@ How to read the table:
 | — | Tutz, G., Schmid, M. *Modeling Discrete Time-to-Event Data.* Springer, 2016 | https://doi.org/10.1007/978-3-319-28158-2 | book | in favor (bibliographic only) | survival framing |
 | [md](research/vock-2016-ipcw-machine-learning-censored-ehr.md), [html](research/vock-2016-ipcw-machine-learning-censored-ehr.html) | Vock, D. M., Wolfson, J., Bandyopadhyay, S., Adomavicius, G., Johnson, P. E., Vazquez-Benitez, G., O'Connor, P. J. "Adapting machine learning techniques to censored time-to-event health record data… inverse probability of censoring weighting." J. Biomedical Informatics 61:119–131, 2016 (PMC full text) | https://doi.org/10.1016/j.jbi.2016.03.009 | peer-reviewed | in favor (don't label censored as healthy); against assuming independent censoring | survival framing |
 | [pdf](research/bandyopadhyay-2014-data-mining-censored-time-to-event.pdf) | Bandyopadhyay, S., Wolfson, J., Vock, D. M., et al. "Data mining for censored time-to-event data: A Bayesian network model for predicting cardiovascular risk from electronic health record data." arXiv:1404.2189, 2014 | https://arxiv.org/abs/1404.2189 | preprint | not labeled (related earlier work to Vock 2016) | survival framing |
-| [pdf](research/kvamme-2019-brier-score-administrative-censoring.pdf) | Kvamme, H., Borgan, Ø. "The Brier Score under Administrative Censoring: Problems and Solutions." arXiv:1912.08581, 2019 | https://arxiv.org/abs/1912.08581 | preprint (journal version not verified) | against naive IPCW evaluation; in favor of the cutoff design with a proper metric | survival framing; evaluation/leakage |
+| [pdf](research/kvamme-2019-brier-score-administrative-censoring.pdf) | Kvamme, H., Borgan, Ø. "The Brier Score under Administrative Censoring: Problems and a Solution." JMLR 24(2):1–26, 2023; earlier version arXiv:1912.08581, 2019 | https://www.jmlr.org/papers/v24/19-1030.html | peer-reviewed (earlier arXiv copy indexed) | against naive IPCW evaluation; in favor of the cutoff design with a proper metric | survival framing; evaluation/leakage |
 | [pdf](research/xu-2026-pitfalls-administrative-censoring.pdf) | Xu, Y., Dai, H., Fernandez-Granda, C., Geras, K. J., Shen, Y. "Pitfalls of Administrative Censoring in Survival Models with Time-Indexed Inputs." arXiv:2607.10466, 2026 | https://arxiv.org/abs/2607.10466 | preprint | against / warning (administrative-cutoff leakage) | survival framing; evaluation/leakage |
 | [pdf](research/siemroth-2026-manufacturer-differences-hdd-reliability.pdf) | Siemroth, C., Park, Y. "Are There Manufacturer Differences in Hard-Drive Reliability?" IEEE Trans. Cloud Computing 14(2):1015–1024, 2026; arXiv:2606.29078 | https://doi.org/10.1109/TCC.2026.3679404 | peer-reviewed (arXiv copy saved) | in favor (survival framing on Backblaze); mixed (censoring assumptions) | survival framing; dataset validity |
 | — | Ahmed, J., Green, R. C. II. "Leveraging survival analysis in cost-aware deepnet for efficient hard drive failure prediction." Neural Computing and Applications 37(2):1089–1104, 2024/2025 | https://doi.org/10.1007/s00521-024-10479-6 | peer-reviewed | mixed | survival framing; imbalance/weighting |
