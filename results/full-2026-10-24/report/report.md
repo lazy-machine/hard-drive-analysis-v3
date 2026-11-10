@@ -38,7 +38,7 @@ ROC-AUC and PR-AUC on test snapshots whose status at the horizon is known, weigh
 | 365 d | survival model, SMART + context | 0.788 [0.774, 0.803] | 0.2989 [0.2702, 0.3250] | 0.01851 | 2.272% | 1784 |
 | 365 d | rule: critical SMART counters | 0.719 [0.706, 0.730] | 0.1145 [0.1026, 0.1319] | n/a | 2.272% | 1784 |
 
-![AUC by horizon](auc_by_horizon.png)
+[Archived figure: AUC by horizon](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-24/report/auc_by_horizon.png)
 
 ## Ranking over the whole future (concordance)
 
@@ -81,7 +81,7 @@ By actual time to failure (survival model, SMART + context):
 | 90-179 | 18146 | 13.5% | > 1 year |
 | 180-364 | 25961 | 7.8% | > 1 year |
 
-![remaining life](remaining_life.png)
+[Archived figure: remaining life](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-24/report/remaining_life.png)
 
 ## Early warning
 
@@ -94,13 +94,13 @@ The alert threshold is set on validation drives so that 1.0% of healthy drive-da
 | survival model, SMART + context | 1.63% | 4.19% | 1379/1784 |
 | rule: critical SMART counters | 1.47% | 2.04% | 661/1784 |
 
-![detection](detection.png)
+[Archived figure: detection](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-24/report/detection.png)
 
 ## Calibration
 
 Mean predicted failure probability vs the Kaplan-Meier observed share, by decile of predicted risk. Points on the diagonal mean that a predicted 5% really fails 5% of the time.
 
-![calibration](calibration.png)
+[Archived figure: calibration](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-24/report/calibration.png)
 
 **Calibration over time** (mean predicted vs observed risk of failing within 30 days, survival model, SMART + context). Validation drives are from the training era, test from 2024 on. A gap that appears only in the test years is drift:
 
@@ -139,6 +139,6 @@ Single-attribute ROC-AUC on train snapshots (fails within 30 days). 0.5 = no sig
 | smart_3_normalized | 0.406 | 100% |
 | smart_188_raw_d30 | 0.593 | 64% |
 
-![importance](importance.png)
+[Archived figure: importance](https://github.com/lazy-machine/hard-drive-analysis-v3/blob/2dc47742252d827c7ce3c5927efa19dc95424bcc/results/full-2026-10-24/report/importance.png)
 
 Also see `build/explore/km_by_counters.png` and `build/explore/models.csv`.
