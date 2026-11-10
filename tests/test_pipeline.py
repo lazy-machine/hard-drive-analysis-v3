@@ -56,7 +56,7 @@ def test_extract_dedups_and_cuts_at_failure(pipeline_run):
         WHERE c.failure_date IS NOT NULL AND p.date > c.failure_date""").fetchall()[0][0]
     assert after == 0
     # the VARCHAR-typed columns were cast, not dropped
-    filled = con.sql(f"SELECT count(smart_18_raw) FROM {panel}").fetchall()[0][0]
+    filled = con.sql(f"SELECT count(smart_22_raw) FROM {panel}").fetchall()[0][0]
     assert filled > 0
 
 
@@ -135,4 +135,4 @@ def test_unparseable_strings_are_counted(pipeline_run):
     project, _ = pipeline_run
     log = (project / "build" / "logs" / "extract.log").read_text()
     line = next(x for x in log.splitlines() if "strings that are not numbers" in x)
-    assert "'smart_18_raw': 0" not in line
+    assert "'smart_22_raw': 0" not in line

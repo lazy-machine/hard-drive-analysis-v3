@@ -1,0 +1,8 @@
+[     1.7s] 1902750 snapshots, models: binary_30d, hazard_nocritical, hazard_nosmart, hazard_smart, hazard_smart_w075, hazard_smart_w100, hazard_usage
+[     6.1s] scored binary_30d
+[    19.0s] scored hazard_nocritical
+[    41.1s] scored hazard_nosmart
+[    62.8s] scored hazard_smart
+[    72.9s] scored hazard_smart_w075
+[    81.4s] scored hazard_smart_w100
+[    89.2s] scored hazard_usage

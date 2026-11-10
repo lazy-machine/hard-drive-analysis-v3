@@ -29,8 +29,9 @@ WHY = {
                          "trends), the ones behind Backblaze's own replacement decisions. A "
                          "drive replaced because these counters rose is recorded as failed, so "
                          "part of the full model's SMART signal may be the replacement policy "
-                         "itself; the full model's gain over context only is an upper bound on "
-                         "what SMART adds beyond that policy.",
+                         "itself. Dropping the counters also drops their physical signal, and "
+                         "other features can still track them, so this is a sensitivity check, "
+                         "not a clean split of policy from physics.",
     "hazard_usage": "context plus the usage counters only (4, 9, 12, 193, 240-242: power-on "
                     "hours, start/stop and power cycles, load cycles, head flying hours, LBAs "
                     "written and read). Tests whether SMART helps only because it measures "
@@ -373,7 +374,7 @@ def _results(metrics, cohort, gate, preds, ref, labels) -> list[str]:
         ["compared with", f"{len(trained)} models and baselines (rows of the tables below)"],
         ["verification gate", f"{len(ran) - len(failed)}/{len(ran)} checks passed "
                               f"(data-verify {gate['version']}; {gate['counts']['skip']} "
-                              "skipped: their roles are not declared)"
+                              "skipped as not applicable; reasons in verify-report.md)"
                               + "".join(f"; {c['id']} "
                                         + ("warned" if c["severity"] == "warn" else "failed")
                                         for c in failed)],
@@ -433,12 +434,17 @@ def _results(metrics, cohort, gate, preds, ref, labels) -> list[str]:
         qc = life["quantile_calibration"]
         lines += ["", "## Remaining life", "",
                   "> For each snapshot the model names the day by which the failure "
-                  "probability reaches 10%, 50% and 90%. If the timing is right, the share "
-                  "that failed by that day matches the target. Below target = too "
-                  "pessimistic, above = too optimistic.", ""]
-        lines += table(["predicted day", "target", "failed by then", "snapshots"],
+                  "probability reaches 10%, 50% and 90%. If the timing is right, the weighted "
+                  "share of snapshots that failed by that day matches the target. Below target "
+                  "= too pessimistic, above = too optimistic. \"Known outcomes\" drops "
+                  "snapshots censored before their outcome is known, which favours early days; "
+                  "\"IPCW\" reweights the known ones instead, assuming censoring is unrelated "
+                  "to both the failure time and the predicted day. Neither corrects for "
+                  "retirement related to health.", ""]
+        lines += table(["predicted day", "target", "failed by then (IPCW)",
+                        "failed by then (known outcomes)", "snapshots"],
                        [[{"0.1": "10% day", "0.5": "median", "0.9": "90% day"}[q],
-                         _pct(qc[q]["target"], 0),
+                         _pct(qc[q]["target"], 0), _pct(_share(qc[q])),
                          _pct(qc[q]["share_failed_by_predicted_day"]), qc[q]["snapshots"]]
                         for q in ("0.1", "0.5", "0.9") if q in qc])
         lines += ["", f"Failing drives' snapshots with a median within a year: "
@@ -607,15 +613,24 @@ def _life(metrics, life_table, ref, labels) -> list[str]:
                       f"the predicted median of {_label(ref, labels)} is within a year; "
                       "otherwise the answer is \"more than a year\".")
     lines += ["", "**Are the predicted days right?** Among snapshots whose predicted day falls "
-              "within a year, the share that actually failed by that day should be close to "
-              "the target:", ""]
+              "within a year, the weighted share of snapshots that actually failed by that "
+              "day should be close to the target. A snapshot censored before its outcome is "
+              "known is dropped, which favours snapshots with an early day. So the first "
+              "share is IPCW: each known failure is weighted by 1 / P(still uncensored on its "
+              "failure day) and each known survivor by 1 / P(still uncensored the day before "
+              "its predicted day), from one Kaplan-Meier curve of the censoring time. That is "
+              "unbiased only if censoring is unrelated to both the failure time and the "
+              "predicted day; most censoring is the panel's end, which depends on the "
+              "snapshot date, so read it as an adjusted estimate. The share over known "
+              "outcomes only is in brackets. Neither corrects for retirement related to "
+              "health, which the retirement check below questions.", ""]
     body = []
     for r in life:
         cells = [_label(r["model"], labels)]
         for q in ("0.1", "0.5", "0.9"):
             c = r["quantile_calibration"][q]
-            cells.append(f"{_pct(c['share_failed_by_predicted_day'])} (target "
-                         f"{_pct(c['target'], 0)}, {c['snapshots']} snapshots)")
+            cells.append(f"{_pct(_share(c))} [{_pct(c['share_failed_by_predicted_day'])}] "
+                         f"(target {_pct(c['target'], 0)}, {c['snapshots']} snapshots)")
         body.append(cells)
     lines += table(["model", "failed by predicted 10% day", "failed by predicted median",
                     "failed by predicted 90% day"], body)
@@ -762,9 +777,11 @@ def _retirement(metrics, ref, labels) -> list[str]:
              "reporting before the end of the next year (left) and those still reporting "
              "(stayed). The survival estimates assume that leaving is unrelated to health; "
              "then both groups would carry about the same predicted risk. A ratio above 1 "
-             "means the drives that leave already looked riskier beforehand: censoring is "
-             "probably informative (drives are retired before they can fail), and the "
-             "observed failure risk is underestimated. The alert threshold is the main-budget "
+             "means the drives that leave already looked riskier beforehand. That suggests "
+             "censoring is informative (some drives may be retired before they would have "
+             "failed). If so, the observed failure risk is too low, by an amount this check "
+             "cannot measure: it does not say how many of them would have failed. The alert "
+             "threshold is the main-budget "
              f"threshold of {_label(ref, labels)}.", ""]
     lines += table(["split", "year", "drives left", "drives stayed",
                     f"mean predicted {H}-day risk, left", f"mean predicted {H}-day risk, stayed",
@@ -780,6 +797,13 @@ def _retirement(metrics, ref, labels) -> list[str]:
     return lines
 
 
+def _share(c: dict) -> float | None:
+    """Share failed by the predicted day: the censoring-weighted (IPCW) one when the
+    metrics have it, else the known-outcome one (metrics from before it was added)."""
+    ipcw = c.get("share_failed_by_predicted_day_ipcw")
+    return ipcw if ipcw is not None else c["share_failed_by_predicted_day"]
+
+
 def _timing_verdict(qc: dict, tolerance: float) -> str:
     """One sentence on whether predicted failure days are early, late or about right.
 
@@ -789,7 +813,7 @@ def _timing_verdict(qc: dict, tolerance: float) -> str:
     """
     off = []
     for c in qc.values():
-        share, target = c["share_failed_by_predicted_day"], c["target"]
+        share, target = _share(c), c["target"]
         if share is not None and c["snapshots"] >= 30:
             off.append((share - target) / max(target, 1 - target))
     if not off:
@@ -838,9 +862,9 @@ def _answer(disc, gains, metrics, ref, labels, tolerance) -> list[str]:
             "when counters 5, 187, 188, 197 or 198 rise, so those counters partly define the "
             "failure label. The full model's ROC-AUC exceeds the model without them by "
             f"{r['auc_gain']:+.3f} {_ci(r['auc_gain_ci'])} at {H} days (an interval above "
-            f"zero at {n_clear} of {len(nc)} horizons). The SMART gain above "
-            "is therefore an upper bound on what SMART adds beyond the operator's "
-            "replacement policy.")
+            f"zero at {n_clear} of {len(nc)} horizons). Part of the SMART gain above may "
+            "be the operator's policy rather than physics; this comparison cannot say how "
+            "much, because the dropped counters also carry physical signal.")
     short = disc[(disc["model"] == ref)].sort_values("horizon")
     if not short.empty:
         first, last = short.iloc[0], short.iloc[-1]
@@ -889,12 +913,14 @@ def _answer(disc, gains, metrics, ref, labels, tolerance) -> list[str]:
         qc = life["quantile_calibration"]
         out.append(
             f"- **When will it probably fail?** {_timing_verdict(qc, tolerance)} "
-            f"{_pct(qc['0.1']['share_failed_by_predicted_day'])} of drives failed by their "
-            f"predicted 10% day, {_pct(qc['0.5']['share_failed_by_predicted_day'])} by the "
-            f"predicted median and {_pct(qc['0.9']['share_failed_by_predicted_day'])} by the "
-            "predicted 90% day (targets 10/50/90%). For drives that do fail within a year it "
-            f"names a median within a year only {_pct(life['share_median_within_horizon'])} of "
-            "the time: most failures are not visible in SMART long in advance. For healthy "
+            f"{_pct(_share(qc['0.1']))} of the weighted snapshots had failed by their "
+            f"predicted 10% day, {_pct(_share(qc['0.5']))} by the "
+            f"predicted median and {_pct(_share(qc['0.9']))} by the "
+            "predicted 90% day (targets 10/50/90%; IPCW, assuming censoring is unrelated to "
+            "the failure time and to the predicted day). For drives that do fail within a "
+            f"year it names a median within a year only "
+            f"{_pct(life['share_median_within_horizon'])} of the time: the model rarely "
+            "names a failure day months in advance. For healthy "
             f"drives it says \"more than a year\" "
             f"{_pct(life['healthy_share_median_beyond_horizon'])} of the time.")
     b = _gain_row(gains, "binary_30d", H)
