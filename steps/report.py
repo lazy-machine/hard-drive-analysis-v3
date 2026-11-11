@@ -311,6 +311,7 @@ def report(ctx):
     lines += _full_follow_up(metrics, ref, labels)
     lines += _calibration_by_group(metrics, ref, labels)
     lines += _seed_spread(metrics)
+    lines += _validation_discrimination(metrics, labels)
     lines += ["", "## Which SMART attributes matter", "",
               "Single-attribute ROC-AUC on train snapshots (fails within "
               f"{meta_ref['binary_horizon']} days), computed only on the drive-days where "
@@ -1138,6 +1139,24 @@ def _calibration_by_group(metrics, ref, labels) -> list[str]:
     lines += table(["split", "year", "group", "weight share", "failing drives", "observed",
                     "predicted", "ratio"], body)
     return lines
+
+
+def _validation_discrimination(metrics, labels) -> list[str]:
+    rows = metrics.get("validation_discrimination") or []
+    if not rows:
+        return []
+    out = ["", "## Validation discrimination", "",
+           "ROC-AUC and PR-AUC on the validation drives (2016-2023, known-status snapshots), "
+           "without the test set: what a choice between variants, such as the training-weight "
+           "exponent, would rest on. Point estimates.", ""]
+    hs = sorted({r["horizon"] for r in rows})
+    by = {(r["model"], r["horizon"]): r for r in rows}
+    names = sorted({r["model"] for r in rows}, key=lambda m: (_rank(m), m))
+    out += table(["model"] + [f"{h} d ROC-AUC / PR-AUC" for h in hs],
+                 [[_label(n, labels)] + [f"{by[n, h]['auc']:.4f} / {by[n, h]['ap']:.4f}"
+                                         if (n, h) in by else "-" for h in hs]
+                  for n in names])
+    return out
 
 
 def _seed_spread(metrics) -> list[str]:

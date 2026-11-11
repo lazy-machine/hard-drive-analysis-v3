@@ -59,8 +59,8 @@ from common import (
 )
 from metrics import (
     DriveCells, RankedScores, bootstrap_drive_counts, censoring_survival, concordance,
-    ipcw_weights, km_failure, one_per_drive, uno_concordance, weighted_auc, weighted_brier,
-    weighted_quantile_threshold,
+    ipcw_weights, km_failure, one_per_drive, uno_concordance, weighted_auc,
+    weighted_average_precision, weighted_brier, weighted_quantile_threshold,
 )
 from survival import known_status
 
@@ -792,6 +792,29 @@ def weekly_alerts(val, test, D, models, horizon, rates, stride, targets, rounds,
             "matched_first_alert": matched_first_alert}
 
 
+def validation_discrimination(val, models, horizons):
+    """ROC-AUC and PR-AUC on the validation drives (2016-2023, known-status snapshots), the
+    numbers a choice made without the test set would rest on: e.g. which training-weight
+    exponent to keep. Point estimates only."""
+    d, e, w = (val[c].to_numpy() for c in ("duration_days", "event", "weight"))
+    rows = []
+    for h in horizons:
+        st = known_status(d, e, h)
+        mask = st >= 0
+        y = st[mask]
+        if y.size == 0 or y.min() == y.max():
+            continue
+        for name, info in models.items():
+            s = score_of(val, name, info, h)
+            if s is None:
+                continue
+            rows.append({"model": name, "horizon": h,
+                         "auc": weighted_auc(s[mask], y, w[mask]),
+                         "ap": weighted_average_precision(s[mask], y, w[mask]),
+                         "snapshots": int(mask.sum()), "positives": int(y.sum())})
+    return rows
+
+
 def windowed_alerts(test, D, models, horizon, stride, targets, rounds, seed, freq,
                     pair=("hazard_smart", "rule_counters")):
     """Per-drive alerts counted per calendar window (quarter "Q" or year "Y").
@@ -1285,6 +1308,8 @@ def evaluate(ctx):
         "composition": mix,
         "seed_spread": spread,
         "weekly_alerts": weekly,
+        "validation_discrimination": validation_discrimination(
+            val, {**models, **seeds}, label["horizons"]),
         "gain_retained_without_critical_counters": retained,
     })
     main = next(c for c in conc if c["model"] == reference)

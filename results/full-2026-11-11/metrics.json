@@ -22184,6 +22184,528 @@
     "silent_failing_drives": 368,
     "snapshots": 825321
   },
+  "validation_discrimination": [
+    {
+      "ap": 0.02807925667537323,
+      "auc": 0.8038900632400763,
+      "horizon": 7,
+      "model": "hazard_nocritical",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.0012517146270324413,
+      "auc": 0.714480407737862,
+      "horizon": 7,
+      "model": "hazard_nosmart",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.105352623616316,
+      "auc": 0.8885849150165824,
+      "horizon": 7,
+      "model": "hazard_smart",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.105352623616316,
+      "auc": 0.8885849150165824,
+      "horizon": 7,
+      "model": "hazard_smart_recent",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.0972060617894907,
+      "auc": 0.8832120743021086,
+      "horizon": 7,
+      "model": "hazard_smart_w075",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.08562204109227865,
+      "auc": 0.8806992616490917,
+      "horizon": 7,
+      "model": "hazard_smart_w100",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.001787070182995134,
+      "auc": 0.7291964705131424,
+      "horizon": 7,
+      "model": "hazard_usage",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.03073619138971779,
+      "auc": 0.8002309492348698,
+      "horizon": 7,
+      "model": "rule_counters",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.10982776028617477,
+      "auc": 0.8904600037588422,
+      "horizon": 7,
+      "model": "hazard_smart_seed1",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.11074416695440135,
+      "auc": 0.88949942024758,
+      "horizon": 7,
+      "model": "hazard_smart_seed2",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.11026463329406212,
+      "auc": 0.8897025563381453,
+      "horizon": 7,
+      "model": "hazard_smart_seed3",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.10758360857502289,
+      "auc": 0.8892825649483398,
+      "horizon": 7,
+      "model": "hazard_smart_seed4",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.16498180261672177,
+      "auc": 0.8674135404071078,
+      "horizon": 30,
+      "model": "binary_30d",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.03532193843285262,
+      "auc": 0.7830731554709279,
+      "horizon": 30,
+      "model": "hazard_nocritical",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.004991435753883212,
+      "auc": 0.7149444730138694,
+      "horizon": 30,
+      "model": "hazard_nosmart",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.1545263087983773,
+      "auc": 0.8659405521383744,
+      "horizon": 30,
+      "model": "hazard_smart",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.15453270238770006,
+      "auc": 0.865939048896956,
+      "horizon": 30,
+      "model": "hazard_smart_recent",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.15119477893228378,
+      "auc": 0.8614494520044862,
+      "horizon": 30,
+      "model": "hazard_smart_w075",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.14290602053334958,
+      "auc": 0.859132865084165,
+      "horizon": 30,
+      "model": "hazard_smart_w100",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.006150206425920399,
+      "auc": 0.7307007237722974,
+      "horizon": 30,
+      "model": "hazard_usage",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.06204318797028101,
+      "auc": 0.7614260606824748,
+      "horizon": 30,
+      "model": "rule_counters",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.16129987290190506,
+      "auc": 0.865417935861286,
+      "horizon": 30,
+      "model": "binary_30d_seed1",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.1649297811170281,
+      "auc": 0.8674524841190286,
+      "horizon": 30,
+      "model": "binary_30d_seed2",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.1635756090899816,
+      "auc": 0.8676781694950974,
+      "horizon": 30,
+      "model": "binary_30d_seed3",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.16307156915605137,
+      "auc": 0.8662326882718273,
+      "horizon": 30,
+      "model": "binary_30d_seed4",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.1549349470049831,
+      "auc": 0.8674705255516829,
+      "horizon": 30,
+      "model": "hazard_smart_seed1",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.15425603347666034,
+      "auc": 0.8668972124343046,
+      "horizon": 30,
+      "model": "hazard_smart_seed2",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.15647228127424603,
+      "auc": 0.8666904584678329,
+      "horizon": 30,
+      "model": "hazard_smart_seed3",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.15632245309642487,
+      "auc": 0.8666478170758515,
+      "horizon": 30,
+      "model": "hazard_smart_seed4",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.0458806538210579,
+      "auc": 0.7704453755283742,
+      "horizon": 90,
+      "model": "hazard_nocritical",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.01483496726650332,
+      "auc": 0.7163662272807799,
+      "horizon": 90,
+      "model": "hazard_nosmart",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.18839921161994944,
+      "auc": 0.8408518049626651,
+      "horizon": 90,
+      "model": "hazard_smart",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.18828503752254294,
+      "auc": 0.8408509951342287,
+      "horizon": 90,
+      "model": "hazard_smart_recent",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.19010934774046429,
+      "auc": 0.8381406948640822,
+      "horizon": 90,
+      "model": "hazard_smart_w075",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.18321247577891883,
+      "auc": 0.8361621857368537,
+      "horizon": 90,
+      "model": "hazard_smart_w100",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.01668008142917685,
+      "auc": 0.7354484942871643,
+      "horizon": 90,
+      "model": "hazard_usage",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.0976586208299392,
+      "auc": 0.7190390679913304,
+      "horizon": 90,
+      "model": "rule_counters",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.18836190443925818,
+      "auc": 0.8421057671964999,
+      "horizon": 90,
+      "model": "hazard_smart_seed1",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.1871370052324374,
+      "auc": 0.8417698253612231,
+      "horizon": 90,
+      "model": "hazard_smart_seed2",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.1881597554872991,
+      "auc": 0.8414673347625998,
+      "horizon": 90,
+      "model": "hazard_smart_seed3",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.19211963150220887,
+      "auc": 0.8412154624266173,
+      "horizon": 90,
+      "model": "hazard_smart_seed4",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.06186544118652617,
+      "auc": 0.7633446128449302,
+      "horizon": 180,
+      "model": "hazard_nocritical",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.026559202399374673,
+      "auc": 0.7179230062126402,
+      "horizon": 180,
+      "model": "hazard_nosmart",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.2144685723891096,
+      "auc": 0.8242730299142647,
+      "horizon": 180,
+      "model": "hazard_smart",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.21440978933667507,
+      "auc": 0.8242622728660446,
+      "horizon": 180,
+      "model": "hazard_smart_recent",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.21421239379399937,
+      "auc": 0.8227427945068327,
+      "horizon": 180,
+      "model": "hazard_smart_w075",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.20358998353541125,
+      "auc": 0.8209936739575758,
+      "horizon": 180,
+      "model": "hazard_smart_w100",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.030166175152918754,
+      "auc": 0.7371873613345398,
+      "horizon": 180,
+      "model": "hazard_usage",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.12454131526779223,
+      "auc": 0.6865609967026939,
+      "horizon": 180,
+      "model": "rule_counters",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.21309203917881198,
+      "auc": 0.825465164946727,
+      "horizon": 180,
+      "model": "hazard_smart_seed1",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.2130751396668675,
+      "auc": 0.8248266045063744,
+      "horizon": 180,
+      "model": "hazard_smart_seed2",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.21471194043624964,
+      "auc": 0.8247628437670937,
+      "horizon": 180,
+      "model": "hazard_smart_seed3",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.21633034790005282,
+      "auc": 0.824606795239133,
+      "horizon": 180,
+      "model": "hazard_smart_seed4",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.09672463421484437,
+      "auc": 0.7580875756361806,
+      "horizon": 365,
+      "model": "hazard_nocritical",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.054525299406776244,
+      "auc": 0.7200668960079798,
+      "horizon": 365,
+      "model": "hazard_nosmart",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.2512226149414675,
+      "auc": 0.8060135152145117,
+      "horizon": 365,
+      "model": "hazard_smart",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.2511438284875517,
+      "auc": 0.8060119075036014,
+      "horizon": 365,
+      "model": "hazard_smart_recent",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.24887353523280498,
+      "auc": 0.8036227902705766,
+      "horizon": 365,
+      "model": "hazard_smart_w075",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.23946981951639176,
+      "auc": 0.8029475428986755,
+      "horizon": 365,
+      "model": "hazard_smart_w100",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.06362144514641985,
+      "auc": 0.7403793859564433,
+      "horizon": 365,
+      "model": "hazard_usage",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.1532455218334939,
+      "auc": 0.6524367326010819,
+      "horizon": 365,
+      "model": "rule_counters",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.24991781799157287,
+      "auc": 0.807686354171435,
+      "horizon": 365,
+      "model": "hazard_smart_seed1",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.24983433267444904,
+      "auc": 0.806830312896847,
+      "horizon": 365,
+      "model": "hazard_smart_seed2",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.24957959862513193,
+      "auc": 0.8071497427929554,
+      "horizon": 365,
+      "model": "hazard_smart_seed3",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.2515677800163456,
+      "auc": 0.8067724392183027,
+      "horizon": 365,
+      "model": "hazard_smart_seed4",
+      "positives": 211643,
+      "snapshots": 879463
+    }
+  ],
   "weekly_alerts": {
     "any_critical_counter": {
       "matched": [

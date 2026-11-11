@@ -19,12 +19,12 @@
   "4.3 ALERTA ANTECIPADO": 25,
   "4.4 VIDA ÚTIL REMANESCENTE": 30,
   "4.5 CALIBRAÇÃO, DERIVA E RETIRADA DE DISCOS": 31,
-  "4.6 COMPARAÇÕES COMPLEMENTARES E SENSIBILIDADE": 34,
-  "4.7 RECOMENDAÇÕES": 34,
-  "5 CONSIDERAÇÕES FINAIS E LIMITAÇÕES DO ESTUDO": 36,
-  "REFERÊNCIAS": 38,
-  "APÊNDICE A – GUIA DE REPRODUÇÃO DOS RESULTADOS": 42,
-  "APÊNDICE B – ANÁLISES DE SENSIBILIDADE": 44
+  "4.6 COMPARAÇÕES COMPLEMENTARES E SENSIBILIDADE": 35,
+  "4.7 RECOMENDAÇÕES": 35,
+  "5 CONSIDERAÇÕES FINAIS E LIMITAÇÕES DO ESTUDO": 37,
+  "REFERÊNCIAS": 39,
+  "APÊNDICE A – GUIA DE REPRODUÇÃO DOS RESULTADOS": 43,
+  "APÊNDICE B – ANÁLISES DE SENSIBILIDADE": 45
  },
  "captions": {
   "Quadro 1 – Principais atributos SMART utilizados": 14,
@@ -39,12 +39,13 @@
   "Tabela 6 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente": 26,
   "Tabela 7 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem": 27,
   "Tabela 8 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência": 28,
-  "Figura 3 – Proporção de retratos de discos que falham com alerta, por dias até a falha (limiar do orçamento de 1%)": 29,
+  "Figura 3 – Proporção de retratos de discos que falham com alerta, por dias até a falha (limiar do orçamento de 1%)": 30,
   "Tabela 9 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha": 30,
-  "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 31,
-  "Tabela 10 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 32,
-  "Tabela 11 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 33,
-  "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 43
+  "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 32,
+  "Tabela 10 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 33,
+  "Tabela 11 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 34,
+  "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 44,
+  "Tabela 12 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes e com expoente 0,75": 45
  },
- "total_pages": 44
+ "total_pages": 46
 }

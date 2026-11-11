@@ -586,6 +586,30 @@ Survival minus classifier, per seed pair (seed 0 = the models above):
 | 3 | 30 d | -0.0059 | 0.0038 |
 | 4 | 30 d | -0.0077 | 0.0053 |
 
+## Validation discrimination
+
+ROC-AUC and PR-AUC on the validation drives (2016-2023, known-status snapshots), without the test set: what a choice between variants, such as the training-weight exponent, would rest on. Point estimates.
+
+| model | 7 d ROC-AUC / PR-AUC | 30 d ROC-AUC / PR-AUC | 90 d ROC-AUC / PR-AUC | 180 d ROC-AUC / PR-AUC | 365 d ROC-AUC / PR-AUC |
+|---|---|---|---|---|---|
+| survival model, SMART + context | 0.8886 / 0.1054 | 0.8659 / 0.1545 | 0.8409 / 0.1884 | 0.8243 / 0.2145 | 0.8060 / 0.2512 |
+| survival model, context only (no SMART) | 0.7145 / 0.0013 | 0.7149 / 0.0050 | 0.7164 / 0.0148 | 0.7179 / 0.0266 | 0.7201 / 0.0545 |
+| 30-day yes/no classifier (SMART + context) | - | 0.8674 / 0.1650 | - | - | - |
+| rule: critical SMART counters (5, 187, 197, 198) | 0.8002 / 0.0307 | 0.7614 / 0.0620 | 0.7190 / 0.0977 | 0.6866 / 0.1245 | 0.6524 / 0.1532 |
+| survival model, SMART without counters 5/187/188/197/198 | 0.8039 / 0.0281 | 0.7831 / 0.0353 | 0.7704 / 0.0459 | 0.7633 / 0.0619 | 0.7581 / 0.0967 |
+| survival model, context + usage counters | 0.7292 / 0.0018 | 0.7307 / 0.0062 | 0.7354 / 0.0167 | 0.7372 / 0.0302 | 0.7404 / 0.0636 |
+| survival model, SMART + context, weight power 0.75 | 0.8832 / 0.0972 | 0.8614 / 0.1512 | 0.8381 / 0.1901 | 0.8227 / 0.2142 | 0.8036 / 0.2489 |
+| survival model, SMART + context, weight power 1.0 | 0.8807 / 0.0856 | 0.8591 / 0.1429 | 0.8362 / 0.1832 | 0.8210 / 0.2036 | 0.8029 / 0.2395 |
+| survival model, SMART + context, recalibrated on the last year | 0.8886 / 0.1054 | 0.8659 / 0.1545 | 0.8409 / 0.1883 | 0.8243 / 0.2144 | 0.8060 / 0.2511 |
+| binary_30d_seed1 | - | 0.8654 / 0.1613 | - | - | - |
+| binary_30d_seed2 | - | 0.8675 / 0.1649 | - | - | - |
+| binary_30d_seed3 | - | 0.8677 / 0.1636 | - | - | - |
+| binary_30d_seed4 | - | 0.8662 / 0.1631 | - | - | - |
+| hazard_smart_seed1 | 0.8905 / 0.1098 | 0.8675 / 0.1549 | 0.8421 / 0.1884 | 0.8255 / 0.2131 | 0.8077 / 0.2499 |
+| hazard_smart_seed2 | 0.8895 / 0.1107 | 0.8669 / 0.1543 | 0.8418 / 0.1871 | 0.8248 / 0.2131 | 0.8068 / 0.2498 |
+| hazard_smart_seed3 | 0.8897 / 0.1103 | 0.8667 / 0.1565 | 0.8415 / 0.1882 | 0.8248 / 0.2147 | 0.8071 / 0.2496 |
+| hazard_smart_seed4 | 0.8893 / 0.1076 | 0.8666 / 0.1563 | 0.8412 / 0.1921 | 0.8246 / 0.2163 | 0.8068 / 0.2516 |
+
 ## Which SMART attributes matter
 
 Single-attribute ROC-AUC on train snapshots (fails within 30 days), computed only on the drive-days where the attribute is reported; "filled" is that share. 0.5 = no signal. Below 0.5 means lower values go with failure (normalized values fall as a drive degrades).

@@ -168,3 +168,16 @@ def test_windowed_alerts_count_drive_quarters():
     (r,) = out["matched"]
     assert r["nonfailing_share"] == 0.25       # only N1 in Q1 alerts
     assert r["share_failing_drives_alerted"] == 1.0
+
+
+def test_validation_discrimination_ranks_known_status_snapshots():
+    from evaluate import validation_discrimination
+    rows = [("a", "2023-01-01", 10, 1, 0.9, "failing", "X", "V", 4),
+            ("b", "2023-01-01", 300, 0, 0.1, "healthy", "X", "V", 4),
+            ("c", "2023-01-01", 300, 0, 0.95, "healthy", "X", "V", 4),
+            ("d", "2023-12-25", 6, 0, 0.5, "healthy", "X", "V", 4)]   # unknown at 30 days
+    val = _frame(rows)
+    out = validation_discrimination(val, {"m": {"kind": "binary", "horizons": [30]}}, [30])
+    (r,) = out
+    assert r["snapshots"] == 3 and r["positives"] == 1
+    assert np.isclose(r["auc"], 0.5)
