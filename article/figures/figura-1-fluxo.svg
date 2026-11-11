@@ -36,8 +36,9 @@
   <text class="desc" x="742" y="62">variáveis e rótulos</text>
 
   <rect class="portao" x="835" y="20" width="115" height="58" rx="4"/>
-  <text class="nome" x="892" y="44">verify</text>
-  <text class="desc" x="892" y="62">56 verificações</text>
+  <text class="nome" x="892" y="40">verify</text>
+  <text class="desc" x="892" y="57">56 verificações</text>
+  <text class="desc" x="892" y="70">aplicáveis</text>
 
   <path class="linha" d="M130,49 H163"/>
   <path class="linha" d="M300,49 H333"/>
@@ -54,9 +55,9 @@
   <text class="nome" x="100" y="164">explore</text>
   <text class="desc" x="100" y="182">análise exploratória</text>
 
-  <rect class="modelo" x="430" y="140" width="260" height="58" rx="4"/>
-  <text class="nome" x="560" y="164">train_* (7 modelos)</text>
-  <text class="desc" x="560" y="182">sobrevivência, classificador, ablações</text>
+  <rect class="modelo" x="400" y="140" width="320" height="58" rx="4"/>
+  <text class="nome" x="560" y="164">train_* (19 modelos)</text>
+  <text class="desc" x="560" y="182">sobrevivência, classificador, ablações, sementes</text>
 
 
   <!-- linha 3: previsão, avaliação, relatório -->
@@ -67,7 +68,7 @@
 
   <rect class="caixa" x="595" y="240" width="150" height="58" rx="4"/>
   <text class="nome" x="670" y="264">evaluate</text>
-  <text class="desc" x="670" y="282">métricas e <tspan font-style="italic">bootstrap</tspan></text>
+  <text class="desc" x="670" y="282">métricas e intervalos</text>
 
   <rect class="caixa" x="780" y="240" width="170" height="58" rx="4"/>
   <text class="nome" x="865" y="264">report</text>

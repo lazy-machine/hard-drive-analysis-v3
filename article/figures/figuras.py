@@ -2,7 +2,7 @@
 
 Uso, na raiz do repositório:  python3 article/figures/figuras.py
 
-Lê apenas results/full-2026-11-09-leakfix/ (metrics.json, detection.csv, calibration.csv) e grava
+Lê apenas results/full-2026-11-11/ (metrics.json, detection.csv, calibration.csv) e grava
 os arquivos SVG nesta pasta. Não recalcula nenhuma métrica.
 """
 
@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator, FuncFormatter, NullFormatter
 
 RAIZ = Path(__file__).resolve().parents[2]
-RUN = RAIZ / "results" / "full-2026-11-09-leakfix"
+RUN = RAIZ / "results" / "full-2026-11-11"
 SAIDA = Path(__file__).resolve().parent
 
 TEXTO, TEXTO_2, GRADE = "#0b0b0b", "#52514e", "#e4e3df"
@@ -31,7 +31,8 @@ MODELOS = {
 HORIZONTES = [7, 30, 90, 180, 365]
 # Horizonte é uma grandeza ordenada: um só matiz, do claro ao escuro, e um marcador por
 # horizonte, para que as curvas se distingam também sem cor.
-AZUIS = {7: "#86b6ef", 30: "#5598e7", 90: "#2a78d6", 180: "#184f95", 365: "#0d366b"}
+# Uma cor por horizonte, distinguíveis também em impressão (com os marcadores).
+AZUIS = {7: "#2a78d6", 30: "#1baf7a", 90: "#eda100", 180: "#eb6834", 365: "#7b3fb5"}
 MARCAS = {7: "o", 30: "s", 90: "^", 180: "D", 365: "v"}
 
 plt.rcParams.update({
@@ -67,11 +68,14 @@ def gravar(fig, nome: str) -> None:
     svg = caminho.read_text(encoding="utf-8").replace(
         "'Liberation Sans'", "Arial, 'Liberation Sans', Helvetica, sans-serif")
     caminho.write_text(svg, encoding="utf-8")
+    # Cópia em PNG para a versão Word do relatório (article/docx/build_docx.py).
+    fig.savefig(caminho.with_suffix(".png"), format="png", dpi=200, metadata={"Software": None})
     plt.close(fig)
 
 
 def figura_roc_auc(metricas: dict) -> None:
-    linhas = {(r["model"], r["horizon"]): r for r in metricas["discrimination"]}
+    # Estimador de acompanhamento completo, o mesmo da Tabela 2.
+    linhas = {(r["model"], r["horizon"]): r for r in metricas["full_follow_up"]}
     fig, ax = plt.subplots(figsize=(6.3, 3.7), layout="constrained")
     desloc = {"hazard_smart": -0.24, "rule_counters": -0.08,
               "hazard_nocritical": 0.08, "hazard_nosmart": 0.24}
@@ -104,26 +108,27 @@ def figura_alertas() -> None:
     with open(RUN / "detection.csv", newline="", encoding="utf-8") as f:
         registros = list(csv.DictReader(f))
     fig, ax = plt.subplots(figsize=(6.3, 3.5), layout="constrained")
+    modelos = ("hazard_smart", "rule_counters", "hazard_nosmart")
+    largura = 0.26
     faixas = None
-    for modelo in ("hazard_smart", "rule_counters", "hazard_nosmart"):
-        rotulo, cor, marcador = MODELOS[modelo]
+    for k, modelo in enumerate(modelos):
+        rotulo, cor, _ = MODELOS[modelo]
         dados = sorted((r for r in registros if r["model"] == modelo),
                        key=lambda r: int(r["lo"]))
         faixas = [r["days_before_failure"].replace("-", " a ") for r in dados]
         ys = [100 * float(r["alerted"]) for r in dados]
-        ax.plot(range(len(ys)), ys, color=cor, marker=marcador, linewidth=2,
-                markersize=6, markeredgecolor="white", markeredgewidth=0.8, label=rotulo)
-        # Valores nas pontas; o da regra fica abaixo do ponto final para não colidir.
-        abaixo = modelo == "rule_counters"
-        ax.annotate(virgula(ys[0], 0) + "%", (0, ys[0]), xytext=(0, 7),
-                    textcoords="offset points", ha="center", fontsize=8, color=TEXTO)
-        ax.annotate(virgula(ys[-1], 0) + "%", (len(ys) - 1, ys[-1]),
-                    xytext=(0, -13 if abaixo else 7), textcoords="offset points",
-                    ha="center", fontsize=8, color=TEXTO)
+        xs = [i + (k - 1) * largura for i in range(len(ys))]
+        # Barras separadas por faixa: as faixas têm larguras diferentes, então não se
+        # ligam os pontos por linhas, que sugeririam uma tendência contínua.
+        ax.bar(xs, ys, width=largura, color=cor, label=rotulo)
+        if modelo != "hazard_nosmart":
+            for x, y in zip(xs, ys, strict=True):
+                ax.annotate(virgula(y, 0), (x, y), xytext=(0, 2), textcoords="offset points",
+                            ha="center", fontsize=6.5, color=TEXTO)
     ax.set_xticks(range(len(faixas)), faixas)
     ax.set_ylim(0, 80)
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.0f}%"))
-    ax.set_xlabel("Dias até a falha")
+    ax.set_xlabel("Dias até a falha (faixas de largura desigual)")
     ax.set_ylabel("Retratos com alerta")
     ax.grid(axis="y", color=GRADE, linewidth=0.8)
     ax.set_axisbelow(True)
@@ -147,10 +152,6 @@ def figura_calibracao() -> None:
         ys = [float(r["observed_km"]) for r in dados]
         ax.plot(xs, ys, color=AZUIS[h], marker=MARCAS[h], linewidth=1.6, markersize=5,
                 markeredgecolor="white", markeredgewidth=0.6, label=f"{h} dias")
-        # Rótulo direto no decil de menor risco, onde as curvas não se sobrepõem.
-        ax.annotate(f"{h} dias", (xs[0], ys[0]), xytext=(-5, 5),
-                    textcoords="offset points", ha="right", va="bottom", fontsize=8,
-                    color=TEXTO)
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlim(*limites)

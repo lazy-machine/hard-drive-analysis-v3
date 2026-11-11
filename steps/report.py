@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 
 import matplotlib
 
@@ -307,6 +308,10 @@ def report(ctx):
     lines += _alerting(metrics, ref, labels)
     lines += _calibration(metrics, ref, labels)
     lines += _retirement(metrics, ref, labels)
+    lines += _full_follow_up(metrics, ref, labels)
+    lines += _calibration_by_group(metrics, ref, labels)
+    lines += _seed_spread(metrics)
+    lines += _validation_discrimination(metrics, labels)
     lines += ["", "## Which SMART attributes matter", "",
               "Single-attribute ROC-AUC on train snapshots (fails within "
               f"{meta_ref['binary_horizon']} days), computed only on the drive-days where "
@@ -629,7 +634,9 @@ def _life(metrics, life_table, ref, labels) -> list[str]:
         cells = [_label(r["model"], labels)]
         for q in ("0.1", "0.5", "0.9"):
             c = r["quantile_calibration"][q]
-            cells.append(f"{_pct(_share(c))} [{_pct(c['share_failed_by_predicted_day'])}] "
+            ci = c.get("share_failed_by_predicted_day_ipcw_ci")
+            cells.append(f"{est(_share(c), ci, 1, pct=True)} "
+                         f"[{_pct(c['share_failed_by_predicted_day'])}] "
                          f"(target {_pct(c['target'], 0)}, {c['snapshots']} snapshots)")
         body.append(cells)
     lines += table(["model", "failed by predicted 10% day", "failed by predicted median",
@@ -642,8 +649,10 @@ def _life(metrics, life_table, ref, labels) -> list[str]:
     lines += table(["model", "failing snapshots: median within a year",
                     "abs. error of median (days)", "all test snapshots: median within a year",
                     "healthy snapshots: median beyond a year"],
-                   [[_label(r["model"], labels), _pct(r["share_median_within_horizon"]),
-                     f"{_fmt(r['median_abs_error_days'], 0)} "
+                   [[_label(r["model"], labels),
+                     est(r["share_median_within_horizon"], r.get("share_median_within_horizon_ci"),
+                         1, pct=True),
+                     f"{est(r['median_abs_error_days'], r.get('median_abs_error_days_ci'), 0)} "
                      f"({r.get('median_abs_error_snapshots', 'n/a')} snapshots)",
                      _pct(r.get("share_finite_median_all")),
                      _pct(r["healthy_share_median_beyond_horizon"])] for r in life])
@@ -709,8 +718,164 @@ def _alerting(metrics, ref, labels) -> list[str]:
         lines += ["", "At the main budget no model's test false-alarm rate is above the budget "
                   "with an interval that excludes it, so the validation thresholds carry over "
                   "to the test years (see Calibration over time for the risk levels)."]
+    per_drive = [a for a in rows if a.get("share_nonfailing_drives_alerted") is not None]
+    if per_drive:
+        lines += ["", "**Per drive.** Non-failing drives = test drives that do not fail in the "
+                  "test period. Alerted = at least one alert on any of their test snapshots, "
+                  "which are weekly, so a daily monitor would alert at least as many. The "
+                  "last column divides the alerted non-failing drives by the failing drives "
+                  f"alerted in their last {main['horizon']} days (both weighted to the fleet).",
+                  ""]
+        lines += table(
+            ["budget", "model", "non-failing drives alerted", "per failing drive alerted"],
+            [[_pct(a["budget"], 1), _label(a["model"], labels),
+              est(a["share_nonfailing_drives_alerted"],
+                  a.get("share_nonfailing_drives_alerted_ci"), 1, pct=True),
+              est(a.get("nonfailing_alerted_per_failing_alerted"),
+                  a.get("nonfailing_alerted_per_failing_alerted_ci"), 1)]
+             for a in per_drive])
+    weekly = metrics.get("weekly_alerts")
+    if weekly and weekly.get("budgets"):
+        shown_w = [b for b in weekly["budgets"] if b["model"] in shown]
+        lines += ["", f"**Per drive, one schedule.** Every drive judged only on its weekly "
+                  f"snapshots (every {weekly['stride_days']} days): a failing drive is caught if "
+                  f"one in its last {main['horizon']} days alerts "
+                  f"({weekly['failing_drives_checked']} of {weekly['failing_drives_total']} "
+                  "failing drives have one), a non-failing drive is a false alarm if any of its "
+                  "test-period ones alerts. Thresholds from validation, as above.", ""]
+        lines += table(["budget", "model", "failing drives caught", "non-failing drives alerted"],
+                       [[_pct(b["budget"], 1), _label(b["model"], labels),
+                         est(b["share_failing_drives_alerted"],
+                             b.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                         est(b["share_nonfailing_drives_alerted"],
+                             b.get("share_nonfailing_drives_alerted_ci"), 1, pct=True)]
+                        for b in _sorted(shown_w, "budget")])
+        matched = [m for m in weekly.get("matched", []) if m["model"] in shown]
+        if matched:
+            lines += ["", "At the same share of non-failing drives alerted (each model's threshold "
+                      "set on test for that share, a point on a drive-level ROC curve):", ""]
+            lines += table(["non-failing drives alerted", "model", "failing drives caught",
+                            "difference vs the rule (paired)"],
+                           [[_pct(m["nonfailing_share"], 2), _label(m["model"], labels),
+                             est(m["share_failing_drives_alerted"],
+                                 m.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                             est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                             if "difference" in m else "-"]
+                            for m in sorted(matched, key=lambda m: (m["target_nonfailing_share"],
+                                                                    _rank(m["model"])))])
+        first = [m for m in weekly.get("matched_first_alert", []) if m["model"] in shown]
+        if first:
+            lines += ["", "**First alert, any lead time.** Each drive counted once over the test "
+                      "period; a failing drive "
+                      f"({weekly.get('failing_drives_any_lead', '?')}) is caught if any weekly "
+                      "check before its failure alerts. Thresholds set on test for each share; "
+                      "lead = days from the first alert to the failure (quartiles).", ""]
+            lines += table(["non-failing drives alerted", "model", "failing drives caught",
+                            "difference vs the rule (paired)", "lead days (25/50/75%)",
+                            f"first alert within {main['horizon']} days"],
+                           [[_pct(m["nonfailing_share"], 2), _label(m["model"], labels),
+                             est(m["share_failing_drives_alerted"],
+                                 m.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                             est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                             if "difference" in m else "-",
+                             "/".join(f"{q:.0f}" for q in
+                                      m.get("first_alert_lead_days_quartiles", [])) or "-",
+                             _pct(m["share_caught_first_alerted_within_horizon"], 1)
+                             if "share_caught_first_alerted_within_horizon" in m else "-"]
+                            for m in sorted(first, key=lambda m: (m["target_nonfailing_share"],
+                                                                  _rank(m["model"])))])
+    for win in (weekly or {}).get("per_window", []):
+        matched = [m for m in win["matched"] if m["model"] in shown]
+        if not matched:
+            continue
+        name = {"Q": "quarter", "Y": "year"}.get(win["window"], win["window"])
+        lines += ["", f"**Per drive and {name}.** The unit is a drive in one {name}: a non-failing "
+                  f"unit ({win['negative_units']}) is alerted if a weekly check in that {name} "
+                  f"fires; a failing drive ({win['positive_units']}) is caught on its weekly "
+                  "checks "
+                  f"in its last {main['horizon']} days. Thresholds set on test for each share:", ""]
+        lines += table(["non-failing units alerted", "model", "failing drives caught",
+                        "difference vs the rule (paired)"],
+                       [[_pct(m["nonfailing_share"], 2), _label(m["model"], labels),
+                         est(m["share_failing_drives_alerted"],
+                             m.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                         est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                         if "difference" in m else "-"]
+                        for m in sorted(matched, key=lambda m: (m["target_nonfailing_share"],
+                                                                _rank(m["model"])))])
+        later = win.get("matched_without_later_failures") or []
+        if later:
+            lines += ["", f"Share of the alerted non-failing {name}-units that belong to drives "
+                      "failing later, and the comparison with those units left out "
+                      f"({win.get('negative_units_of_drives_failing_later', '?')} units, "
+                      f"{_pct(win.get('negative_weight_share_of_drives_failing_later', 0), 2)} "
+                      "of the negative weight):", ""]
+            full = {(m["model"], m["target_nonfailing_share"]): m for m in matched}
+            lines += table(["non-failing units alerted", "model", "alerts on later failures",
+                            "failing drives caught without them", "difference vs the rule"],
+                           [[_pct(m["target_nonfailing_share"], 1), _label(m["model"], labels),
+                             _pct(full[m["model"], m["target_nonfailing_share"]]
+                                  ["alerted_negative_share_of_drives_failing_later"], 1)
+                             if (m["model"], m["target_nonfailing_share"]) in full else "-",
+                             est(m["share_failing_drives_alerted"],
+                                 m.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                             est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                             if "difference" in m else "-"]
+                            for m in sorted(later, key=lambda m: (m["target_nonfailing_share"],
+                                                                  _rank(m["model"])))])
+    zero = (weekly or {}).get("any_critical_counter")
+    if zero:
+        def pt(key):
+            return est(zero[key], zero.get(f"{key}_ci"), 1, pct=True)
+
+        lines += ["", "**Any critical counter above zero** (a simplified proxy of the operator's "
+                  "use, the rule's "
+                  f"score > 0): {pt('share_nonfailing_drives_alerted')} of non-failing drives "
+                  f"alerted; failing drives caught {pt('share_failing_drives_alerted')} (last "
+                  f"30 days) and {pt('share_failing_drives_alerted_any_lead')} (any lead). "
+                  "Models at the same share of non-failing drives alerted:", ""]
+        rows = [[kind, _label(m["model"], labels),
+                 est(m["share_failing_drives_alerted"], m.get("share_failing_drives_alerted_ci"),
+                     1, pct=True),
+                 est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                 if "difference" in m else "-"]
+                for kind, key in (("last 30 days", "matched"), ("any lead", "matched_first_alert"))
+                for m in zero[key]]
+        lines += table(["failing drives counted", "model", "failing drives caught",
+                        "difference vs the rule (paired)"], rows)
+    lines += _alert_seed_range(weekly or {}, ref)
     lines += ["", "![detection](detection.png)"]
     return lines
+
+
+def _alert_seed_range(weekly, ref) -> list[str]:
+    """Per-drive differences vs the rule across the reference model's seed replicates."""
+    if not ref:
+        return []
+    family = re.compile(rf"^{re.escape(ref)}(_seed\d+)?$")
+    tables = [("whole period, last 30 days", weekly.get("matched", [])),
+              ("whole period, any lead", weekly.get("matched_first_alert", []))]
+    tables += [({"Q": "quarter", "Y": "year"}.get(w["window"], w["window"]), w["matched"])
+               for w in weekly.get("per_window", [])]
+    rows = []
+    for label, tab in tables:
+        for target in sorted({m["target_nonfailing_share"] for m in tab}):
+            ds = [m for m in tab if family.match(m["model"])
+                  and m["target_nonfailing_share"] == target and "difference" in m]
+            if len(ds) < 2:
+                continue
+            diffs = [m["difference"] for m in ds]
+            above = sum(m["difference_ci"][0] > 0 for m in ds if m.get("difference_ci"))
+            below = sum(m["difference_ci"][1] < 0 for m in ds if m.get("difference_ci"))
+            rows.append([label, _pct(target, 1), str(len(ds)),
+                         f"{100 * min(diffs):+.1f} to {100 * max(diffs):+.1f}",
+                         f"{above} of {len(ds)}", f"{below} of {len(ds)}"])
+    if not rows:
+        return []
+    return ["", f"**Seed replicates.** Per-drive difference vs the rule (percentage points) of "
+            f"{ref} and its seed replicates, at the same share of non-failing units alerted:",
+            ""] + table(["count", "non-failing alerted", "seeds", "difference range",
+                         "intervals above zero", "intervals below zero"], rows)
 
 
 def _calibration(metrics, ref, labels) -> list[str]:
@@ -944,3 +1109,95 @@ def _answer(disc, gains, metrics, ref, labels, tolerance) -> list[str]:
             f"gains {rule['auc_gain']:+.3f} ROC-AUC {_ci(rule['auc_gain_ci'])} at "
             f"{rule['horizon']} days.")
     return out
+
+
+def _full_follow_up(metrics, ref, labels) -> list[str]:
+    rows = metrics.get("full_follow_up", [])
+    if not rows:
+        return []
+    gains = {(g["horizon"], g["other"]): g for g in metrics.get("full_follow_up_gain", [])}
+    main = {(r["horizon"], r["model"]): r for r in metrics["discrimination"]}
+    lines = ["", "## Full follow-up", "",
+             "The main estimator keeps every snapshot whose status at the horizon is known, "
+             "so failures near the panel's end count while healthy snapshots of the same "
+             "days drop out. Here only snapshots dated at least H - 1 days before the panel's "
+             "last day count, for positives and negatives alike (drives retired inside the "
+             "horizon are still dropped). Gain = reference minus the model in the row, paired.",
+             ""]
+    body = []
+    for r in _sorted([r for r in rows if r["model"] in CORE], "horizon"):
+        g = gains.get((r["horizon"], r["model"]))
+        m = main.get((r["horizon"], r["model"]))
+        body.append([f"{r['horizon']} d", _label(r["model"], labels), r["last_snapshot_date"],
+                     _pct(r["base_rate"], 3), _pct(r["observed_km"], 3),
+                     est(r["auc"], r["auc_ci"]), _fmt(m["auc"]) if m else "n/a",
+                     est(r["ap"], r["ap_ci"], 4),
+                     est(g["auc_gain"], g["auc_gain_ci"], sign=True) if g else "-"])
+    lines += table(["horizon", "model", "snapshots up to", "positive share",
+                    "observed (Kaplan-Meier)", "ROC-AUC", "ROC-AUC, main estimator", "PR-AUC",
+                    f"ROC-AUC gain of {_label(ref, labels)}"], body)
+    return lines
+
+
+def _calibration_by_group(metrics, ref, labels) -> list[str]:
+    rows = [r for r in metrics.get("calibration_by_group", []) if r["split"] == "test"
+            or r["year"] == max(x["year"] for x in metrics["calibration_by_group"]
+                                if x["split"] == "val")]
+    if not rows:
+        return []
+    mix = {(r["split"], r["year"], r["group"]): r["weight_share"]
+           for r in metrics.get("composition", [])}
+    lines = ["", "## Calibration by group", "",
+             f"Predicted / observed {rows[0]['horizon']}-day risk of {_label(ref, labels)} by "
+             "part of the fleet, for the last validation year and the test years (95% drive "
+             "bootstrap). Weight share = the group's share of the year's weighted snapshots.",
+             ""]
+    body = [[r["split"], r["year"], r["group"],
+             _pct(mix.get((r["split"], r["year"], r["group"])), 1),
+             r["failing_drives"], _pct(r["observed_km"], 3), _pct(r["predicted"], 3),
+             est(r["ratio"], r.get("ratio_ci"), 2)]
+            for r in sorted(rows, key=lambda r: (r["split"] != "val", r["year"], r["group"]))]
+    lines += table(["split", "year", "group", "weight share", "failing drives", "observed",
+                    "predicted", "ratio"], body)
+    return lines
+
+
+def _validation_discrimination(metrics, labels) -> list[str]:
+    rows = metrics.get("validation_discrimination") or []
+    if not rows:
+        return []
+    out = ["", "## Validation discrimination", "",
+           "ROC-AUC and PR-AUC on the validation drives (2016-2023, known-status snapshots), "
+           "without the test set: what a choice between variants, such as the training-weight "
+           "exponent, would rest on. Point estimates.", ""]
+    hs = sorted({r["horizon"] for r in rows})
+    by = {(r["model"], r["horizon"]): r for r in rows}
+    names = sorted({r["model"] for r in rows}, key=lambda m: (_rank(m), m))
+    out += table(["model"] + [f"{h} d ROC-AUC / PR-AUC" for h in hs],
+                 [[_label(n, labels)] + [f"{by[n, h]['auc']:.4f} / {by[n, h]['ap']:.4f}"
+                                         if (n, h) in by else "-" for h in hs]
+                  for n in names])
+    return out
+
+
+def _seed_spread(metrics) -> list[str]:
+    spread = metrics.get("seed_spread") or {}
+    summary = spread.get("summary", [])
+    if not summary:
+        return []
+    lines = ["", "## Training variation (seeds)", "",
+             "The reference survival model and the 30-day classifier retrained with other "
+             "seeds, all else equal. Point estimates on the known-status test snapshots.", ""]
+    lines += table(["model", "horizon", "trainings", "ROC-AUC min-max", "ROC-AUC sd",
+                    "PR-AUC min-max", "PR-AUC sd"],
+                   [[r["family"], f"{r['horizon']} d", r["replicates"],
+                     f"{_fmt(r['auc_min'])}-{_fmt(r['auc_max'])}", _fmt(r["auc_std"], 4),
+                     f"{_fmt(r['ap_min'], 4)}-{_fmt(r['ap_max'], 4)}", _fmt(r["ap_std"], 4)]
+                    for r in sorted(summary, key=lambda r: (r["family"], r["horizon"]))])
+    diffs = spread.get("pair_differences", [])
+    if diffs:
+        lines += ["", "Survival minus classifier, per seed pair (seed 0 = the models above):", ""]
+        lines += table(["seed", "horizon", "ROC-AUC difference", "PR-AUC difference"],
+                       [[d["seed_index"], f"{d['horizon']} d", _fmt(d["auc_diff"], 4),
+                         _fmt(d["ap_diff"], 4)] for d in diffs])
+    return lines

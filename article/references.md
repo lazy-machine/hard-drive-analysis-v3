@@ -17,6 +17,7 @@ The bibliography in `main-article.md` also cites these sources, which were not i
 
 | file | citation | link | type | aspect |
 |---|---|---|---|---|
+| — | Kaplan, E. L., Meier, P. "Nonparametric estimation from incomplete observations." Journal of the American Statistical Association 53(282):457–481, 1958 | https://doi.org/10.1080/01621459.1958.10501452 | peer-reviewed; local full text not obtained | survival framing |
 | — | Harrell, F. E., et al. "Evaluating the yield of medical tests." JAMA 247(18):2543–2546, 1982 | https://doi.org/10.1001/jama.1982.03320430047030 | peer-reviewed; local full text not obtained | evaluation/leakage |
 | — | Ke, G., et al. "LightGBM: A Highly Efficient Gradient Boosting Decision Tree." NeurIPS 30, 2017, pp. 3146–3154 | https://proceedings.neurips.cc/paper/2017/hash/6449f44a102fde848669bdd9eb6b76fa-Abstract.html | peer-reviewed; publisher provides PDF | modeling |
 | — | Smartmontools. "smartctl(8)" and "drivedb.h", version 7.5, 2025 | https://www.smartmontools.org/ | software manual and drive database; website access denied during the 2026-11-10 check | SMART encoding |

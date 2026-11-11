@@ -55,11 +55,11 @@ What the run shows:
   2.02 times the predicted risk of the ones that stayed (test year 2024). The observed
   failure risk is then probably too low.
 
-Differences of a few thousandths between models are ties: two full runs that differed
-in 10 of 7.6 million training snapshots moved the 30-day ROC-AUC by 0.002.
+Differences of a few thousandths between models are within training noise: five trainings
+of the reference model with different seeds gave a 30-day ROC-AUC of 0.871 to 0.877.
 
 Every table and the full explanation are in
-[`results/full-2026-11-09-leakfix/report/`](results/full-2026-11-09-leakfix/report/)
+[`results/full-2026-11-11/report/`](results/full-2026-11-11/report/)
 (`results.md` and `analysis.md`). Earlier runs are indexed in
 [`results/README.md`](results/README.md).
 

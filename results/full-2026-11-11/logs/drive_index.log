@@ -1,0 +1,19 @@
+[    17.2s] sha256 4/22 GiB
+[    35.7s] sha256 8/22 GiB
+[    43.5s] sha256 12/22 GiB
+[    58.8s] sha256 16/22 GiB
+[    76.2s] sha256 20/22 GiB
+[    86.2s] sha256 ok (d43984e8200893ebdd1bc739cabff8e05dc759aeb572dc2adb5aaad29e40b556)
+[    89.3s] panel 2016-01-01..2025-12-31, 120 chunks
+[   118.6s] chunk 12/120 (2016-12-01)
+[   151.4s] chunk 24/120 (2017-12-01)
+[   186.2s] chunk 36/120 (2018-12-01)
+[   221.8s] chunk 48/120 (2019-12-01)
+[   259.3s] chunk 60/120 (2020-12-01)
+[   298.6s] chunk 72/120 (2021-12-01)
+[   340.1s] chunk 84/120 (2022-12-01)
+[   383.8s] chunk 96/120 (2023-12-01)
+[   430.5s] chunk 108/120 (2024-12-01)
+[   485.1s] chunk 120/120 (2025-12-01)
+[   487.6s] rounded capacity varies on 12 drives; 10 report none (model's used)
+[   487.7s] 478464 drives, 26679 with a failure, 646777037 rows

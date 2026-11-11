@@ -1,0 +1,26 @@
+▶ hard-drive-analysis · 24 steps · pipeline.toml
+[ 1/24] drive_index               ↷ cached            drives=478464 failed=26679 rows=646777037 capacity_varies=12 capacity_missing=10
+[ 2/24] cohort                    ↷ cached            scale=full drives=57309 failing=22230
+[ 3/24] extract                   ↷ cached            rows=58678959 drives=57309 cohort_drives=57309 cast_failures={'smart_22_raw': 0, 'smart_23_normalized': 0, 'smart_24_normalized': 0}
+[ 4/24] snapshots                 ↷ cached            test=825321 val=1077429 train=7597961 events=3215526 features=64
+[ 5/24] verify                    ↷ cached            checks=56 passed=55 warnings=1 skipped=14 warned=assert.cohort_drives_have_snapshots
+[ 6/24] explore                   ✓ ran       64.54s  models=56 top_feature=smart_187_raw top_auc=0.6986  (code changed)
+[ 7/24] train_hazard_smart        ↷ cached            best_iter=419 val_logloss=0.03726 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[ 8/24] train_hazard_nosmart      ↷ cached            best_iter=468 val_logloss=0.04253 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[ 9/24] train_binary_30d          ↷ cached            best_iter=602 val_logloss=0.03746 train_rows=7475517 train_events=354044 val_rows=534678 val_events=25736
+[10/24] train_hazard_nocritical   ↷ cached            best_iter=284 val_logloss=0.04124 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[11/24] train_hazard_usage        ↷ cached            best_iter=219 val_logloss=0.04224 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[12/24] train_hazard_smart_w075   ↷ cached            best_iter=213 val_logloss=0.02079 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[13/24] train_hazard_smart_w100   ↷ cached            best_iter=191 val_logloss=0.01166 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[14/24] train_hazard_smart_seed1  ↷ cached            best_iter=688 val_logloss=0.03724 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[15/24] train_hazard_smart_seed2  ↷ cached            best_iter=613 val_logloss=0.03725 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[16/24] train_hazard_smart_seed3  ↷ cached            best_iter=549 val_logloss=0.03724 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[17/24] train_hazard_smart_seed4  ↷ cached            best_iter=510 val_logloss=0.03723 train_rows=48083205 train_events=1440968 val_rows=3435318 val_events=105110
+[18/24] train_binary_30d_seed1    ↷ cached            best_iter=371 val_logloss=0.03759 train_rows=7475517 train_events=354044 val_rows=534678 val_events=25736
+[19/24] train_binary_30d_seed2    ↷ cached            best_iter=656 val_logloss=0.03746 train_rows=7475517 train_events=354044 val_rows=534678 val_events=25736
+[20/24] train_binary_30d_seed3    ↷ cached            best_iter=490 val_logloss=0.03746 train_rows=7475517 train_events=354044 val_rows=534678 val_events=25736
+[21/24] train_binary_30d_seed4    ↷ cached            best_iter=380 val_logloss=0.03749 train_rows=7475517 train_events=354044 val_rows=534678 val_events=25736
+[22/24] predict                   ↷ cached            rows=1902750 models=16
+[23/24] evaluate                  ✓ ran      558.00s  auc30_hazard_smart=0.8767 c_hazard_smart=0.7623  (code changed)
+[24/24] report                    ✓ ran        3.23s  results_lines=87 analysis_lines=480  (inputs changed: explore, metrics)
+✓ completed · 3 ran · 21 cached · 626.38s
