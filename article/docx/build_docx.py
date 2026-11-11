@@ -14,7 +14,7 @@ they are left blank.
 
 Only the Markdown that main-article.md uses is supported: # and ## headings, paragraphs,
 "a)" list items, pipe tables, images, **bold**, *italic*, `code`, captions in bold
-("**Tabela 1 – ...**") and "Fonte:" lines. Standard library only.
+("**Tabela 1 – ...**"), "Fonte:" and "Nota:" lines. Standard library only.
 """
 
 from __future__ import annotations
@@ -170,7 +170,8 @@ class Doc:
                '<w:tblCellMar><w:left w:w="70" w:type="dxa"/><w:right w:w="70" w:type="dxa"/></w:tblCellMar>'
                '</w:tblPr><w:tblGrid>' + "".join(f'<w:gridCol w:w="{w}"/>' for w in widths)
                + "</w:tblGrid>"]
-        whole = len(rows) <= KEEP_WHOLE
+        short_cells = max((len(plain(c)) for r in rows[1:] for c in r), default=0) <= 26
+        whole = len(rows) <= KEEP_WHOLE or (short_cells and len(rows) <= 14)
         for i, r in enumerate(rows):
             head = i == 0
             keep = whole or i < 3 or i >= len(rows) - 3   # no lone rows at either end
@@ -332,7 +333,8 @@ def build(pages: dict) -> tuple[str, Doc, str]:
         text_xml.append(doc.heading(1, title, center=center))
         in_refs = title == "REFERÊNCIAS"
         pending = None                                   # caption kind waiting for its table
-        for b in blocks(rest):
+        section = blocks(rest)
+        for k, b in enumerate(section):
             if b.startswith("## "):
                 text_xml.append(doc.heading(2, b[3:].strip()))
             elif b.startswith("|"):
@@ -350,7 +352,13 @@ def build(pages: dict) -> tuple[str, Doc, str]:
                                      + inline(m.group(3), size=20), jc="center", first=0,
                                      before=240, after=120, keep_next=True))
             elif b.startswith("Fonte:"):
-                text_xml.append(para(inline(b, size=20), jc="left", first=0, before=60, after=240,
+                # A "Nota:" paragraph may follow the source line; the two stay together.
+                noted = k + 1 < len(section) and section[k + 1].startswith("Nota:")
+                text_xml.append(para(inline(b, size=20), jc="left", first=0, before=60,
+                                     after=0 if noted else 240, keep_lines=True,
+                                     keep_next=noted))
+            elif b.startswith("Nota:"):
+                text_xml.append(para(inline(b, size=20), jc="left", first=0, before=0, after=240,
                                      keep_lines=True))
             elif in_refs:
                 text_xml.append(para(inline(b), jc="left", first=0, after=240, keep_lines=True))
