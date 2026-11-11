@@ -206,7 +206,7 @@ Kvamme e Borgan (2023) mostram que, nesse caso, o escore de Brier ponderado pelo
 
 ## 2.5 AMOSTRAGEM, PONDERAÇÃO E CALIBRAÇÃO
 
-Com eventos raros e dados volumosos, é comum amostrar todos os eventos e uma fração dos não eventos, corrigindo depois as estimativas por ajuste das probabilidades a priori ou por ponderação pelo inverso da probabilidade de inclusão (KING; ZENG, 2001). Sugiyama *et al.* (2007), no contexto de mudança na distribuição das covariáveis, observam que a ponderação completa é consistente, mas pode ter variância elevada, e propõem elevar os pesos de importância a um expoente entre 0 e 1, que controla a troca entre viés e variância; os autores recomendam escolher esse expoente por validação cruzada ponderada.
+Com eventos raros e dados volumosos, é comum amostrar todos os eventos e uma fração dos não eventos, corrigindo depois as estimativas por ajuste das probabilidades a priori ou por ponderação pelo inverso da probabilidade de inclusão (KING; ZENG, 2001). Sugiyama *et al.* (2007), no contexto de mudança na distribuição das covariáveis, observam que a ponderação completa é consistente, mas pode ter variância elevada, e descrevem uma variante que eleva os pesos de importância a um expoente entre 0 e 1, que controla a troca entre viés e variância; os autores propõem escolher esse expoente por validação cruzada ponderada pela importância.
 
 Alterar o peso relativo das classes tem custo na calibração: Van den Goorbergh *et al.* (2022) verificaram que correções de desbalanceamento levaram a superestimação acentuada das probabilidades sem melhorar a ROC-AUC. Uma recalibração posterior pode corrigir a distorção. Niculescu-Mizil e Caruana (2005) mostram que árvores com *boosting* produzem distorção em forma sigmoide, corrigida pelo escalonamento de Platt, um ajuste logístico de dois parâmetros.
 
@@ -768,7 +768,7 @@ g) **execução**: executar `uv run data-pipeline`; o progresso das etapas longa
 
 h) **resultados**: o relatório gerado fica em `build/report/` (`results.md` com os números e `analysis.md` com as tabelas detalhadas); a cópia da execução usada neste relatório está em `results/full-2026-11-11/`;
 
-i) **figuras e versão Word**: as Figuras 2 a 4 são geradas a partir dessa cópia por `python3 article/figures/figuras.py`, e o documento no modelo da FATEC, por `python3 article/docx/build_docx.py`.
+i) **figuras e versão Word**: as Figuras 2 a 4 são geradas a partir dessa cópia por `uv run python article/figures/figuras.py`, e o documento no modelo da FATEC, por `python3 article/docx/build_docx.py`.
 
 As regras compartilhadas entre etapas (divisão dos conjuntos, intervalos de tempo, variáveis e parâmetros de avaliação) ficam em `config/study.toml`, e os hiperparâmetros de cada modelo, em `pipeline.toml`.
 
