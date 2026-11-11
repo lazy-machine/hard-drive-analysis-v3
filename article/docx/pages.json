@@ -17,14 +17,14 @@
   "4.1 GANHO DOS ATRIBUTOS SMART": 22,
   "4.2 POLÍTICA DE SUBSTITUIÇÃO, USO E FALHAS SILENCIOSAS": 24,
   "4.3 ALERTA ANTECIPADO": 25,
-  "4.4 VIDA ÚTIL REMANESCENTE": 30,
-  "4.5 CALIBRAÇÃO, DERIVA E RETIRADA DE DISCOS": 31,
-  "4.6 COMPARAÇÕES COMPLEMENTARES E SENSIBILIDADE": 34,
-  "4.7 RECOMENDAÇÕES": 35,
-  "5 CONSIDERAÇÕES FINAIS E LIMITAÇÕES DO ESTUDO": 36,
+  "4.4 VIDA ÚTIL REMANESCENTE": 29,
+  "4.5 CALIBRAÇÃO, DERIVA E RETIRADA DE DISCOS": 30,
+  "4.6 COMPARAÇÕES COMPLEMENTARES E SENSIBILIDADE": 33,
+  "4.7 RECOMENDAÇÕES": 34,
+  "5 CONSIDERAÇÕES FINAIS E LIMITAÇÕES DO ESTUDO": 35,
   "REFERÊNCIAS": 22,
-  "APÊNDICE A – GUIA DE REPRODUÇÃO DOS RESULTADOS": 42,
-  "APÊNDICE B – ANÁLISES DE SENSIBILIDADE": 44
+  "APÊNDICE A – GUIA DE REPRODUÇÃO DOS RESULTADOS": 41,
+  "APÊNDICE B – ANÁLISES DE SENSIBILIDADE": 43
  },
  "captions": {
   "Quadro 1 – Principais atributos SMART utilizados": 14,
@@ -38,15 +38,15 @@
   "Tabela 5 – Síntese da comparação entre o modelo e a regra dos contadores críticos, por forma de contagem dos alertas": 26,
   "Tabela 6 – Desempenho dos alertas por retrato no conjunto de teste, por orçamento de falsos alarmes": 27,
   "Figura 3 – Proporção de retratos de discos que falham com alerta, por dias até a falha (limiar do orçamento de 1%)": 28,
-  "Tabela 7 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem": 29,
-  "Tabela 8 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência": 30,
-  "Tabela 9 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha": 31,
-  "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 32,
-  "Tabela 10 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 33,
-  "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 43,
-  "Tabela 11 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 44,
-  "Tabela 12 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente": 45,
-  "Tabela 13 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente": 46
+  "Tabela 7 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha": 29,
+  "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 31,
+  "Tabela 8 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 32,
+  "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 42,
+  "Tabela 9 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 43,
+  "Tabela 10 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente": 44,
+  "Tabela 11 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem": 44,
+  "Tabela 12 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência": 45,
+  "Tabela 13 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente": 46
  },
  "total_pages": 47
 }
