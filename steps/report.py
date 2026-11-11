@@ -761,6 +761,27 @@ def _alerting(metrics, ref, labels) -> list[str]:
                              if "difference" in m else "-"]
                             for m in sorted(matched, key=lambda m: (m["target_nonfailing_share"],
                                                                     _rank(m["model"])))])
+        first = [m for m in weekly.get("matched_first_alert", []) if m["model"] in shown]
+        if first:
+            lines += ["", "**First alert, any lead time.** Each drive counted once over the test "
+                      "period; a failing drive "
+                      f"({weekly.get('failing_drives_any_lead', '?')}) is caught if any weekly "
+                      "check before its failure alerts. Thresholds set on test for each share; "
+                      "lead = days from the first alert to the failure (quartiles).", ""]
+            lines += table(["non-failing drives alerted", "model", "failing drives caught",
+                            "difference vs the rule (paired)", "lead days (25/50/75%)",
+                            f"first alert within {main['horizon']} days"],
+                           [[_pct(m["nonfailing_share"], 2), _label(m["model"], labels),
+                             est(m["share_failing_drives_alerted"],
+                                 m.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                             est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                             if "difference" in m else "-",
+                             "/".join(f"{q:.0f}" for q in
+                                      m.get("first_alert_lead_days_quartiles", [])) or "-",
+                             _pct(m["share_caught_first_alerted_within_horizon"], 1)
+                             if "share_caught_first_alerted_within_horizon" in m else "-"]
+                            for m in sorted(first, key=lambda m: (m["target_nonfailing_share"],
+                                                                  _rank(m["model"])))])
     for win in (weekly or {}).get("per_window", []):
         matched = [m for m in win["matched"] if m["model"] in shown]
         if not matched:

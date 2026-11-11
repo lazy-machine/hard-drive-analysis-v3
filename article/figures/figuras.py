@@ -107,22 +107,23 @@ def figura_alertas() -> None:
     with open(RUN / "detection.csv", newline="", encoding="utf-8") as f:
         registros = list(csv.DictReader(f))
     fig, ax = plt.subplots(figsize=(6.3, 3.5), layout="constrained")
+    modelos = ("hazard_smart", "rule_counters", "hazard_nosmart")
+    largura = 0.26
     faixas = None
-    for modelo in ("hazard_smart", "rule_counters", "hazard_nosmart"):
-        rotulo, cor, marcador = MODELOS[modelo]
+    for k, modelo in enumerate(modelos):
+        rotulo, cor, _ = MODELOS[modelo]
         dados = sorted((r for r in registros if r["model"] == modelo),
                        key=lambda r: int(r["lo"]))
         faixas = [r["days_before_failure"].replace("-", " a ") for r in dados]
         ys = [100 * float(r["alerted"]) for r in dados]
-        ax.plot(range(len(ys)), ys, color=cor, marker=marcador, linewidth=2,
-                markersize=6, markeredgecolor="white", markeredgewidth=0.8, label=rotulo)
-        # Valores nas pontas; o da regra fica abaixo do ponto final para não colidir.
-        abaixo = modelo == "rule_counters"
-        ax.annotate(virgula(ys[0], 0) + "%", (0, ys[0]), xytext=(0, 7),
-                    textcoords="offset points", ha="center", fontsize=8, color=TEXTO)
-        ax.annotate(virgula(ys[-1], 0) + "%", (len(ys) - 1, ys[-1]),
-                    xytext=(0, -13 if abaixo else 7), textcoords="offset points",
-                    ha="center", fontsize=8, color=TEXTO)
+        xs = [i + (k - 1) * largura for i in range(len(ys))]
+        # Barras separadas por faixa: as faixas têm larguras diferentes, então não se
+        # ligam os pontos por linhas, que sugeririam uma tendência contínua.
+        ax.bar(xs, ys, width=largura, color=cor, label=rotulo)
+        if modelo != "hazard_nosmart":
+            for x, y in zip(xs, ys, strict=True):
+                ax.annotate(virgula(y, 0), (x, y), xytext=(0, 2), textcoords="offset points",
+                            ha="center", fontsize=6.5, color=TEXTO)
     ax.set_xticks(range(len(faixas)), faixas)
     ax.set_ylim(0, 80)
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.0f}%"))

@@ -670,31 +670,67 @@ def weekly_alerts(val, test, D, models, horizon, rates, stride, targets, rounds,
                 "nonfailing_alerted_per_failing_alerted_ci": _interval([b[2] for b in boot]),
             })
 
-    def caught(name, c, target):
-        qmax, fmax = maxima[name]
-        qw, fw = (c * dw)[quiet], c[failing].astype(float)
+    # first alert: every drive counted once over the test period; a failing drive is
+    # caught if any of its weekly checks before the failure alerts (any lead time), the
+    # same span over which a non-failing drive can raise its one false alarm
+    any_rows = week & (D.e == 1)
+    failing_any = np.unique(D.codes[any_rows])
+    first = {}
+    for name in maxima:
+        s = score_of(test, name, models[name], horizon)
+        fmax = np.full(D.n, -np.inf)
+        np.maximum.at(fmax, D.codes[any_rows], s[any_rows])
+        first[name] = (maxima[name][0], fmax[failing_any])
+
+    def caught(name, c, target, table=None, pos=None):
+        qmax, fmax = (table or maxima)[name]
+        pos = failing if pos is None else pos
+        qw, fw = (c * dw)[quiet], c[pos].astype(float)
         t = weighted_quantile_threshold(qmax, qw, target)
         return (float(np.sum(fw * (fmax >= t)) / fw.sum()),
                 float(np.sum(qw * (qmax >= t)) / qw.sum()))
 
-    matched = []
-    for target in targets:
-        boot = {n: [caught(n, c, target) for c in counts_list] for n in maxima}
-        for name in maxima:
-            share, achieved = caught(name, np.ones(D.n), target)
-            row = {"model": name, "target_nonfailing_share": target,
-                   "nonfailing_share": achieved, "share_failing_drives_alerted": share,
-                   "share_failing_drives_alerted_ci": _interval([b[0] for b in boot[name]])}
-            if name == pair[0] and pair[1] in maxima:
-                base = caught(pair[1], np.ones(D.n), target)[0]
-                row["versus"] = pair[1]
-                row["difference"] = share - base
-                row["difference_ci"] = _interval([a[0] - b[0] for a, b in
-                                                  zip(boot[name], boot[pair[1]], strict=True)])
-            matched.append(row)
+    def compare(table, pos):
+        out = []
+        for target in targets:
+            boot = {n: [caught(n, c, target, table, pos) for c in counts_list] for n in table}
+            for name in table:
+                share, achieved = caught(name, np.ones(D.n), target, table, pos)
+                row = {"model": name, "target_nonfailing_share": target,
+                       "nonfailing_share": achieved, "share_failing_drives_alerted": share,
+                       "share_failing_drives_alerted_ci": _interval([b[0] for b in boot[name]])}
+                if name != pair[1] and pair[1] in table:
+                    base = caught(pair[1], np.ones(D.n), target, table, pos)[0]
+                    row["versus"] = pair[1]
+                    row["difference"] = share - base
+                    row["difference_ci"] = _interval([a[0] - b[0] for a, b in
+                                                      zip(boot[name], boot[pair[1]], strict=True)])
+                out.append(row)
+        return out
+
+    matched = compare(maxima, failing)
+    matched_first_alert = compare(first, failing_any)
+    # how early the first alert of each caught failing drive came: the largest days to
+    # failure among its alerted weekly checks, at the point-estimate threshold
+    for row in matched_first_alert:
+        name = row["model"]
+        qmax = first[name][0]
+        t = weighted_quantile_threshold(qmax, dw[quiet], row["target_nonfailing_share"])
+        s = score_of(test, name, models[name], horizon)
+        hit = any_rows & (s >= t)
+        lead = np.full(D.n, -1.0)
+        np.maximum.at(lead, D.codes[hit], D.d[hit].astype(float))
+        lead = lead[failing_any]
+        lead = lead[lead >= 0]
+        if lead.size:
+            row["first_alert_lead_days_quartiles"] = [float(q) for q in
+                                                      np.percentile(lead, [25, 50, 75])]
+            row["share_caught_first_alerted_within_horizon"] = float(np.mean(lead < horizon))
     return {"stride_days": stride, "failing_drives_checked": int(failing.size),
             "failing_drives_total": int(np.unique(D.codes[(D.e == 1) & (D.d < horizon)]).size),
-            "nonfailing_drives": int(quiet.sum()), "budgets": budgets, "matched": matched}
+            "nonfailing_drives": int(quiet.sum()), "budgets": budgets, "matched": matched,
+            "failing_drives_any_lead": int(failing_any.size),
+            "matched_first_alert": matched_first_alert}
 
 
 def windowed_alerts(test, D, models, horizon, stride, targets, rounds, seed, freq,
