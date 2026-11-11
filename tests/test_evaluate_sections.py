@@ -141,6 +141,10 @@ def test_weekly_alerts_use_only_stride_days():
     assert out["failing_drives_checked"] == 1
     assert b["share_failing_drives_alerted"] == 0.0      # its alerts fall between checks
     assert b["share_nonfailing_drives_alerted"] == 0.5
+    # every score is above zero, so "any counter above zero" alerts every drive
+    zero = out["any_critical_counter"]
+    assert zero["share_nonfailing_drives_alerted"] == 1.0
+    assert zero["share_failing_drives_alerted"] == 1.0
 
 
 def test_windowed_alerts_count_drive_quarters():

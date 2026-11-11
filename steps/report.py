@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 
 import matplotlib
 
@@ -801,8 +802,58 @@ def _alerting(metrics, ref, labels) -> list[str]:
                          if "difference" in m else "-"]
                         for m in sorted(matched, key=lambda m: (m["target_nonfailing_share"],
                                                                 _rank(m["model"])))])
+    zero = (weekly or {}).get("any_critical_counter")
+    if zero:
+        def pt(key):
+            return est(zero[key], zero.get(f"{key}_ci"), 1, pct=True)
+
+        lines += ["", "**Any critical counter above zero** (the operator's criterion, the rule's "
+                  f"score > 0): {pt('share_nonfailing_drives_alerted')} of non-failing drives "
+                  f"alerted; failing drives caught {pt('share_failing_drives_alerted')} (last "
+                  f"30 days) and {pt('share_failing_drives_alerted_any_lead')} (any lead). "
+                  "Models at the same share of non-failing drives alerted:", ""]
+        rows = [[kind, _label(m["model"], labels),
+                 est(m["share_failing_drives_alerted"], m.get("share_failing_drives_alerted_ci"),
+                     1, pct=True),
+                 est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                 if "difference" in m else "-"]
+                for kind, key in (("last 30 days", "matched"), ("any lead", "matched_first_alert"))
+                for m in zero[key] if m["model"] in shown]
+        lines += table(["failing drives counted", "model", "failing drives caught",
+                        "difference vs the rule (paired)"], rows)
+    lines += _alert_seed_range(weekly or {}, ref)
     lines += ["", "![detection](detection.png)"]
     return lines
+
+
+def _alert_seed_range(weekly, ref) -> list[str]:
+    """Per-drive differences vs the rule across the reference model's seed replicates."""
+    if not ref:
+        return []
+    family = re.compile(rf"^{re.escape(ref)}(_seed\d+)?$")
+    tables = [("whole period, last 30 days", weekly.get("matched", [])),
+              ("whole period, any lead", weekly.get("matched_first_alert", []))]
+    tables += [({"Q": "quarter", "Y": "year"}.get(w["window"], w["window"]), w["matched"])
+               for w in weekly.get("per_window", [])]
+    rows = []
+    for label, tab in tables:
+        for target in sorted({m["target_nonfailing_share"] for m in tab}):
+            ds = [m for m in tab if family.match(m["model"])
+                  and m["target_nonfailing_share"] == target and "difference" in m]
+            if len(ds) < 2:
+                continue
+            diffs = [m["difference"] for m in ds]
+            above = sum(m["difference_ci"][0] > 0 for m in ds if m.get("difference_ci"))
+            below = sum(m["difference_ci"][1] < 0 for m in ds if m.get("difference_ci"))
+            rows.append([label, _pct(target, 1), str(len(ds)),
+                         f"{100 * min(diffs):+.1f} to {100 * max(diffs):+.1f}",
+                         f"{above} of {len(ds)}", f"{below} of {len(ds)}"])
+    if not rows:
+        return []
+    return ["", f"**Seed replicates.** Per-drive difference vs the rule (percentage points) of "
+            f"{ref} and its seed replicates, at the same share of non-failing units alerted:",
+            ""] + table(["count", "non-failing alerted", "seeds", "difference range",
+                         "intervals above zero", "intervals below zero"], rows)
 
 
 def _calibration(metrics, ref, labels) -> list[str]:

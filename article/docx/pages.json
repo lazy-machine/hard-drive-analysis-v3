@@ -17,14 +17,14 @@
   "4.1 GANHO DOS ATRIBUTOS SMART": 22,
   "4.2 POLÍTICA DE SUBSTITUIÇÃO, USO E FALHAS SILENCIOSAS": 24,
   "4.3 ALERTA ANTECIPADO": 25,
-  "4.4 VIDA ÚTIL REMANESCENTE": 28,
-  "4.5 CALIBRAÇÃO, DERIVA E RETIRADA DE DISCOS": 29,
-  "4.6 COMPARAÇÕES COMPLEMENTARES E SENSIBILIDADE": 32,
-  "4.7 RECOMENDAÇÕES": 33,
-  "5 CONSIDERAÇÕES FINAIS E LIMITAÇÕES DO ESTUDO": 34,
-  "REFERÊNCIAS": 36,
-  "APÊNDICE A – GUIA DE REPRODUÇÃO DOS RESULTADOS": 40,
-  "APÊNDICE B – ANÁLISES DE SENSIBILIDADE": 42
+  "4.4 VIDA ÚTIL REMANESCENTE": 29,
+  "4.5 CALIBRAÇÃO, DERIVA E RETIRADA DE DISCOS": 30,
+  "4.6 COMPARAÇÕES COMPLEMENTARES E SENSIBILIDADE": 34,
+  "4.7 RECOMENDAÇÕES": 34,
+  "5 CONSIDERAÇÕES FINAIS E LIMITAÇÕES DO ESTUDO": 36,
+  "REFERÊNCIAS": 38,
+  "APÊNDICE A – GUIA DE REPRODUÇÃO DOS RESULTADOS": 42,
+  "APÊNDICE B – ANÁLISES DE SENSIBILIDADE": 44
  },
  "captions": {
   "Quadro 1 – Principais atributos SMART utilizados": 14,
@@ -38,12 +38,13 @@
   "Tabela 5 – Desempenho dos alertas por retrato no conjunto de teste, por orçamento de falsos alarmes": 25,
   "Tabela 6 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente": 26,
   "Tabela 7 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem": 27,
-  "Figura 3 – Proporção de retratos de discos que falham com alerta, por dias até a falha (limiar do orçamento de 1%)": 28,
-  "Tabela 8 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha": 28,
-  "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 30,
-  "Tabela 9 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 31,
-  "Tabela 10 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 31,
-  "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 41
+  "Tabela 8 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência": 28,
+  "Figura 3 – Proporção de retratos de discos que falham com alerta, por dias até a falha (limiar do orçamento de 1%)": 29,
+  "Tabela 9 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha": 29,
+  "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 31,
+  "Tabela 10 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 32,
+  "Tabela 11 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 33,
+  "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 43
  },
- "total_pages": 42
+ "total_pages": 44
 }

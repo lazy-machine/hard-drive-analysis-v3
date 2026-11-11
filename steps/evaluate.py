@@ -690,9 +690,9 @@ def weekly_alerts(val, test, D, models, horizon, rates, stride, targets, rounds,
         return (float(np.sum(fw * (fmax >= t)) / fw.sum()),
                 float(np.sum(qw * (qmax >= t)) / qw.sum()))
 
-    def compare(table, pos):
+    def compare(table, pos, shares=targets):
         out = []
-        for target in targets:
+        for target in shares:
             boot = {n: [caught(n, c, target, table, pos) for c in counts_list] for n in table}
             for name in table:
                 share, achieved = caught(name, np.ones(D.n), target, table, pos)
@@ -705,6 +705,11 @@ def weekly_alerts(val, test, D, models, horizon, rates, stride, targets, rounds,
                     row["difference"] = share - base
                     row["difference_ci"] = _interval([a[0] - b[0] for a, b in
                                                       zip(boot[name], boot[pair[1]], strict=True)])
+                if name not in pair and pair[0] in table:
+                    base = caught(pair[0], np.ones(D.n), target, table, pos)[0]
+                    row["difference_vs_reference"] = share - base
+                    row["difference_vs_reference_ci"] = _interval(
+                        [a[0] - b[0] for a, b in zip(boot[name], boot[pair[0]], strict=True)])
                 out.append(row)
         return out
 
@@ -726,7 +731,35 @@ def weekly_alerts(val, test, D, models, horizon, rates, stride, targets, rounds,
             row["first_alert_lead_days_quartiles"] = [float(q) for q in
                                                       np.percentile(lead, [25, 50, 75])]
             row["share_caught_first_alerted_within_horizon"] = float(np.mean(lead < horizon))
+    # the operator's criterion: any critical counter above zero, i.e. the rule's score > 0
+    # (it is a sum of log1p counters). Its own point, and the models at its share of
+    # non-failing drives alerted.
+    any_counter = None
+    if pair[1] in maxima:
+        qr, fr = maxima[pair[1]]
+        fr_any = first[pair[1]][1]
+
+        def zero_point(c):
+            qw = (c * dw)[quiet]
+            fw, fa = c[failing].astype(float), c[failing_any].astype(float)
+            return (float(np.sum(qw * (qr > 0)) / qw.sum()),
+                    float(np.sum(fw * (fr > 0)) / fw.sum()),
+                    float(np.sum(fa * (fr_any > 0)) / fa.sum()))
+
+        point = zero_point(np.ones(D.n))
+        boot = [zero_point(c) for c in counts_list]
+        any_counter = {
+            "share_nonfailing_drives_alerted": point[0],
+            "share_nonfailing_drives_alerted_ci": _interval([b[0] for b in boot]),
+            "share_failing_drives_alerted": point[1],
+            "share_failing_drives_alerted_ci": _interval([b[1] for b in boot]),
+            "share_failing_drives_alerted_any_lead": point[2],
+            "share_failing_drives_alerted_any_lead_ci": _interval([b[2] for b in boot]),
+            "matched": compare(maxima, failing, [point[0]]),
+            "matched_first_alert": compare(first, failing_any, [point[0]]),
+        }
     return {"stride_days": stride, "failing_drives_checked": int(failing.size),
+            "any_critical_counter": any_counter,
             "failing_drives_total": int(np.unique(D.codes[(D.e == 1) & (D.d < horizon)]).size),
             "nonfailing_drives": int(quiet.sum()), "budgets": budgets, "matched": matched,
             "failing_drives_any_lead": int(failing_any.size),
@@ -793,11 +826,16 @@ def windowed_alerts(test, D, models, horizon, stride, targets, rounds, seed, fre
             row = {"window": freq, "model": name, "target_nonfailing_share": target,
                    "nonfailing_share": achieved, "share_failing_drives_alerted": share,
                    "share_failing_drives_alerted_ci": _interval([b[0] for b in boot[name]])}
-            if name == pair[0] and pair[1] in maxima:
+            if name != pair[1] and pair[1] in maxima:
                 row["versus"] = pair[1]
                 row["difference"] = share - caught(pair[1], np.ones(D.n), target)[0]
                 row["difference_ci"] = _interval([a[0] - b[0] for a, b in
                                                   zip(boot[name], boot[pair[1]], strict=True)])
+            if name not in pair and pair[0] in maxima:
+                row["difference_vs_reference"] = (share
+                                                  - caught(pair[0], np.ones(D.n), target)[0])
+                row["difference_vs_reference_ci"] = _interval(
+                    [a[0] - b[0] for a, b in zip(boot[name], boot[pair[0]], strict=True)])
             rows.append(row)
     return {"window": freq, "negative_units": int(len(neg_units)),
             "negative_units_of_drives_failing_later": int(D.fails[neg_drive].sum()),
@@ -1165,8 +1203,11 @@ def evaluate(ctx):
                                  ev["min_lead_days"], edges, rounds, seed)
     stride = load_sample(ctx.inputs["sample"])["stride_days"]
     targets = ev.get("matched_nonfailing_shares", [0.01, 0.025, 0.05])
-    weekly = weekly_alerts(val_cal, test, D, models, H, rates, stride, targets, rounds, seed)
-    weekly["per_window"] = [windowed_alerts(test, D, models, H, stride, targets, rounds, seed, f)
+    # the seed replicates join the per-drive comparisons, to show how far their verdicts
+    # move with the training seed
+    every = {**models, **seeds}
+    weekly = weekly_alerts(val_cal, test, D, every, H, rates, stride, targets, rounds, seed)
+    weekly["per_window"] = [windowed_alerts(test, D, every, H, stride, targets, rounds, seed, f)
                             for f in ("Q", "Y")]
     log("alerting done")
     life_summary, life_table = life(test, models, edges, D, rounds, seed)

@@ -352,40 +352,72 @@ At the same share of non-failing drives alerted (each model's threshold set on t
 | non-failing units alerted | model | failing drives caught | difference vs the rule (paired) |
 |---|---|---|---|
 | 1.00% | survival model, SMART + context | 56.9% [53.6%, 59.7%] | 14.2% [10.6%, 17.5%] |
-| 0.95% | survival model, context only (no SMART) | 2.8% [2.1%, 4.1%] | - |
-| 1.00% | 30-day yes/no classifier (SMART + context) | 56.2% [52.7%, 59.5%] | - |
+| 0.95% | survival model, context only (no SMART) | 2.8% [2.1%, 4.1%] | -39.9% [-43.6%, -36.0%] |
+| 1.00% | 30-day yes/no classifier (SMART + context) | 56.2% [52.7%, 59.5%] | 13.5% [10.3%, 16.8%] |
 | 1.00% | rule: critical SMART counters (5, 187, 197, 198) | 42.7% [38.9%, 46.3%] | - |
-| 1.00% | survival model, SMART + context, recalibrated on the last year | 56.9% [53.6%, 59.7%] | - |
+| 1.00% | survival model, SMART + context, recalibrated on the last year | 56.9% [53.6%, 59.7%] | 14.2% [10.6%, 17.5%] |
 | 2.50% | survival model, SMART + context | 68.6% [66.5%, 71.0%] | 9.6% [6.5%, 13.1%] |
-| 2.49% | survival model, context only (no SMART) | 5.6% [4.6%, 6.9%] | - |
-| 2.50% | 30-day yes/no classifier (SMART + context) | 69.4% [67.1%, 71.8%] | - |
+| 2.49% | survival model, context only (no SMART) | 5.6% [4.6%, 6.9%] | -53.3% [-57.0%, -49.0%] |
+| 2.50% | 30-day yes/no classifier (SMART + context) | 69.4% [67.1%, 71.8%] | 10.4% [7.3%, 13.7%] |
 | 2.50% | rule: critical SMART counters (5, 187, 197, 198) | 58.9% [54.9%, 62.7%] | - |
-| 2.50% | survival model, SMART + context, recalibrated on the last year | 68.6% [66.5%, 71.0%] | - |
+| 2.50% | survival model, SMART + context, recalibrated on the last year | 68.6% [66.5%, 71.0%] | 9.6% [6.5%, 13.0%] |
 | 5.00% | survival model, SMART + context | 75.5% [73.2%, 77.6%] | 4.6% [2.3%, 7.4%] |
-| 4.58% | survival model, context only (no SMART) | 9.2% [7.9%, 10.8%] | - |
-| 5.00% | 30-day yes/no classifier (SMART + context) | 75.0% [72.7%, 77.3%] | - |
+| 4.58% | survival model, context only (no SMART) | 9.2% [7.9%, 10.8%] | -61.6% [-65.1%, -57.6%] |
+| 5.00% | 30-day yes/no classifier (SMART + context) | 75.0% [72.7%, 77.3%] | 4.1% [1.9%, 7.0%] |
 | 4.87% | rule: critical SMART counters (5, 187, 197, 198) | 70.8% [67.4%, 74.0%] | - |
-| 5.00% | survival model, SMART + context, recalibrated on the last year | 75.5% [73.2%, 77.6%] | - |
+| 5.00% | survival model, SMART + context, recalibrated on the last year | 75.5% [73.2%, 77.6%] | 4.6% [2.3%, 7.4%] |
 
 **Per drive and year.** The unit is a drive in one year: a non-failing unit (13850) is alerted if a weekly check in that year fires; a failing drive (1766) is caught on its weekly checks in its last 30 days. Thresholds set on test for each share:
 
 | non-failing units alerted | model | failing drives caught | difference vs the rule (paired) |
 |---|---|---|---|
 | 1.00% | survival model, SMART + context | 45.3% [41.7%, 49.1%] | 8.0% [3.3%, 10.4%] |
-| 0.69% | survival model, context only (no SMART) | 2.2% [1.5%, 2.9%] | - |
-| 1.00% | 30-day yes/no classifier (SMART + context) | 43.1% [39.0%, 48.3%] | - |
+| 0.69% | survival model, context only (no SMART) | 2.2% [1.5%, 2.9%] | -35.2% [-40.5%, -32.6%] |
+| 1.00% | 30-day yes/no classifier (SMART + context) | 43.1% [39.0%, 48.3%] | 5.8% [1.1%, 8.8%] |
 | 0.99% | rule: critical SMART counters (5, 187, 197, 198) | 37.3% [34.7%, 42.7%] | - |
-| 1.00% | survival model, SMART + context, recalibrated on the last year | 45.3% [41.7%, 49.1%] | - |
+| 1.00% | survival model, SMART + context, recalibrated on the last year | 45.3% [41.7%, 49.1%] | 8.0% [3.3%, 10.5%] |
 | 2.49% | survival model, SMART + context | 60.4% [58.3%, 63.4%] | 5.3% [1.0%, 7.8%] |
-| 1.79% | survival model, context only (no SMART) | 3.4% [2.5%, 4.4%] | - |
-| 2.50% | 30-day yes/no classifier (SMART + context) | 60.1% [57.4%, 63.4%] | - |
+| 1.79% | survival model, context only (no SMART) | 3.4% [2.5%, 4.4%] | -51.8% [-56.7%, -48.3%] |
+| 2.50% | 30-day yes/no classifier (SMART + context) | 60.1% [57.4%, 63.4%] | 4.9% [1.2%, 7.5%] |
 | 2.46% | rule: critical SMART counters (5, 187, 197, 198) | 55.2% [52.1%, 60.3%] | - |
-| 2.49% | survival model, SMART + context, recalibrated on the last year | 60.5% [58.2%, 63.4%] | - |
+| 2.49% | survival model, SMART + context, recalibrated on the last year | 60.5% [58.2%, 63.4%] | 5.3% [1.1%, 7.8%] |
 | 5.00% | survival model, SMART + context | 69.3% [67.0%, 72.6%] | 0.6% [-1.3%, 3.1%] |
-| 4.93% | survival model, context only (no SMART) | 5.6% [4.6%, 6.9%] | - |
-| 5.00% | 30-day yes/no classifier (SMART + context) | 70.3% [67.9%, 72.7%] | - |
+| 4.93% | survival model, context only (no SMART) | 5.6% [4.6%, 6.9%] | -63.1% [-66.2%, -59.7%] |
+| 5.00% | 30-day yes/no classifier (SMART + context) | 70.3% [67.9%, 72.7%] | 1.6% [-1.0%, 3.4%] |
 | 4.81% | rule: critical SMART counters (5, 187, 197, 198) | 68.7% [65.9%, 72.1%] | - |
-| 5.00% | survival model, SMART + context, recalibrated on the last year | 69.3% [67.0%, 72.6%] | - |
+| 5.00% | survival model, SMART + context, recalibrated on the last year | 69.3% [67.0%, 72.6%] | 0.6% [-1.3%, 3.1%] |
+
+**Any critical counter above zero** (the operator's criterion, the rule's score > 0): 6.9% [6.3%, 7.4%] of non-failing drives alerted; failing drives caught 75.3% [73.1%, 77.3%] (last 30 days) and 75.8% [73.7%, 77.7%] (any lead). Models at the same share of non-failing drives alerted:
+
+| failing drives counted | model | failing drives caught | difference vs the rule (paired) |
+|---|---|---|---|
+| last 30 days | 30-day yes/no classifier (SMART + context) | 70.1% [67.7%, 72.5%] | -5.2% [-6.3%, -1.1%] |
+| last 30 days | survival model, context only (no SMART) | 5.4% [3.3%, 6.7%] | -69.9% [-71.9%, -64.6%] |
+| last 30 days | survival model, SMART + context | 68.8% [66.9%, 71.5%] | -6.5% [-7.5%, -2.2%] |
+| last 30 days | survival model, SMART + context, recalibrated on the last year | 68.8% [66.9%, 71.5%] | -6.5% [-7.5%, -2.3%] |
+| last 30 days | rule: critical SMART counters (5, 187, 197, 198) | 75.3% [70.3%, 76.9%] | - |
+| any lead | 30-day yes/no classifier (SMART + context) | 74.7% [72.5%, 77.0%] | -1.0% [-1.8%, 2.9%] |
+| any lead | survival model, context only (no SMART) | 7.2% [3.8%, 8.4%] | -68.6% [-71.0%, -63.2%] |
+| any lead | survival model, SMART + context | 74.1% [71.7%, 76.5%] | -1.7% [-2.5%, 2.1%] |
+| any lead | survival model, SMART + context, recalibrated on the last year | 74.1% [71.7%, 76.4%] | -1.7% [-2.5%, 2.1%] |
+| any lead | rule: critical SMART counters (5, 187, 197, 198) | 75.8% [71.0%, 77.4%] | - |
+
+**Seed replicates.** Per-drive difference vs the rule (percentage points) of hazard_smart and its seed replicates, at the same share of non-failing units alerted:
+
+| count | non-failing alerted | seeds | difference range | intervals above zero | intervals below zero |
+|---|---|---|---|---|---|
+| whole period, last 30 days | 1.0% | 5 | +0.8 to +4.1 | 0 of 5 | 0 of 5 |
+| whole period, last 30 days | 2.5% | 5 | +1.2 to +2.4 | 0 of 5 | 0 of 5 |
+| whole period, last 30 days | 5.0% | 5 | -6.1 to -1.5 | 0 of 5 | 3 of 5 |
+| whole period, any lead | 1.0% | 5 | +4.8 to +7.9 | 4 of 5 | 0 of 5 |
+| whole period, any lead | 2.5% | 5 | +6.3 to +7.9 | 5 of 5 | 0 of 5 |
+| whole period, any lead | 5.0% | 5 | -0.3 to +3.4 | 2 of 5 | 0 of 5 |
+| quarter | 1.0% | 5 | +12.3 to +14.2 | 5 of 5 | 0 of 5 |
+| quarter | 2.5% | 5 | +8.7 to +9.6 | 5 of 5 | 0 of 5 |
+| quarter | 5.0% | 5 | +4.0 to +4.6 | 5 of 5 | 0 of 5 |
+| year | 1.0% | 5 | +7.7 to +8.8 | 5 of 5 | 0 of 5 |
+| year | 2.5% | 5 | +3.6 to +5.7 | 4 of 5 | 0 of 5 |
+| year | 5.0% | 5 | -0.8 to +0.6 | 0 of 5 | 0 of 5 |
 
 ![detection](detection.png)
 
