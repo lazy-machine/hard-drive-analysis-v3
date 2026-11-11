@@ -445,8 +445,12 @@ Predicted / observed 30-day risk of survival model, SMART + context by part of t
 | val | 2023 | capacity >= 16 TB | 28.6% | 51 | 0.060% | 0.063% | 1.05 [0.84, 1.56] |
 | val | 2023 | in service 2-4 years | 40.5% | 239 | 0.180% | 0.144% | 0.80 [0.70, 0.95] |
 | val | 2023 | in service < 2 years | 32.6% | 103 | 0.058% | 0.058% | 0.99 [0.79, 1.32] |
+| val | 2023 | in service < 2 years, other models | 0.4% | 8 | 0.259% | 0.207% | 0.80 [0.33, 3.38] |
+| val | 2023 | in service < 2 years, training models | 32.3% | 95 | 0.056% | 0.056% | 1.00 [0.76, 1.31] |
 | val | 2023 | in service >= 4 years | 26.9% | 224 | 0.277% | 0.245% | 0.89 [0.73, 1.05] |
 | val | 2023 | model MG08ACA16TEY | 2.2% | 6 | 0.089% | 0.060% | 0.68 [0.39, 2.18] |
+| val | 2023 | other models | 1.4% | 21 | 0.514% | 0.395% | 0.77 [0.45, 1.32] |
+| val | 2023 | training models | 98.6% | 468 | 0.161% | 0.140% | 0.87 [0.79, 0.97] |
 | val | 2023 | vendor HGST | 15.7% | 72 | 0.154% | 0.100% | 0.65 [0.44, 1.02] |
 | val | 2023 | vendor Seagate | 46.6% | 317 | 0.231% | 0.200% | 0.87 [0.77, 0.97] |
 | val | 2023 | vendor Toshiba | 26.5% | 86 | 0.111% | 0.111% | 1.00 [0.76, 1.37] |
@@ -457,8 +461,12 @@ Predicted / observed 30-day risk of survival model, SMART + context by part of t
 | test | 2024 | capacity >= 16 TB | 44.0% | 489 | 0.072% | 0.092% | 1.27 [1.07, 1.51] |
 | test | 2024 | in service 2-4 years | 38.0% | 754 | 0.110% | 0.109% | 1.00 [0.86, 1.14] |
 | test | 2024 | in service < 2 years | 34.1% | 417 | 0.079% | 0.091% | 1.15 [0.98, 1.39] |
+| test | 2024 | in service < 2 years, other models | 1.1% | 29 | 0.118% | 0.323% | 2.74 [1.36, 5.77] |
+| test | 2024 | in service < 2 years, training models | 33.0% | 388 | 0.078% | 0.083% | 1.07 [0.88, 1.28] |
 | test | 2024 | in service >= 4 years | 27.9% | 871 | 0.233% | 0.302% | 1.30 [1.13, 1.47] |
 | test | 2024 | model MG08ACA16TEY | 1.5% | 74 | 0.153% | 0.093% | 0.60 [0.37, 1.12] |
+| test | 2024 | other models | 1.9% | 48 | 0.166% | 0.271% | 1.63 [1.06, 2.93] |
+| test | 2024 | training models | 98.1% | 1691 | 0.133% | 0.155% | 1.16 [1.05, 1.28] |
 | test | 2024 | vendor HGST | 12.8% | 379 | 0.245% | 0.205% | 0.83 [0.64, 1.03] |
 | test | 2024 | vendor Seagate | 38.0% | 738 | 0.157% | 0.222% | 1.41 [1.25, 1.59] |
 | test | 2024 | vendor Toshiba | 32.1% | 477 | 0.100% | 0.123% | 1.24 [1.07, 1.45] |
@@ -469,8 +477,12 @@ Predicted / observed 30-day risk of survival model, SMART + context by part of t
 | test | 2025 | capacity >= 16 TB | 54.0% | 304 | 0.073% | 0.161% | 2.21 [1.83, 2.74] |
 | test | 2025 | in service 2-4 years | 24.3% | 273 | 0.094% | 0.163% | 1.73 [1.40, 2.23] |
 | test | 2025 | in service < 2 years | 34.8% | 182 | 0.055% | 0.170% | 3.10 [2.35, 3.97] |
+| test | 2025 | in service < 2 years, other models | 6.8% | 44 | 0.088% | 0.354% | 4.01 [2.82, 5.50] |
+| test | 2025 | in service < 2 years, training models | 28.0% | 138 | 0.047% | 0.125% | 2.67 [1.64, 4.00] |
 | test | 2025 | in service >= 4 years | 40.8% | 519 | 0.151% | 0.310% | 2.05 [1.78, 2.43] |
 | test | 2025 | model MG08ACA16TEY | 1.3% | 58 | 0.585% | 0.192% | 0.33 [0.18, 0.56] |
+| test | 2025 | other models | 7.7% | 52 | 0.092% | 0.345% | 3.75 [2.81, 5.18] |
+| test | 2025 | training models | 92.3% | 798 | 0.104% | 0.215% | 2.07 [1.79, 2.33] |
 | test | 2025 | vendor HGST | 9.0% | 164 | 0.209% | 0.365% | 1.75 [1.29, 2.37] |
 | test | 2025 | vendor Seagate | 34.9% | 335 | 0.115% | 0.342% | 2.97 [2.41, 3.59] |
 | test | 2025 | vendor Toshiba | 32.7% | 264 | 0.103% | 0.176% | 1.71 [1.46, 2.02] |

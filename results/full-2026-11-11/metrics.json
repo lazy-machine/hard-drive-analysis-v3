@@ -8,6 +8,10 @@
       "failing_drives_alerted": 1120,
       "failing_drives_alerted_early": 866,
       "false_alarm_rate_test": 0.003189707447618332,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.0019354942689736312,
+        "2025": 0.004402905306190863
+      },
       "false_alarm_rate_test_ci": [
         0.0025693618467490147,
         0.0038146434540937066
@@ -66,6 +70,10 @@
       "failing_drives_alerted": 1270,
       "failing_drives_alerted_early": 1051,
       "false_alarm_rate_test": 0.007156760352831414,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.005033359559940006,
+        "2025": 0.009210721624081014
+      },
       "false_alarm_rate_test_ci": [
         0.006077247433485398,
         0.008254304436122952
@@ -124,6 +132,10 @@
       "failing_drives_alerted": 1426,
       "failing_drives_alerted_early": 1231,
       "false_alarm_rate_test": 0.022233146292712218,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.016564568489293732,
+        "2025": 0.027716350080835752
+      },
       "false_alarm_rate_test_ci": [
         0.019935267621730514,
         0.024371233086348976
@@ -182,6 +194,10 @@
       "failing_drives_alerted": 716,
       "failing_drives_alerted_early": 504,
       "false_alarm_rate_test": 0.004174746855438191,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.0032107813331028125,
+        "2025": 0.0051071887459777
+      },
       "false_alarm_rate_test_ci": [
         0.003124139076503464,
         0.005208145108937514
@@ -240,6 +256,10 @@
       "failing_drives_alerted": 863,
       "failing_drives_alerted_early": 663,
       "false_alarm_rate_test": 0.009982373029572987,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.0079221445843034,
+        "2025": 0.011975227817362882
+      },
       "false_alarm_rate_test_ci": [
         0.008407778093933711,
         0.011534539417638419
@@ -298,6 +318,10 @@
       "failing_drives_alerted": 1016,
       "failing_drives_alerted_early": 831,
       "false_alarm_rate_test": 0.025318346390188373,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.020817185899755754,
+        "2025": 0.029672309784182574
+      },
       "false_alarm_rate_test_ci": [
         0.022863523613516738,
         0.028409876265283966
@@ -356,6 +380,10 @@
       "failing_drives_alerted": 6,
       "failing_drives_alerted_early": 6,
       "false_alarm_rate_test": 0.0010569362383174854,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.0007928542508836218,
+        "2025": 0.0013123822080277918
+      },
       "false_alarm_rate_test_ci": [
         0.000626901091228694,
         0.0016291544668994293
@@ -414,6 +442,10 @@
       "failing_drives_alerted": 36,
       "failing_drives_alerted_early": 35,
       "false_alarm_rate_test": 0.0038474409771206705,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.00290597639410043,
+        "2025": 0.00475811775479277
+      },
       "false_alarm_rate_test_ci": [
         0.0028357742143674007,
         0.004964461798357969
@@ -472,6 +504,10 @@
       "failing_drives_alerted": 141,
       "failing_drives_alerted_early": 135,
       "false_alarm_rate_test": 0.025482719738470355,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.009522016430456269,
+        "2025": 0.040921475608918415
+      },
       "false_alarm_rate_test_ci": [
         0.023061978415326524,
         0.028652858316847246
@@ -530,6 +566,10 @@
       "failing_drives_alerted": 1020,
       "failing_drives_alerted_early": 763,
       "false_alarm_rate_test": 0.0020539104239454004,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.001457896528466613,
+        "2025": 0.0026304334536712544
+      },
       "false_alarm_rate_test_ci": [
         0.001643171235939297,
         0.002471020001983065
@@ -588,6 +628,10 @@
       "failing_drives_alerted": 1246,
       "failing_drives_alerted_early": 1015,
       "false_alarm_rate_test": 0.005727396611445226,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.004464872219772127,
+        "2025": 0.0069486338894879695
+      },
       "false_alarm_rate_test_ci": [
         0.0048034180827201504,
         0.006646171166505708
@@ -646,6 +690,10 @@
       "failing_drives_alerted": 1391,
       "failing_drives_alerted_early": 1203,
       "false_alarm_rate_test": 0.018654057713992006,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.015785828743677167,
+        "2025": 0.021428489767434347
+      },
       "false_alarm_rate_test_ci": [
         0.01636893272840583,
         0.02067737402085077
@@ -704,6 +752,10 @@
       "failing_drives_alerted": 1017,
       "failing_drives_alerted_early": 761,
       "false_alarm_rate_test": 0.0020552792012795236,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.0014577500111108994,
+        "2025": 0.0026332679724790898
+      },
       "false_alarm_rate_test_ci": [
         0.0016428284814050875,
         0.002470676289169944
@@ -762,6 +814,10 @@
       "failing_drives_alerted": 1247,
       "failing_drives_alerted_early": 1015,
       "false_alarm_rate_test": 0.005731719066184563,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.004471318983423515,
+        "2025": 0.006950901504534238
+      },
       "false_alarm_rate_test_ci": [
         0.004803945950479332,
         0.006655532549105367
@@ -820,6 +876,10 @@
       "failing_drives_alerted": 1390,
       "failing_drives_alerted_early": 1203,
       "false_alarm_rate_test": 0.01864718981368395,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.015778747071484352,
+        "2025": 0.021421828648235934
+      },
       "false_alarm_rate_test_ci": [
         0.0163632786293099,
         0.020670463406860982
@@ -878,6 +938,10 @@
       "failing_drives_alerted": 1001,
       "failing_drives_alerted_early": 761,
       "false_alarm_rate_test": 0.002290564820924062,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.001594157669280048,
+        "2025": 0.002964198043293873
+      },
       "false_alarm_rate_test_ci": [
         0.0017948831773537321,
         0.0028057398189441714
@@ -936,6 +1000,10 @@
       "failing_drives_alerted": 1225,
       "failing_drives_alerted_early": 1011,
       "false_alarm_rate_test": 0.005851859294300671,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.004739885296446124,
+        "2025": 0.0069274694823894655
+      },
       "false_alarm_rate_test_ci": [
         0.0048426339572788055,
         0.006786164653876041
@@ -994,6 +1062,10 @@
       "failing_drives_alerted": 1389,
       "failing_drives_alerted_early": 1201,
       "false_alarm_rate_test": 0.018239366209027573,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.0158672923934538,
+        "2025": 0.02053386838970136
+      },
       "false_alarm_rate_test_ci": [
         0.015704277312962416,
         0.020073826075343436
@@ -1052,6 +1124,10 @@
       "failing_drives_alerted": 924,
       "failing_drives_alerted_early": 705,
       "false_alarm_rate_test": 0.0020851521662558254,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.0014603873235137402,
+        "2025": 0.002689485928834492
+      },
       "false_alarm_rate_test_ci": [
         0.0016400380023452597,
         0.0025657423856180754
@@ -1110,6 +1186,10 @@
       "failing_drives_alerted": 1240,
       "failing_drives_alerted_early": 1023,
       "false_alarm_rate_test": 0.0066156850740162745,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.005249521498735799,
+        "2025": 0.007937172323720567
+      },
       "false_alarm_rate_test_ci": [
         0.005664573928832118,
         0.00769136100994907
@@ -1168,6 +1248,10 @@
       "failing_drives_alerted": 1380,
       "failing_drives_alerted_early": 1197,
       "false_alarm_rate_test": 0.01820757215305601,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.015620654844669625,
+        "2025": 0.02070989200766794
+      },
       "false_alarm_rate_test_ci": [
         0.01564054797766885,
         0.02041095115713922
@@ -1226,6 +1310,10 @@
       "failing_drives_alerted": 44,
       "failing_drives_alerted_early": 37,
       "false_alarm_rate_test": 0.0062957513823930665,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.003914553031712705,
+        "2025": 0.008599079707330265
+      },
       "false_alarm_rate_test_ci": [
         0.004937492736968121,
         0.007951027251924321
@@ -1284,6 +1372,10 @@
       "failing_drives_alerted": 89,
       "failing_drives_alerted_early": 79,
       "false_alarm_rate_test": 0.011811779957084748,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.009778812515903238,
+        "2025": 0.013778265231026984
+      },
       "false_alarm_rate_test_ci": [
         0.009445977597534586,
         0.014192921744029087
@@ -1342,6 +1434,10 @@
       "failing_drives_alerted": 206,
       "failing_drives_alerted_early": 184,
       "false_alarm_rate_test": 0.03711415727837502,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.02302451870269626,
+        "2025": 0.05074303603608796
+      },
       "false_alarm_rate_test_ci": [
         0.03372273257058274,
         0.04136249263901408
@@ -1400,6 +1496,10 @@
       "failing_drives_alerted": 664,
       "failing_drives_alerted_early": 500,
       "false_alarm_rate_test": 0.004761520086303092,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.003710796229033977,
+        "2025": 0.005777883137891687
+      },
       "false_alarm_rate_test_ci": [
         0.003512312841317046,
         0.0058418696018686786
@@ -1458,6 +1558,10 @@
       "failing_drives_alerted": 839,
       "failing_drives_alerted_early": 664,
       "false_alarm_rate_test": 0.00785373216591195,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.005956614257408528,
+        "2025": 0.009688810463002585
+      },
       "false_alarm_rate_test_ci": [
         0.006163841927271568,
         0.009232887264978994
@@ -1516,6 +1620,10 @@
       "failing_drives_alerted": 1051,
       "failing_drives_alerted_early": 874,
       "false_alarm_rate_test": 0.017384432688861737,
+      "false_alarm_rate_test_by_year": {
+        "2024": 0.014779547544637733,
+        "2025": 0.019904132794560596
+      },
       "false_alarm_rate_test_ci": [
         0.014816024546992363,
         0.020114272043317546
@@ -1743,6 +1851,74 @@
       "year": 2024
     },
     {
+      "drives": 7782,
+      "failing_drives": 1691,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0013278797044015134,
+      "predicted": 0.0015468204853360979,
+      "ratio": 1.1648799813784811,
+      "ratio_ci": [
+        1.0547847915092414,
+        1.284328939032083
+      ],
+      "snapshots": 413971,
+      "split": "test",
+      "year": 2024
+    },
+    {
+      "drives": 275,
+      "failing_drives": 48,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0016635443647321502,
+      "predicted": 0.0027139955028246303,
+      "ratio": 1.6314536362014096,
+      "ratio_ci": [
+        1.0648928319820654,
+        2.9348844623972883
+      ],
+      "snapshots": 8230,
+      "split": "test",
+      "year": 2024
+    },
+    {
+      "drives": 2936,
+      "failing_drives": 388,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0007764554939000412,
+      "predicted": 0.0008300334822604845,
+      "ratio": 1.0690032961082259,
+      "ratio_ci": [
+        0.8804787942913768,
+        1.2818655872457905
+      ],
+      "snapshots": 121453,
+      "split": "test",
+      "year": 2024
+    },
+    {
+      "drives": 209,
+      "failing_drives": 29,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0011754700767169224,
+      "predicted": 0.0032252379012170855,
+      "ratio": 2.7437856267895366,
+      "ratio_ci": [
+        1.3568044045378793,
+        5.770245725838548
+      ],
+      "snapshots": 4058,
+      "split": "test",
+      "year": 2024
+    },
+    {
       "drives": 155,
       "failing_drives": 74,
       "group": "model MG08ACA16TEY",
@@ -1947,6 +2123,74 @@
       "year": 2025
     },
     {
+      "drives": 6867,
+      "failing_drives": 798,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0010429706295115304,
+      "predicted": 0.0021549553485198532,
+      "ratio": 2.0661706931566375,
+      "ratio_ci": [
+        1.7910084781414268,
+        2.329698689165957
+      ],
+      "snapshots": 372903,
+      "split": "test",
+      "year": 2025
+    },
+    {
+      "drives": 794,
+      "failing_drives": 52,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0009204356744205722,
+      "predicted": 0.003447858918861843,
+      "ratio": 3.7458988332153913,
+      "ratio_ci": [
+        2.8081794235245368,
+        5.182093230679571
+      ],
+      "snapshots": 30217,
+      "split": "test",
+      "year": 2025
+    },
+    {
+      "drives": 2520,
+      "failing_drives": 138,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0004679502426199189,
+      "predicted": 0.0012494530469145347,
+      "ratio": 2.6700553458829432,
+      "ratio_ci": [
+        1.6391795509336757,
+        4.000050307113499
+      ],
+      "snapshots": 102008,
+      "split": "test",
+      "year": 2025
+    },
+    {
+      "drives": 737,
+      "failing_drives": 44,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0008832727988458133,
+      "predicted": 0.0035380128212043273,
+      "ratio": 4.005572033722204,
+      "ratio_ci": [
+        2.824732582003331,
+        5.504083188399862
+      ],
+      "snapshots": 26464,
+      "split": "test",
+      "year": 2025
+    },
+    {
       "drives": 140,
       "failing_drives": 58,
       "group": "model MG08ACA16TEY",
@@ -2100,6 +2344,74 @@
       "year": 2016
     },
     {
+      "drives": 1364,
+      "failing_drives": 667,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0014174079502383696,
+      "predicted": 0.001566535376906758,
+      "ratio": 1.1052113660314302,
+      "ratio_ci": [
+        0.8910639094364422,
+        1.414399928650885
+      ],
+      "snapshots": 65101,
+      "split": "val",
+      "year": 2016
+    },
+    {
+      "drives": 94,
+      "failing_drives": 41,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.004230354545405324,
+      "predicted": 0.005246416916810623,
+      "ratio": 1.2401837388567978,
+      "ratio_ci": [
+        0.7477132619424931,
+        2.156736136832795
+      ],
+      "snapshots": 5417,
+      "split": "val",
+      "year": 2016
+    },
+    {
+      "drives": 1364,
+      "failing_drives": 667,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0014174079502383696,
+      "predicted": 0.001566535376906758,
+      "ratio": 1.1052113660314302,
+      "ratio_ci": [
+        0.8910639094364422,
+        1.414399928650885
+      ],
+      "snapshots": 65101,
+      "split": "val",
+      "year": 2016
+    },
+    {
+      "drives": 94,
+      "failing_drives": 41,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.004230354545405324,
+      "predicted": 0.005246416916810623,
+      "ratio": 1.2401837388567978,
+      "ratio_ci": [
+        0.7477132619424931,
+        2.156736136832795
+      ],
+      "snapshots": 5417,
+      "split": "val",
+      "year": 2016
+    },
+    {
       "drives": 1939,
       "failing_drives": 868,
       "group": "all",
@@ -2215,6 +2527,74 @@
         1.3035019492638198
       ],
       "snapshots": 85198,
+      "split": "val",
+      "year": 2017
+    },
+    {
+      "drives": 1856,
+      "failing_drives": 846,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0014946255215851911,
+      "predicted": 0.0014890079985672372,
+      "ratio": 0.9962415180680202,
+      "ratio_ci": [
+        0.808407728312596,
+        1.257115984392282
+      ],
+      "snapshots": 82174,
+      "split": "val",
+      "year": 2017
+    },
+    {
+      "drives": 83,
+      "failing_drives": 22,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0027229033020520488,
+      "predicted": 0.0045103049671519485,
+      "ratio": 1.656432295540157,
+      "ratio_ci": [
+        0.8164168602661896,
+        3.7139285941204605
+      ],
+      "snapshots": 3024,
+      "split": "val",
+      "year": 2017
+    },
+    {
+      "drives": 1856,
+      "failing_drives": 846,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0014946255215851911,
+      "predicted": 0.0014890079985672372,
+      "ratio": 0.9962415180680202,
+      "ratio_ci": [
+        0.808407728312596,
+        1.257115984392282
+      ],
+      "snapshots": 82174,
+      "split": "val",
+      "year": 2017
+    },
+    {
+      "drives": 83,
+      "failing_drives": 22,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0027229033020520488,
+      "predicted": 0.0045103049671519485,
+      "ratio": 1.656432295540157,
+      "ratio_ci": [
+        0.8164168602661896,
+        3.7139285941204605
+      ],
+      "snapshots": 3024,
       "split": "val",
       "year": 2017
     },
@@ -2351,6 +2731,74 @@
         1.2105481103202944
       ],
       "snapshots": 41824,
+      "split": "val",
+      "year": 2018
+    },
+    {
+      "drives": 2075,
+      "failing_drives": 878,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0013799609274603997,
+      "predicted": 0.001224454945312585,
+      "ratio": 0.8873113150862909,
+      "ratio_ci": [
+        0.7748497767401847,
+        1.0424647870228039
+      ],
+      "snapshots": 99430,
+      "split": "val",
+      "year": 2018
+    },
+    {
+      "drives": 67,
+      "failing_drives": 18,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.000245197290745236,
+      "predicted": 0.0024477843420532236,
+      "ratio": 9.982917570637074,
+      "ratio_ci": [
+        2.2856720990100867,
+        12.220015954312464
+      ],
+      "snapshots": 2838,
+      "split": "val",
+      "year": 2018
+    },
+    {
+      "drives": 1476,
+      "failing_drives": 621,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0011748172490914088,
+      "predicted": 0.0010126564064757845,
+      "ratio": 0.8619693039568173,
+      "ratio_ci": [
+        0.7003341118326861,
+        1.0654725239173042
+      ],
+      "snapshots": 58814,
+      "split": "val",
+      "year": 2018
+    },
+    {
+      "drives": 45,
+      "failing_drives": 10,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0,
+      "predicted": 0.001275127914375931,
+      "ratio": null,
+      "ratio_ci": [
+        null,
+        null
+      ],
+      "snapshots": 1630,
       "split": "val",
       "year": 2018
     },
@@ -2504,6 +2952,74 @@
         1.1000642186790492
       ],
       "snapshots": 55036,
+      "split": "val",
+      "year": 2019
+    },
+    {
+      "drives": 2382,
+      "failing_drives": 908,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0016523847044378481,
+      "predicted": 0.0014693416633810295,
+      "ratio": 0.889224924095935,
+      "ratio_ci": [
+        0.7049070595160062,
+        1.1770794916227094
+      ],
+      "snapshots": 113095,
+      "split": "val",
+      "year": 2019
+    },
+    {
+      "drives": 61,
+      "failing_drives": 24,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0017087458787353738,
+      "predicted": 0.0029504150602264094,
+      "ratio": 1.7266552604123808,
+      "ratio_ci": [
+        0.6830492571300876,
+        5.827638370438913
+      ],
+      "snapshots": 3006,
+      "split": "val",
+      "year": 2019
+    },
+    {
+      "drives": 1633,
+      "failing_drives": 571,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0019037336066973776,
+      "predicted": 0.0018502908597339373,
+      "ratio": 0.9719274026705063,
+      "ratio_ci": [
+        0.7321623383276649,
+        1.2802349551529784
+      ],
+      "snapshots": 58954,
+      "split": "val",
+      "year": 2019
+    },
+    {
+      "drives": 41,
+      "failing_drives": 17,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0015007668253723683,
+      "predicted": 0.0011159718452057707,
+      "ratio": 0.7436010886826988,
+      "ratio_ci": [
+        0.29256204162137756,
+        2.978453924218178
+      ],
+      "snapshots": 2111,
       "split": "val",
       "year": 2019
     },
@@ -2674,6 +3190,74 @@
         1.4766333056269512
       ],
       "snapshots": 26937,
+      "split": "val",
+      "year": 2020
+    },
+    {
+      "drives": 2950,
+      "failing_drives": 894,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0008277822283099256,
+      "predicted": 0.001127563931240854,
+      "ratio": 1.3621504457071874,
+      "ratio_ci": [
+        1.114336044386827,
+        1.7133361388153483
+      ],
+      "snapshots": 134394,
+      "split": "val",
+      "year": 2020
+    },
+    {
+      "drives": 52,
+      "failing_drives": 23,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.001533834949697388,
+      "predicted": 0.0031576446776868544,
+      "ratio": 2.058660013132332,
+      "ratio_ci": [
+        0.8161662485069212,
+        8.247330254129805
+      ],
+      "snapshots": 2618,
+      "split": "val",
+      "year": 2020
+    },
+    {
+      "drives": 1804,
+      "failing_drives": 448,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0006348120954644543,
+      "predicted": 0.0009184153607032933,
+      "ratio": 1.4467515147633465,
+      "ratio_ci": [
+        1.0811734441672665,
+        1.9995989375480934
+      ],
+      "snapshots": 62595,
+      "split": "val",
+      "year": 2020
+    },
+    {
+      "drives": 19,
+      "failing_drives": 13,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0152022983002158,
+      "predicted": 0.002541555511191477,
+      "ratio": 0.16718232079128453,
+      "ratio_ci": [
+        0.04084902391742968,
+        0.7240654392868634
+      ],
+      "snapshots": 704,
       "split": "val",
       "year": 2020
     },
@@ -2882,6 +3466,74 @@
       "year": 2021
     },
     {
+      "drives": 3548,
+      "failing_drives": 894,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0008822244724436823,
+      "predicted": 0.000978646847382883,
+      "ratio": 1.1092946046623706,
+      "ratio_ci": [
+        0.9789078916963276,
+        1.310668099119782
+      ],
+      "snapshots": 166145,
+      "split": "val",
+      "year": 2021
+    },
+    {
+      "drives": 59,
+      "failing_drives": 25,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0010112348188373588,
+      "predicted": 0.0025754815354886856,
+      "ratio": 2.5468679356292134,
+      "ratio_ci": [
+        1.1121063315344473,
+        10.989332410115356
+      ],
+      "snapshots": 3009,
+      "split": "val",
+      "year": 2021
+    },
+    {
+      "drives": 2263,
+      "failing_drives": 474,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0006741964891673335,
+      "predicted": 0.0007117647733265498,
+      "ratio": 1.0557230492339331,
+      "ratio_ci": [
+        0.8731067164961301,
+        1.3230235350942972
+      ],
+      "snapshots": 91141,
+      "split": "val",
+      "year": 2021
+    },
+    {
+      "drives": 18,
+      "failing_drives": 12,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0012798397418063434,
+      "predicted": 0.0012084415012985595,
+      "ratio": 0.9442131399928138,
+      "ratio_ci": [
+        0.19624910291827685,
+        1.407321339793725
+      ],
+      "snapshots": 598,
+      "split": "val",
+      "year": 2021
+    },
+    {
       "drives": 49,
       "failing_drives": 5,
       "group": "model MG08ACA16TEY",
@@ -3086,6 +3738,74 @@
       "year": 2022
     },
     {
+      "drives": 3548,
+      "failing_drives": 727,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0010831097744884444,
+      "predicted": 0.001239766579533327,
+      "ratio": 1.1446361289822835,
+      "ratio_ci": [
+        1.017051215601002,
+        1.2902176047754972
+      ],
+      "snapshots": 188244,
+      "split": "val",
+      "year": 2022
+    },
+    {
+      "drives": 64,
+      "failing_drives": 26,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.001262327416173381,
+      "predicted": 0.0032453291630992853,
+      "ratio": 2.5709091963931,
+      "ratio_ci": [
+        1.1042940915998603,
+        8.687272599507013
+      ],
+      "snapshots": 3579,
+      "split": "val",
+      "year": 2022
+    },
+    {
+      "drives": 2047,
+      "failing_drives": 284,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0006186093947421201,
+      "predicted": 0.0007871687217719757,
+      "ratio": 1.2724810332053282,
+      "ratio_ci": [
+        0.9766294737405464,
+        1.6230209549630812
+      ],
+      "snapshots": 81288,
+      "split": "val",
+      "year": 2022
+    },
+    {
+      "drives": 21,
+      "failing_drives": 11,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0012336392357453763,
+      "predicted": 0.0028484563473739084,
+      "ratio": 2.3089865049994494,
+      "ratio_ci": [
+        0.7465892593888057,
+        12.185294533349618
+      ],
+      "snapshots": 1120,
+      "split": "val",
+      "year": 2022
+    },
+    {
       "drives": 101,
       "failing_drives": 7,
       "group": "model MG08ACA16TEY",
@@ -3286,6 +4006,74 @@
         1.0462872476000429
       ],
       "snapshots": 63037,
+      "split": "val",
+      "year": 2023
+    },
+    {
+      "drives": 3875,
+      "failing_drives": 468,
+      "group": "training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0016116623119536433,
+      "predicted": 0.0013951314386248831,
+      "ratio": 0.865647492205558,
+      "ratio_ci": [
+        0.7892935182023416,
+        0.9674516947416057
+      ],
+      "snapshots": 201227,
+      "split": "val",
+      "year": 2023
+    },
+    {
+      "drives": 73,
+      "failing_drives": 21,
+      "group": "other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0051414216508154365,
+      "predicted": 0.003949187658620834,
+      "ratio": 0.7681119983603149,
+      "ratio_ci": [
+        0.4513222878900743,
+        1.3210893175902967
+      ],
+      "snapshots": 4128,
+      "split": "val",
+      "year": 2023
+    },
+    {
+      "drives": 1782,
+      "failing_drives": 95,
+      "group": "in service < 2 years, training models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0005618671119139718,
+      "predicted": 0.0005610519771042951,
+      "ratio": 0.9985492391485595,
+      "ratio_ci": [
+        0.7614685683608224,
+        1.3114374023635385
+      ],
+      "snapshots": 53494,
+      "split": "val",
+      "year": 2023
+    },
+    {
+      "drives": 30,
+      "failing_drives": 8,
+      "group": "in service < 2 years, other models",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0025851908861160844,
+      "predicted": 0.002066448369065638,
+      "ratio": 0.7993407296009039,
+      "ratio_ci": [
+        0.3346866319610963,
+        3.3805514428707912
+      ],
+      "snapshots": 696,
       "split": "val",
       "year": 2023
     },
@@ -7302,6 +8090,30 @@
       "year": 2024
     },
     {
+      "group": "training models",
+      "split": "test",
+      "weight_share": 0.9808781999949238,
+      "year": 2024
+    },
+    {
+      "group": "other models",
+      "split": "test",
+      "weight_share": 0.01912180000507623,
+      "year": 2024
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "test",
+      "weight_share": 0.33013474375460217,
+      "year": 2024
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "test",
+      "weight_share": 0.010899378928889767,
+      "year": 2024
+    },
+    {
       "group": "model MG08ACA16TEY",
       "split": "test",
       "weight_share": 0.015483464819437468,
@@ -7365,6 +8177,30 @@
       "group": "in service >= 4 years",
       "split": "test",
       "weight_share": 0.4083188596844417,
+      "year": 2025
+    },
+    {
+      "group": "training models",
+      "split": "test",
+      "weight_share": 0.9232870773865437,
+      "year": 2025
+    },
+    {
+      "group": "other models",
+      "split": "test",
+      "weight_share": 0.07671292261345632,
+      "year": 2025
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "test",
+      "weight_share": 0.2803639306810628,
+      "year": 2025
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "test",
+      "weight_share": 0.06808063331865999,
       "year": 2025
     },
     {
@@ -7434,6 +8270,30 @@
       "year": 2016
     },
     {
+      "group": "training models",
+      "split": "val",
+      "weight_share": 0.9288490747368032,
+      "year": 2016
+    },
+    {
+      "group": "other models",
+      "split": "val",
+      "weight_share": 0.0711509252631968,
+      "year": 2016
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "val",
+      "weight_share": 0.9288490747368032,
+      "year": 2016
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "val",
+      "weight_share": 0.0711509252631968,
+      "year": 2016
+    },
+    {
       "group": "capacity >= 16 TB",
       "split": "val",
       "weight_share": 0.0,
@@ -7485,6 +8345,30 @@
       "group": "in service >= 4 years",
       "split": "val",
       "weight_share": 0.0,
+      "year": 2017
+    },
+    {
+      "group": "training models",
+      "split": "val",
+      "weight_share": 0.9576850563599693,
+      "year": 2017
+    },
+    {
+      "group": "other models",
+      "split": "val",
+      "weight_share": 0.04231494364003074,
+      "year": 2017
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "val",
+      "weight_share": 0.9576850563599693,
+      "year": 2017
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "val",
+      "weight_share": 0.04231494364003074,
       "year": 2017
     },
     {
@@ -7542,6 +8426,30 @@
       "year": 2018
     },
     {
+      "group": "training models",
+      "split": "val",
+      "weight_share": 0.9645042972697527,
+      "year": 2018
+    },
+    {
+      "group": "other models",
+      "split": "val",
+      "weight_share": 0.03549570273024725,
+      "year": 2018
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "val",
+      "weight_share": 0.5652699598433321,
+      "year": 2018
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "val",
+      "weight_share": 0.019536008709240153,
+      "year": 2018
+    },
+    {
       "group": "capacity >= 16 TB",
       "split": "val",
       "weight_share": 2.1492627133367125e-05,
@@ -7596,6 +8504,30 @@
       "year": 2019
     },
     {
+      "group": "training models",
+      "split": "val",
+      "weight_share": 0.9771679216399284,
+      "year": 2019
+    },
+    {
+      "group": "other models",
+      "split": "val",
+      "weight_share": 0.02283207836007161,
+      "year": 2019
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "val",
+      "weight_share": 0.5182688609956664,
+      "year": 2019
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "val",
+      "weight_share": 0.015428380041844098,
+      "year": 2019
+    },
+    {
       "group": "capacity >= 16 TB",
       "split": "val",
       "weight_share": 0.0006583176514017873,
@@ -7647,6 +8579,30 @@
       "group": "in service >= 4 years",
       "split": "val",
       "weight_share": 0.18057233642580567,
+      "year": 2020
+    },
+    {
+      "group": "training models",
+      "split": "val",
+      "weight_share": 0.983767706010001,
+      "year": 2020
+    },
+    {
+      "group": "other models",
+      "split": "val",
+      "weight_share": 0.016232293989998984,
+      "year": 2020
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "val",
+      "weight_share": 0.45584537259347946,
+      "year": 2020
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "val",
+      "weight_share": 0.0016377563013134397,
       "year": 2020
     },
     {
@@ -7716,6 +8672,30 @@
       "year": 2021
     },
     {
+      "group": "training models",
+      "split": "val",
+      "weight_share": 0.9846828106219254,
+      "year": 2021
+    },
+    {
+      "group": "other models",
+      "split": "val",
+      "weight_share": 0.01531718937807462,
+      "year": 2021
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "val",
+      "weight_share": 0.5675293676658282,
+      "year": 2021
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "val",
+      "weight_share": 0.002783577650834562,
+      "year": 2021
+    },
+    {
       "group": "model MG08ACA16TEY",
       "split": "val",
       "weight_share": 0.010307028413526475,
@@ -7782,6 +8762,30 @@
       "year": 2022
     },
     {
+      "group": "training models",
+      "split": "val",
+      "weight_share": 0.9850950097583099,
+      "year": 2022
+    },
+    {
+      "group": "other models",
+      "split": "val",
+      "weight_share": 0.014904990241690149,
+      "year": 2022
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "val",
+      "weight_share": 0.49234210803795453,
+      "year": 2022
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "val",
+      "weight_share": 0.004342470748915819,
+      "year": 2022
+    },
+    {
       "group": "model MG08ACA16TEY",
       "split": "val",
       "weight_share": 0.017285868893314765,
@@ -7845,6 +8849,30 @@
       "group": "in service >= 4 years",
       "split": "val",
       "weight_share": 0.26879498264517937,
+      "year": 2023
+    },
+    {
+      "group": "training models",
+      "split": "val",
+      "weight_share": 0.9858441097344819,
+      "year": 2023
+    },
+    {
+      "group": "other models",
+      "split": "val",
+      "weight_share": 0.014155890265518166,
+      "year": 2023
+    },
+    {
+      "group": "in service < 2 years, training models",
+      "split": "val",
+      "weight_share": 0.32250804429698116,
+      "year": 2023
+    },
+    {
+      "group": "in service < 2 years, other models",
+      "split": "val",
+      "weight_share": 0.003610795629878303,
       "year": 2023
     },
     {
@@ -11615,6 +12643,48 @@
       "horizon": 365,
       "other": "rule_counters",
       "reference": "hazard_smart"
+    }
+  ],
+  "gain_retained_without_critical_counters": [
+    {
+      "horizon": 7,
+      "share": 0.6489579479093831,
+      "share_ci": [
+        0.6215620956895718,
+        0.6741575772502713
+      ]
+    },
+    {
+      "horizon": 30,
+      "share": 0.611131251063826,
+      "share_ci": [
+        0.5783562664385301,
+        0.6430971343858801
+      ]
+    },
+    {
+      "horizon": 90,
+      "share": 0.5804115379809908,
+      "share_ci": [
+        0.5379494248206165,
+        0.6157099312975862
+      ]
+    },
+    {
+      "horizon": 180,
+      "share": 0.5500550357122964,
+      "share_ci": [
+        0.5101717582138491,
+        0.599119195761005
+      ]
+    },
+    {
+      "horizon": 365,
+      "share": 0.6286527501960546,
+      "share_ci": [
+        0.5904562999036745,
+        0.6696779695755585
+      ]
     }
   ],
   "life": [
@@ -22324,6 +23394,7 @@
           }
         ],
         "negative_units": 53669,
+        "negative_units_of_drives_failing_later": 5139,
         "positive_units": 1766,
         "window": "Q"
       },
@@ -22646,6 +23717,7 @@
           }
         ],
         "negative_units": 13850,
+        "negative_units_of_drives_failing_later": 721,
         "positive_units": 1766,
         "window": "Y"
       }

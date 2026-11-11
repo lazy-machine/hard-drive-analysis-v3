@@ -462,7 +462,7 @@ watch = ["steps/common.py", "steps/model.py", "steps/survival.py"]
 name = "evaluate"
 description = "Weighted, censoring-aware metrics with drive-level bootstrap intervals"
 function = "evaluate:evaluate"
-inputs = { predictions = "build/predictions.parquet", cohort = "build/cohort.parquet", study = "config/study.toml", sample = "config/sample.toml" }
+inputs = { predictions = "build/predictions.parquet", cohort = "build/cohort.parquet", study = "config/study.toml", sample = "config/sample.toml", schema = "build/feature-schema.json" }
 outputs = { metrics = "build/metrics.json", calibration = "build/calibration.csv", detection = "build/detection.csv", life = "build/life.csv" }
 params = { reference = "hazard_smart", concordance_max_rows = 300000, firmware_model = "MG08ACA16TEY" }
 requires = ["numpy", "pandas>=2.2"]

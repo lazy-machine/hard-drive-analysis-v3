@@ -44,6 +44,7 @@ Sections of metrics.json:
 
 from __future__ import annotations
 
+import json
 import multiprocessing
 import os
 import re
@@ -257,8 +258,9 @@ def _ranking_metrics(test, D: Drives, models, H, mask, rounds, seed, reference=N
     return out, gains
 
 
-def discrimination(test, D, models, horizons, reference, rounds, seed, log):
+def discrimination(test, D, models, horizons, reference, rounds, seed, log, retained=None):
     rows, diffs, skipped = [], [], {}
+    retained = [] if retained is None else retained
     everything = np.ones(len(test), dtype=bool)
     for H in horizons:
         res, gains = _ranking_metrics(test, D, models, H, everything, rounds, seed + H,
@@ -281,6 +283,17 @@ def discrimination(test, D, models, horizons, reference, rounds, seed, log):
                 skill = 1 - brier / ref if ref > 0 else None
             rows.append({"horizon": H, "model": n, "kind": models[n]["kind"], **r,
                          "brier": brier, "brier_skill": skill})
+        if reference in res and {"hazard_nosmart", "hazard_nocritical"} <= set(gains):
+            # share of the SMART gain over the no-SMART model that the model without the
+            # critical counters keeps: (nocritical - nosmart) / (reference - nosmart), per
+            # paired bootstrap round
+            full, kept = gains["hazard_nosmart"]["auc"], gains["hazard_nocritical"]["auc"]
+            point_full = res[reference]["auc"] - res["hazard_nosmart"]["auc"]
+            point_kept = res["hazard_nocritical"]["auc"] - res["hazard_nosmart"]["auc"]
+            retained.append({
+                "horizon": H, "share": point_kept / point_full if point_full else None,
+                "share_ci": _interval([(a - b) / a for a, b in zip(full, kept, strict=True)
+                                       if a])})
         if reference in res:
             for n, g in gains.items():
                 diffs.append({
@@ -505,6 +518,7 @@ def alerting(val, test, D, models, horizon, rates, main_rate, lead, edges, round
     healthy, positive, unknown = st == 0, st == 1, st == -1
     window = (D.e == 1) & (D.d < horizon)                     # failing drives' last days
     failing_drives = np.unique(D.codes[window])
+    year = pd.to_datetime(test["date"]).dt.year.to_numpy()
     # drives that do not fail in the test period, and their test snapshots
     quiet = ~D.fails
     quiet_rows = quiet[D.codes]
@@ -555,7 +569,13 @@ def alerting(val, test, D, models, horizon, rates, main_rate, lead, edges, round
 
             point = stats(D.w, np.ones(D.n))
             boot = [stats(D.w * c[D.codes], c) for c in counts_list]
+            by_year = {}
+            for yr in np.unique(year):
+                h = healthy & (year == yr)
+                if h.any():
+                    by_year[str(int(yr))] = float(np.sum(D.w[alert & h]) / np.sum(D.w[h]))
             row = {"model": name, "horizon": horizon, "budget": rate, "threshold": float(threshold),
+                   "false_alarm_rate_test_by_year": by_year,
                    "false_alarm_rate_val":
                        float(np.sum(w_val[healthy_val] * (s_val[healthy_val] >= threshold))
                              / np.sum(w_val[healthy_val])),
@@ -744,6 +764,7 @@ def windowed_alerts(test, D, models, horizon, stride, targets, rounds, seed, fre
                                                   zip(boot[name], boot[pair[1]], strict=True)])
             rows.append(row)
     return {"window": freq, "negative_units": int(len(neg_units)),
+            "negative_units_of_drives_failing_later": int(D.fails[neg_drive].sum()),
             "positive_units": int(pos_drive.size), "matched": rows}
 
 
@@ -948,8 +969,10 @@ def full_follow_up(test, D, models, horizons, reference, rounds, seed, log):
     return rows, diffs
 
 
-def _groups(frame, cap_split_tb, firmware_model):
-    """{group name: row mask} for calibration_by_group and composition."""
+def _groups(frame, cap_split_tb, firmware_model, known_models=None):
+    """{group name: row mask} for calibration_by_group and composition. known_models: the
+    drive models the model_code feature names (the most frequent in training); the rest
+    share one "other" category."""
     cap = frame["capacity_bytes"].to_numpy() / 1e12
     out = {"all": np.ones(len(frame), dtype=bool),
            f"capacity >= {cap_split_tb} TB": cap >= cap_split_tb,
@@ -964,6 +987,13 @@ def _groups(frame, cap_split_tb, firmware_model):
         out["in service < 2 years"] = age < 2
         out["in service 2-4 years"] = (age >= 2) & (age < 4)
         out["in service >= 4 years"] = age >= 4
+    if known_models:
+        known = frame["model"].isin(known_models).to_numpy()
+        out["training models"] = known
+        out["other models"] = ~known
+        if "first_date" in frame:
+            out["in service < 2 years, training models"] = (age < 2) & known
+            out["in service < 2 years, other models"] = (age < 2) & ~known
     vendor, model = firmware_vendor(frame, firmware_model) if firmware_model else (None, None)
     if vendor is not None:
         out[f"model {firmware_model}"] = model
@@ -972,14 +1002,15 @@ def _groups(frame, cap_split_tb, firmware_model):
     return out
 
 
-def calibration_by_group(preds, name, H, cap_split_tb, firmware_model, rounds, seed):
+def calibration_by_group(preds, name, H, cap_split_tb, firmware_model, rounds, seed,
+                         known_models=None):
     """Predicted vs Kaplan-Meier observed H-day risk of one model per split, calendar year
     and group, with a drive-bootstrap interval for the ratio. Tells whether a drift in
     calibration sits in one part of the fleet (large drives, one vendor, one model)."""
     rows = []
     year = pd.to_datetime(preds["date"]).dt.year
     for (split, yr), g in preds.groupby([preds["split"], year]):
-        for group, m in _groups(g, cap_split_tb, firmware_model).items():
+        for group, m in _groups(g, cap_split_tb, firmware_model, known_models).items():
             if not m.any():
                 continue
             sub = g[m]
@@ -1001,13 +1032,13 @@ def calibration_by_group(preds, name, H, cap_split_tb, firmware_model, rounds, s
     return rows
 
 
-def composition(preds, cap_split_tb, firmware_model):
+def composition(preds, cap_split_tb, firmware_model, known_models=None):
     """Weighted share of snapshots per group, split and calendar year (fleet mix)."""
     rows = []
     year = pd.to_datetime(preds["date"]).dt.year
     for (split, yr), g in preds.groupby([preds["split"], year]):
         w = g["weight"].to_numpy()
-        for group, m in _groups(g, cap_split_tb, firmware_model).items():
+        for group, m in _groups(g, cap_split_tb, firmware_model, known_models).items():
             if group != "all":
                 rows.append({"split": split, "year": int(yr), "group": group,
                              "weight_share": float(w[m].sum() / w.sum())})
@@ -1081,8 +1112,9 @@ def evaluate(ctx):
     log(f"{len(test)} test snapshots of {D.n} drives; {len(val_cal)} validation snapshots "
         "for alert thresholds")
 
+    retained = []
     disc, diffs, skipped = discrimination(test, D, models, label["horizons"], reference,
-                                          rounds, seed, log)
+                                          rounds, seed, log, retained)
     slice_rows = slices(test, D, models, label["horizons"], H, rounds, seed, ev, log, firmware)
     follow_rows, follow_diffs = full_follow_up(test, D, models, label["horizons"], reference,
                                                rounds, seed, log)
@@ -1107,9 +1139,13 @@ def evaluate(ctx):
                   if a["budget"] == ev["alert_false_alarm_rate"]}
     retire = retirement(preds, models, H, thresholds)
     log("calibration over time and retirement done")
+    known = None
+    if "schema" in ctx.inputs:
+        levels = json.loads(ctx.inputs["schema"].read_text())["categorical"]["model_code"]
+        known = [m for m in levels if m != "other"]
     by_group = calibration_by_group(preds, reference, H, ev["capacity_split_tb"], firmware,
-                                    rounds, seed)
-    mix = composition(preds, ev["capacity_split_tb"], firmware)
+                                    rounds, seed, known)
+    mix = composition(preds, ev["capacity_split_tb"], firmware, known)
     spread = seed_spread(test, D, models, seeds, label["horizons"])
     log(f"calibration by group done; {len(seeds)} seed replicates")
 
@@ -1146,6 +1182,7 @@ def evaluate(ctx):
         "composition": mix,
         "seed_spread": spread,
         "weekly_alerts": weekly,
+        "gain_retained_without_critical_counters": retained,
     })
     main = next(c for c in conc if c["model"] == reference)
     return {f"auc{H}_{reference}": _row(disc, H, reference)["auc"],
