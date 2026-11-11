@@ -11623,231 +11623,483 @@
       "healthy_share_median_beyond_horizon": 0.9996181311064096,
       "healthy_snapshots": 296032,
       "interval_q10_q90_coverage": 0.0923275008253549,
+      "interval_q10_q90_coverage_ci": [
+        0.08101635327438432,
+        0.10531782743488108
+      ],
       "mean_rmst_failing": 347.11956332971914,
       "mean_rmst_healthy": 361.3315713071985,
       "median_abs_error_days": 100.42454526005055,
+      "median_abs_error_days_ci": [
+        91.17510928968682,
+        112.43338860990009
+      ],
       "median_abs_error_snapshots": 8316,
       "model": "hazard_nocritical",
       "quantile_calibration": {
         "0.1": {
           "share_failed_by_predicted_day": 0.07499457446478691,
+          "share_failed_by_predicted_day_ci": [
+            0.06481365922996152,
+            0.08859226058531056
+          ],
           "share_failed_by_predicted_day_ipcw": 0.0613925914355564,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.05225173960008495,
+            0.07262735054322092
+          ],
           "snapshots": 52025,
           "target": 0.1
         },
         "0.5": {
           "share_failed_by_predicted_day": 0.26708798625598235,
+          "share_failed_by_predicted_day_ci": [
+            0.17230985629746737,
+            0.5144098228795541
+          ],
           "share_failed_by_predicted_day_ipcw": 0.24342040672907242,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.15522923625913523,
+            0.48524550895925855
+          ],
           "snapshots": 8644,
           "target": 0.5
         },
         "0.9": {
           "share_failed_by_predicted_day": 0.21982608695652173,
+          "share_failed_by_predicted_day_ci": [
+            0.0880477649342372,
+            0.6538010387378945
+          ],
           "share_failed_by_predicted_day_ipcw": 0.14207382128920015,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.05051420138719453,
+            0.6463023639885228
+          ],
           "snapshots": 1790,
           "target": 0.9
         }
       },
       "share_finite_median_all": 0.0010870598882349986,
-      "share_median_within_horizon": 0.027586662264773854
+      "share_median_within_horizon": 0.027586662264773854,
+      "share_median_within_horizon_ci": [
+        0.021939098671719844,
+        0.03314451241656106
+      ]
     },
     {
       "failing_snapshots": 189708,
       "healthy_share_median_beyond_horizon": 1.0,
       "healthy_snapshots": 296032,
       "interval_q10_q90_coverage": 0.0012325299878947948,
+      "interval_q10_q90_coverage_ci": [
+        0.0001706147735400541,
+        0.00261354805687326
+      ],
       "mean_rmst_failing": 360.6226047914736,
       "mean_rmst_healthy": 361.68435351367447,
       "median_abs_error_days": null,
+      "median_abs_error_days_ci": [
+        null,
+        null
+      ],
       "median_abs_error_snapshots": 0,
       "model": "hazard_nosmart",
       "quantile_calibration": {
         "0.1": {
           "share_failed_by_predicted_day": 0.04587659945065988,
+          "share_failed_by_predicted_day_ci": [
+            0.024658866672967586,
+            0.07431995946564987
+          ],
           "share_failed_by_predicted_day_ipcw": 0.036760238487290646,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.019545696910836036,
+            0.05816469768049759
+          ],
           "snapshots": 3112,
           "target": 0.1
         },
         "0.5": {
           "share_failed_by_predicted_day": null,
+          "share_failed_by_predicted_day_ci": [
+            null,
+            null
+          ],
           "share_failed_by_predicted_day_ipcw": null,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            null,
+            null
+          ],
           "snapshots": 0,
           "target": 0.5
         },
         "0.9": {
           "share_failed_by_predicted_day": null,
+          "share_failed_by_predicted_day_ci": [
+            null,
+            null
+          ],
           "share_failed_by_predicted_day_ipcw": null,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            null,
+            null
+          ],
           "snapshots": 0,
           "target": 0.9
         }
       },
       "share_finite_median_all": 0.0,
-      "share_median_within_horizon": 0.0
+      "share_median_within_horizon": 0.0,
+      "share_median_within_horizon_ci": [
+        0.0,
+        0.0
+      ]
     },
     {
       "failing_snapshots": 189708,
       "healthy_share_median_beyond_horizon": 0.9985366468758754,
       "healthy_snapshots": 296032,
       "interval_q10_q90_coverage": 0.2539473973808738,
+      "interval_q10_q90_coverage_ci": [
+        0.2399805019250364,
+        0.27015727929767663
+      ],
       "mean_rmst_failing": 320.14510064538274,
       "mean_rmst_healthy": 361.90693413959485,
       "median_abs_error_days": 109.8574311255582,
+      "median_abs_error_days_ci": [
+        106.08151145370582,
+        113.85999171811095
+      ],
       "median_abs_error_snapshots": 43922,
       "model": "hazard_smart",
       "quantile_calibration": {
         "0.1": {
           "share_failed_by_predicted_day": 0.06980183541937371,
+          "share_failed_by_predicted_day_ci": [
+            0.06267051904290864,
+            0.07937011078347991
+          ],
           "share_failed_by_predicted_day_ipcw": 0.0595738750633668,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.052869544857166426,
+            0.06824134314071152
+          ],
           "snapshots": 113802,
           "target": 0.1
         },
         "0.5": {
           "share_failed_by_predicted_day": 0.3834296294643853,
+          "share_failed_by_predicted_day_ci": [
+            0.32925945183974653,
+            0.4616362023896417
+          ],
           "share_failed_by_predicted_day_ipcw": 0.33673957631092755,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.2821749522121298,
+            0.4132740753709338
+          ],
           "snapshots": 45249,
           "target": 0.5
         },
         "0.9": {
           "share_failed_by_predicted_day": 0.8248006915762175,
+          "share_failed_by_predicted_day_ci": [
+            0.7643204089787583,
+            0.8809853844560658
+          ],
           "share_failed_by_predicted_day_ipcw": 0.797958005386047,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.7350917666065306,
+            0.8563811652541569
+          ],
           "snapshots": 7981,
           "target": 0.9
         }
       },
       "share_finite_median_all": 0.004816116745881564,
-      "share_median_within_horizon": 0.15046990205788488
+      "share_median_within_horizon": 0.15046990205788488,
+      "share_median_within_horizon_ci": [
+        0.14004373966123723,
+        0.1625659237163965
+      ]
     },
     {
       "failing_snapshots": 189708,
       "healthy_share_median_beyond_horizon": 0.997685501949824,
       "healthy_snapshots": 296032,
       "interval_q10_q90_coverage": 0.27951799273687683,
+      "interval_q10_q90_coverage_ci": [
+        0.26469809360753277,
+        0.2959698057610818
+      ],
       "mean_rmst_failing": 313.2677202982054,
       "mean_rmst_healthy": 361.4607603502418,
       "median_abs_error_days": 101.5768479176135,
+      "median_abs_error_days_ci": [
+        98.0264938261699,
+        104.90079814431003
+      ],
       "median_abs_error_snapshots": 51101,
       "model": "hazard_smart_recent",
       "quantile_calibration": {
         "0.1": {
           "share_failed_by_predicted_day": 0.05764832399337942,
+          "share_failed_by_predicted_day_ci": [
+            0.05194175059556961,
+            0.06439593875845862
+          ],
           "share_failed_by_predicted_day_ipcw": 0.05027000002921863,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.04494214823412364,
+            0.056439102793298175
+          ],
           "snapshots": 118969,
           "target": 0.1
         },
         "0.5": {
           "share_failed_by_predicted_day": 0.3228516804185953,
+          "share_failed_by_predicted_day_ci": [
+            0.2764570652201325,
+            0.386057572416146
+          ],
           "share_failed_by_predicted_day_ipcw": 0.2824295254528765,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.23838325281411857,
+            0.34440571385864127
+          ],
           "snapshots": 53022,
           "target": 0.5
         },
         "0.9": {
           "share_failed_by_predicted_day": 0.7513975319059171,
+          "share_failed_by_predicted_day_ci": [
+            0.6909901880015609,
+            0.814100637200881
+          ],
           "share_failed_by_predicted_day_ipcw": 0.7057687713409893,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.6403632894353829,
+            0.782278784401109
+          ],
           "snapshots": 12689,
           "target": 0.9
         }
       },
       "share_finite_median_all": 0.006174553174653116,
-      "share_median_within_horizon": 0.18108726752503576
+      "share_median_within_horizon": 0.18108726752503576,
+      "share_median_within_horizon_ci": [
+        0.1690663439460918,
+        0.19448014789324977
+      ]
     },
     {
       "failing_snapshots": 189708,
       "healthy_share_median_beyond_horizon": 0.9978527934820066,
       "healthy_snapshots": 296032,
       "interval_q10_q90_coverage": 0.2597733025200836,
+      "interval_q10_q90_coverage_ci": [
+        0.24562533228951583,
+        0.2766547658776362
+      ],
       "mean_rmst_failing": 317.46183880520874,
       "mean_rmst_healthy": 361.80942816651753,
       "median_abs_error_days": 106.65402577549133,
+      "median_abs_error_days_ci": [
+        101.50788060906211,
+        110.22289284759805
+      ],
       "median_abs_error_snapshots": 46338,
       "model": "hazard_smart_w075",
       "quantile_calibration": {
         "0.1": {
           "share_failed_by_predicted_day": 0.07090571102403505,
+          "share_failed_by_predicted_day_ci": [
+            0.06330041810359285,
+            0.08138230298266244
+          ],
           "share_failed_by_predicted_day_ipcw": 0.06083178588491461,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.053786102815844124,
+            0.06979825097098197
+          ],
           "snapshots": 113164,
           "target": 0.1
         },
         "0.5": {
           "share_failed_by_predicted_day": 0.3259243117600058,
+          "share_failed_by_predicted_day_ci": [
+            0.2713342556550072,
+            0.4030826056006004
+          ],
           "share_failed_by_predicted_day_ipcw": 0.28897903177735945,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.2374112918132693,
+            0.3661887396440967
+          ],
           "snapshots": 48153,
           "target": 0.5
         },
         "0.9": {
           "share_failed_by_predicted_day": 0.7788071450196791,
+          "share_failed_by_predicted_day_ci": [
+            0.7122907380466338,
+            0.8578029525846333
+          ],
           "share_failed_by_predicted_day_ipcw": 0.7192193631740156,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.6408226240562885,
+            0.8102043452832844
+          ],
           "snapshots": 10899,
           "target": 0.9
         }
       },
       "share_finite_median_all": 0.005415740771586773,
-      "share_median_within_horizon": 0.1635655331792671
+      "share_median_within_horizon": 0.1635655331792671,
+      "share_median_within_horizon_ci": [
+        0.15244915220361058,
+        0.1758391936521108
+      ]
     },
     {
       "failing_snapshots": 189708,
       "healthy_share_median_beyond_horizon": 0.9973376645242364,
       "healthy_snapshots": 296032,
       "interval_q10_q90_coverage": 0.2401914823374051,
+      "interval_q10_q90_coverage_ci": [
+        0.2270501407573825,
+        0.25559232888182665
+      ],
       "mean_rmst_failing": 317.59831092411423,
       "mean_rmst_healthy": 361.83259383882927,
       "median_abs_error_days": 96.5500656171172,
+      "median_abs_error_days_ci": [
+        92.7968083917088,
+        99.97569538690324
+      ],
       "median_abs_error_snapshots": 44634,
       "model": "hazard_smart_w100",
       "quantile_calibration": {
         "0.1": {
           "share_failed_by_predicted_day": 0.07740518239152172,
+          "share_failed_by_predicted_day_ci": [
+            0.06759423840368833,
+            0.0895633445188708
+          ],
           "share_failed_by_predicted_day_ipcw": 0.06788387614233068,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.05855256383269112,
+            0.07875860546620073
+          ],
           "snapshots": 106277,
           "target": 0.1
         },
         "0.5": {
           "share_failed_by_predicted_day": 0.2718683815743029,
+          "share_failed_by_predicted_day_ci": [
+            0.22590813182171102,
+            0.34352681512703825
+          ],
           "share_failed_by_predicted_day_ipcw": 0.24014786059835153,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.19591278651121483,
+            0.3147726779944422
+          ],
           "snapshots": 46744,
           "target": 0.5
         },
         "0.9": {
           "share_failed_by_predicted_day": 0.4445506692160612,
+          "share_failed_by_predicted_day_ci": [
+            0.3432062511867791,
+            0.5852921091390376
+          ],
           "share_failed_by_predicted_day_ipcw": 0.35486360791303656,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.2597615562486908,
+            0.5234355492533728
+          ],
           "snapshots": 17215,
           "target": 0.9
         }
       },
       "share_finite_median_all": 0.005639842910980772,
-      "share_median_within_horizon": 0.1602244965335094
+      "share_median_within_horizon": 0.1602244965335094,
+      "share_median_within_horizon_ci": [
+        0.1481992475735847,
+        0.1755300157493728
+      ]
     },
     {
       "failing_snapshots": 189708,
       "healthy_share_median_beyond_horizon": 1.0,
       "healthy_snapshots": 296032,
       "interval_q10_q90_coverage": 0.006010784637394079,
+      "interval_q10_q90_coverage_ci": [
+        0.0032202446098103395,
+        0.008999545563870845
+      ],
       "mean_rmst_failing": 358.91512272085095,
       "mean_rmst_healthy": 361.24852632189834,
       "median_abs_error_days": 112.21707087053073,
+      "median_abs_error_days_ci": [
+        112.21707087053073,
+        112.21707087053073
+      ],
       "median_abs_error_snapshots": 24,
       "model": "hazard_usage",
       "quantile_calibration": {
         "0.1": {
           "share_failed_by_predicted_day": 0.044587692437268005,
+          "share_failed_by_predicted_day_ci": [
+            0.0326319345398989,
+            0.058444135281201376
+          ],
           "share_failed_by_predicted_day_ipcw": 0.035631145215049065,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            0.02582779665726228,
+            0.046917035961824484
+          ],
           "snapshots": 13345,
           "target": 0.1
         },
         "0.5": {
           "share_failed_by_predicted_day": 1.0,
+          "share_failed_by_predicted_day_ci": [
+            1.0,
+            1.0
+          ],
           "share_failed_by_predicted_day_ipcw": 1.0,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            1.0,
+            1.0
+          ],
           "snapshots": 24,
           "target": 0.5
         },
         "0.9": {
           "share_failed_by_predicted_day": null,
+          "share_failed_by_predicted_day_ci": [
+            null,
+            null
+          ],
           "share_failed_by_predicted_day_ipcw": null,
+          "share_failed_by_predicted_day_ipcw_ci": [
+            null,
+            null
+          ],
           "snapshots": 0,
           "target": 0.9
         }
       },
       "share_finite_median_all": 5.483739136884137e-07,
-      "share_median_within_horizon": 5.282271376691978e-05
+      "share_median_within_horizon": 5.282271376691978e-05,
+      "share_median_within_horizon_ci": [
+        0.0,
+        0.00015886244788097242
+      ]
     }
   ],
   "models": {
@@ -14224,6 +14476,246 @@
       "positive_snapshots": 9136,
       "slice": "failures with a critical counter above zero",
       "snapshots": 816639
+    },
+    {
+      "ap": 0.012896180033084556,
+      "ap_ci": [
+        0.006961125656125973,
+        0.023432856235013233
+      ],
+      "ap_ipcw": 0.012844692872564699,
+      "ap_ipcw_ci": [
+        0.006924063387918717,
+        0.023355410765400975
+      ],
+      "auc": 0.6361880777261549,
+      "auc_ci": [
+        0.60517407857019,
+        0.6647494569993945
+      ],
+      "auc_ipcw": 0.6361683450226497,
+      "auc_ipcw_ci": [
+        0.6051538810304419,
+        0.6647217063043562
+      ],
+      "base_rate": 6.1017798887046104e-05,
+      "drives": 8253,
+      "horizon": 7,
+      "model": "hazard_nocritical",
+      "positive_drives": 368,
+      "positive_snapshots": 2496,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 675404
+    },
+    {
+      "ap": 8.686797223040092e-05,
+      "ap_ci": [
+        7.326696504527388e-05,
+        0.00011721879377884013
+      ],
+      "ap_ipcw": 8.642836222617654e-05,
+      "ap_ipcw_ci": [
+        7.289188502263122e-05,
+        0.00011663691077561015
+      ],
+      "auc": 0.571751497164709,
+      "auc_ci": [
+        0.5407101408358169,
+        0.600947342539999
+      ],
+      "auc_ipcw": 0.5717547251144997,
+      "auc_ipcw_ci": [
+        0.5407123572929502,
+        0.6009501474459479
+      ],
+      "base_rate": 6.1017798887046104e-05,
+      "drives": 8253,
+      "horizon": 7,
+      "model": "hazard_nosmart",
+      "positive_drives": 368,
+      "positive_snapshots": 2496,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 675404
+    },
+    {
+      "ap": 0.016129333673850735,
+      "ap_ci": [
+        0.008999135841016173,
+        0.029283549084319186
+      ],
+      "ap_ipcw": 0.016073201566618293,
+      "ap_ipcw_ci": [
+        0.008967637583977634,
+        0.02919479778227275
+      ],
+      "auc": 0.685519008509867,
+      "auc_ci": [
+        0.65493078804173,
+        0.716467570192067
+      ],
+      "auc_ipcw": 0.6854895640688518,
+      "auc_ipcw_ci": [
+        0.6549031595258387,
+        0.7164467718903427
+      ],
+      "base_rate": 6.1017798887046104e-05,
+      "drives": 8253,
+      "horizon": 7,
+      "model": "hazard_smart",
+      "positive_drives": 368,
+      "positive_snapshots": 2496,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 675404
+    },
+    {
+      "ap": 0.016129333673850735,
+      "ap_ci": [
+        0.008999135841016173,
+        0.029283549084319186
+      ],
+      "ap_ipcw": 0.016073201566618293,
+      "ap_ipcw_ci": [
+        0.008967637583977634,
+        0.02919479778227275
+      ],
+      "auc": 0.685519008509867,
+      "auc_ci": [
+        0.65493078804173,
+        0.716467570192067
+      ],
+      "auc_ipcw": 0.6854895640688518,
+      "auc_ipcw_ci": [
+        0.6549031595258387,
+        0.7164467718903427
+      ],
+      "base_rate": 6.1017798887046104e-05,
+      "drives": 8253,
+      "horizon": 7,
+      "model": "hazard_smart_recent",
+      "positive_drives": 368,
+      "positive_snapshots": 2496,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 675404
+    },
+    {
+      "ap": 0.016517045534291886,
+      "ap_ci": [
+        0.010432634124847818,
+        0.028395510629482063
+      ],
+      "ap_ipcw": 0.016464894887560498,
+      "ap_ipcw_ci": [
+        0.010392876351898858,
+        0.028312846481943363
+      ],
+      "auc": 0.6928019979951593,
+      "auc_ci": [
+        0.6652436561040673,
+        0.7203284221765246
+      ],
+      "auc_ipcw": 0.6927878940932296,
+      "auc_ipcw_ci": [
+        0.665218450229831,
+        0.7203125965980255
+      ],
+      "base_rate": 6.1017798887046104e-05,
+      "drives": 8253,
+      "horizon": 7,
+      "model": "hazard_smart_w075",
+      "positive_drives": 368,
+      "positive_snapshots": 2496,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 675404
+    },
+    {
+      "ap": 0.01268598405081053,
+      "ap_ci": [
+        0.006884513215962293,
+        0.023208000293244865
+      ],
+      "ap_ipcw": 0.012645756755496286,
+      "ap_ipcw_ci": [
+        0.0068550380347594505,
+        0.02316195206325303
+      ],
+      "auc": 0.6761994344747958,
+      "auc_ci": [
+        0.6494011180857099,
+        0.7055468574018368
+      ],
+      "auc_ipcw": 0.6761914111901988,
+      "auc_ipcw_ci": [
+        0.6493896637875181,
+        0.7055351233545114
+      ],
+      "base_rate": 6.1017798887046104e-05,
+      "drives": 8253,
+      "horizon": 7,
+      "model": "hazard_smart_w100",
+      "positive_drives": 368,
+      "positive_snapshots": 2496,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 675404
+    },
+    {
+      "ap": 0.001009121203408242,
+      "ap_ci": [
+        0.00012949313315154115,
+        0.0027670965983768794
+      ],
+      "ap_ipcw": 0.0010052480417705922,
+      "ap_ipcw_ci": [
+        0.00012880488811612396,
+        0.0027567317366562387
+      ],
+      "auc": 0.6143895340455399,
+      "auc_ci": [
+        0.5848920127790995,
+        0.64433218986572
+      ],
+      "auc_ipcw": 0.6143809874676588,
+      "auc_ipcw_ci": [
+        0.5848800235865528,
+        0.644327023461936
+      ],
+      "base_rate": 6.1017798887046104e-05,
+      "drives": 8253,
+      "horizon": 7,
+      "model": "hazard_usage",
+      "positive_drives": 368,
+      "positive_snapshots": 2496,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 675404
+    },
+    {
+      "ap": 6.1017798887046104e-05,
+      "ap_ci": [
+        5.5317922793483166e-05,
+        6.696849695493058e-05
+      ],
+      "ap_ipcw": 6.071063992402155e-05,
+      "ap_ipcw_ci": [
+        5.503889808984762e-05,
+        6.663200374122133e-05
+      ],
+      "auc": 0.5,
+      "auc_ci": [
+        0.5,
+        0.5
+      ],
+      "auc_ipcw": 0.5,
+      "auc_ipcw_ci": [
+        0.5,
+        0.5
+      ],
+      "base_rate": 6.1017798887046104e-05,
+      "drives": 8253,
+      "horizon": 7,
+      "model": "rule_counters",
+      "positive_drives": 368,
+      "positive_snapshots": 2496,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 675404
     },
     {
       "ap": 0.07525005589029084,
@@ -17466,6 +17958,276 @@
       "snapshots": 232279
     },
     {
+      "ap": 0.026546910131608627,
+      "ap_ci": [
+        0.011931028586947131,
+        0.04120097318465465
+      ],
+      "ap_ipcw": 0.02611218216134136,
+      "ap_ipcw_ci": [
+        0.011710652532544354,
+        0.0405621497122412
+      ],
+      "auc": 0.6794439561708827,
+      "auc_ci": [
+        0.6540097241540668,
+        0.7050227514272176
+      ],
+      "auc_ipcw": 0.6792682637008292,
+      "auc_ipcw_ci": [
+        0.6538346899348957,
+        0.7049117134733189
+      ],
+      "base_rate": 0.0002636861695613337,
+      "drives": 8148,
+      "horizon": 30,
+      "model": "binary_30d",
+      "positive_drives": 368,
+      "positive_snapshots": 10380,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 648489
+    },
+    {
+      "ap": 0.024514997902221333,
+      "ap_ci": [
+        0.010348049540412633,
+        0.03773633171809061
+      ],
+      "ap_ipcw": 0.024230315888428614,
+      "ap_ipcw_ci": [
+        0.010200731586058187,
+        0.037479583261294705
+      ],
+      "auc": 0.612941063959777,
+      "auc_ci": [
+        0.5800307362472404,
+        0.6419286449755568
+      ],
+      "auc_ipcw": 0.6127569003295709,
+      "auc_ipcw_ci": [
+        0.5798432828918643,
+        0.6417497836218751
+      ],
+      "base_rate": 0.0002636861695613337,
+      "drives": 8148,
+      "horizon": 30,
+      "model": "hazard_nocritical",
+      "positive_drives": 368,
+      "positive_snapshots": 10380,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 648489
+    },
+    {
+      "ap": 0.00035212361786367583,
+      "ap_ci": [
+        0.0002876725764299958,
+        0.0004380939479266024
+      ],
+      "ap_ipcw": 0.0003435191796696131,
+      "ap_ipcw_ci": [
+        0.00028058584702052975,
+        0.0004274308589669788
+      ],
+      "auc": 0.5707335637207772,
+      "auc_ci": [
+        0.5391527794327478,
+        0.602051883482327
+      ],
+      "auc_ipcw": 0.5707131600640061,
+      "auc_ipcw_ci": [
+        0.5391049477205708,
+        0.6020168546659703
+      ],
+      "base_rate": 0.0002636861695613337,
+      "drives": 8148,
+      "horizon": 30,
+      "model": "hazard_nosmart",
+      "positive_drives": 368,
+      "positive_snapshots": 10380,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 648489
+    },
+    {
+      "ap": 0.02792219124508102,
+      "ap_ci": [
+        0.01341792087340661,
+        0.04292916730298269
+      ],
+      "ap_ipcw": 0.027620673097049825,
+      "ap_ipcw_ci": [
+        0.013231137970680146,
+        0.04264672560385763
+      ],
+      "auc": 0.6688619842462619,
+      "auc_ci": [
+        0.637627631910749,
+        0.6974354551510099
+      ],
+      "auc_ipcw": 0.6687014927793228,
+      "auc_ipcw_ci": [
+        0.6374249800075861,
+        0.697205254820055
+      ],
+      "base_rate": 0.0002636861695613337,
+      "drives": 8148,
+      "horizon": 30,
+      "model": "hazard_smart",
+      "positive_drives": 368,
+      "positive_snapshots": 10380,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 648489
+    },
+    {
+      "ap": 0.02791143628213267,
+      "ap_ci": [
+        0.01341549905054043,
+        0.042911612765298215
+      ],
+      "ap_ipcw": 0.02760936372464887,
+      "ap_ipcw_ci": [
+        0.0132286978422584,
+        0.04262912046283069
+      ],
+      "auc": 0.6689058762279891,
+      "auc_ci": [
+        0.6376562929786855,
+        0.6974585710999884
+      ],
+      "auc_ipcw": 0.668745424763762,
+      "auc_ipcw_ci": [
+        0.6374536131351334,
+        0.6972284469417193
+      ],
+      "base_rate": 0.0002636861695613337,
+      "drives": 8148,
+      "horizon": 30,
+      "model": "hazard_smart_recent",
+      "positive_drives": 368,
+      "positive_snapshots": 10380,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 648489
+    },
+    {
+      "ap": 0.027048835351390233,
+      "ap_ci": [
+        0.01223037547047359,
+        0.04157472101094177
+      ],
+      "ap_ipcw": 0.02676566066711847,
+      "ap_ipcw_ci": [
+        0.012091535305332095,
+        0.04129986668876341
+      ],
+      "auc": 0.681904548938568,
+      "auc_ci": [
+        0.6495221103843749,
+        0.7084774900568411
+      ],
+      "auc_ipcw": 0.6817855492085292,
+      "auc_ipcw_ci": [
+        0.6494259625850695,
+        0.7083241660203705
+      ],
+      "base_rate": 0.0002636861695613337,
+      "drives": 8148,
+      "horizon": 30,
+      "model": "hazard_smart_w075",
+      "positive_drives": 368,
+      "positive_snapshots": 10380,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 648489
+    },
+    {
+      "ap": 0.025404664640191105,
+      "ap_ci": [
+        0.012257851881443833,
+        0.03791730615169553
+      ],
+      "ap_ipcw": 0.025150421309831885,
+      "ap_ipcw_ci": [
+        0.01212016980217992,
+        0.037633249065911555
+      ],
+      "auc": 0.6658505551428912,
+      "auc_ci": [
+        0.6312627949633218,
+        0.6955402980080025
+      ],
+      "auc_ipcw": 0.6657230575567792,
+      "auc_ipcw_ci": [
+        0.631126677536949,
+        0.6954069219509905
+      ],
+      "base_rate": 0.0002636861695613337,
+      "drives": 8148,
+      "horizon": 30,
+      "model": "hazard_smart_w100",
+      "positive_drives": 368,
+      "positive_snapshots": 10380,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 648489
+    },
+    {
+      "ap": 0.002796592145472456,
+      "ap_ci": [
+        0.00040056242801965735,
+        0.007800873691624052
+      ],
+      "ap_ipcw": 0.002773155921773919,
+      "ap_ipcw_ci": [
+        0.000390324114028633,
+        0.007754501314375147
+      ],
+      "auc": 0.6004368340632831,
+      "auc_ci": [
+        0.567508783359082,
+        0.6246440340465151
+      ],
+      "auc_ipcw": 0.6003336844946741,
+      "auc_ipcw_ci": [
+        0.5673929430612985,
+        0.6245387644459567
+      ],
+      "base_rate": 0.0002636861695613337,
+      "drives": 8148,
+      "horizon": 30,
+      "model": "hazard_usage",
+      "positive_drives": 368,
+      "positive_snapshots": 10380,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 648489
+    },
+    {
+      "ap": 0.0002636861695613337,
+      "ap_ci": [
+        0.00024266056783603753,
+        0.000287047393922761
+      ],
+      "ap_ipcw": 0.00025727442184979256,
+      "ap_ipcw_ci": [
+        0.00023674935027708698,
+        0.00028005952558166357
+      ],
+      "auc": 0.5,
+      "auc_ci": [
+        0.5,
+        0.5
+      ],
+      "auc_ipcw": 0.5,
+      "auc_ipcw_ci": [
+        0.5,
+        0.5
+      ],
+      "base_rate": 0.0002636861695613337,
+      "drives": 8148,
+      "horizon": 30,
+      "model": "rule_counters",
+      "positive_drives": 368,
+      "positive_snapshots": 10380,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 648489
+    },
+    {
       "ap": 0.048368635546773724,
       "ap_ci": [
         0.03912857697802391,
@@ -18184,6 +18946,246 @@
       "positive_snapshots": 116385,
       "slice": "failures with a critical counter above zero",
       "snapshots": 706486
+    },
+    {
+      "ap": 0.01426435113707416,
+      "ap_ci": [
+        0.00841630868022675,
+        0.023846930147147984
+      ],
+      "ap_ipcw": 0.013266583205386047,
+      "ap_ipcw_ci": [
+        0.0077746747421530114,
+        0.022528124768876355
+      ],
+      "auc": 0.590067958618198,
+      "auc_ci": [
+        0.556919796017472,
+        0.6187555572524952
+      ],
+      "auc_ipcw": 0.5893350419240435,
+      "auc_ipcw_ci": [
+        0.556229901112562,
+        0.6180750794439644
+      ],
+      "base_rate": 0.0008254276234089308,
+      "drives": 7856,
+      "horizon": 90,
+      "model": "hazard_nocritical",
+      "positive_drives": 368,
+      "positive_snapshots": 29216,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 570237
+    },
+    {
+      "ap": 0.0010859143755597126,
+      "ap_ci": [
+        0.0009139775632294494,
+        0.0013163928911864968
+      ],
+      "ap_ipcw": 0.0010020277520406788,
+      "ap_ipcw_ci": [
+        0.0008439031220224089,
+        0.0012155245018973947
+      ],
+      "auc": 0.5671037470453936,
+      "auc_ci": [
+        0.5379197033740822,
+        0.5929793586219858
+      ],
+      "auc_ipcw": 0.5671908162013826,
+      "auc_ipcw_ci": [
+        0.5379407220119985,
+        0.5932135269360937
+      ],
+      "base_rate": 0.0008254276234089308,
+      "drives": 7856,
+      "horizon": 90,
+      "model": "hazard_nosmart",
+      "positive_drives": 368,
+      "positive_snapshots": 29216,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 570237
+    },
+    {
+      "ap": 0.018959959008216183,
+      "ap_ci": [
+        0.011035619976568871,
+        0.030623800711119368
+      ],
+      "ap_ipcw": 0.01783266644381242,
+      "ap_ipcw_ci": [
+        0.01039835113323688,
+        0.02902475796075795
+      ],
+      "auc": 0.6466990080718739,
+      "auc_ci": [
+        0.6131953542180874,
+        0.6746002210443979
+      ],
+      "auc_ipcw": 0.6460044060719872,
+      "auc_ipcw_ci": [
+        0.6124022062847602,
+        0.6740489852937832
+      ],
+      "base_rate": 0.0008254276234089308,
+      "drives": 7856,
+      "horizon": 90,
+      "model": "hazard_smart",
+      "positive_drives": 368,
+      "positive_snapshots": 29216,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 570237
+    },
+    {
+      "ap": 0.018926931594539235,
+      "ap_ci": [
+        0.010985771835791512,
+        0.030637735317127365
+      ],
+      "ap_ipcw": 0.01780374778457416,
+      "ap_ipcw_ci": [
+        0.010354001042559286,
+        0.029039786984261066
+      ],
+      "auc": 0.6466498734272301,
+      "auc_ci": [
+        0.613126203969331,
+        0.6745413221948457
+      ],
+      "auc_ipcw": 0.6459552076783943,
+      "auc_ipcw_ci": [
+        0.6123327881367617,
+        0.6739900148551378
+      ],
+      "base_rate": 0.0008254276234089308,
+      "drives": 7856,
+      "horizon": 90,
+      "model": "hazard_smart_recent",
+      "positive_drives": 368,
+      "positive_snapshots": 29216,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 570237
+    },
+    {
+      "ap": 0.018393167967829718,
+      "ap_ci": [
+        0.01039045591005525,
+        0.030716802202859394
+      ],
+      "ap_ipcw": 0.017236903413281202,
+      "ap_ipcw_ci": [
+        0.009655526383370019,
+        0.028961155743541377
+      ],
+      "auc": 0.6619180003127444,
+      "auc_ci": [
+        0.62962706066074,
+        0.6917266072104146
+      ],
+      "auc_ipcw": 0.6613716729279554,
+      "auc_ipcw_ci": [
+        0.6288941296198385,
+        0.6912952530647565
+      ],
+      "base_rate": 0.0008254276234089308,
+      "drives": 7856,
+      "horizon": 90,
+      "model": "hazard_smart_w075",
+      "positive_drives": 368,
+      "positive_snapshots": 29216,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 570237
+    },
+    {
+      "ap": 0.016980456444720817,
+      "ap_ci": [
+        0.00912126356922095,
+        0.028987683139905834
+      ],
+      "ap_ipcw": 0.01593681908443176,
+      "ap_ipcw_ci": [
+        0.008444536174045437,
+        0.027169387675901414
+      ],
+      "auc": 0.6503469040178177,
+      "auc_ci": [
+        0.6155995788638406,
+        0.6808238709564916
+      ],
+      "auc_ipcw": 0.6498322859322889,
+      "auc_ipcw_ci": [
+        0.6149550676869046,
+        0.6805599324780209
+      ],
+      "base_rate": 0.0008254276234089308,
+      "drives": 7856,
+      "horizon": 90,
+      "model": "hazard_smart_w100",
+      "positive_drives": 368,
+      "positive_snapshots": 29216,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 570237
+    },
+    {
+      "ap": 0.0022084376651254887,
+      "ap_ci": [
+        0.0011670685671312433,
+        0.004112350417900328
+      ],
+      "ap_ipcw": 0.002054415322102531,
+      "ap_ipcw_ci": [
+        0.0010733730573377284,
+        0.0038584680811887605
+      ],
+      "auc": 0.5962237213241239,
+      "auc_ci": [
+        0.5671316069026553,
+        0.6212785631453168
+      ],
+      "auc_ipcw": 0.5960213841603937,
+      "auc_ipcw_ci": [
+        0.5668386615210491,
+        0.6210618324601879
+      ],
+      "base_rate": 0.0008254276234089308,
+      "drives": 7856,
+      "horizon": 90,
+      "model": "hazard_usage",
+      "positive_drives": 368,
+      "positive_snapshots": 29216,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 570237
+    },
+    {
+      "ap": 0.0008254276234089308,
+      "ap_ci": [
+        0.0007372744859842996,
+        0.0009067831153648975
+      ],
+      "ap_ipcw": 0.0007615990484439117,
+      "ap_ipcw_ci": [
+        0.0006801334705867252,
+        0.000836871108863072
+      ],
+      "auc": 0.5,
+      "auc_ci": [
+        0.5,
+        0.5
+      ],
+      "auc_ipcw": 0.5,
+      "auc_ipcw_ci": [
+        0.5,
+        0.5
+      ],
+      "base_rate": 0.0008254276234089308,
+      "drives": 7856,
+      "horizon": 90,
+      "model": "rule_counters",
+      "positive_drives": 368,
+      "positive_snapshots": 29216,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 570237
     },
     {
       "ap": 0.07127394353627792,
@@ -18906,6 +19908,246 @@
       "snapshots": 617491
     },
     {
+      "ap": 0.016060459748793353,
+      "ap_ci": [
+        0.008660260400109305,
+        0.025854179060992695
+      ],
+      "ap_ipcw": 0.013899819487814576,
+      "ap_ipcw_ci": [
+        0.007367035440036713,
+        0.02300055073977621
+      ],
+      "auc": 0.5683950597068836,
+      "auc_ci": [
+        0.536767374422233,
+        0.6027340005659474
+      ],
+      "auc_ipcw": 0.5665401886822513,
+      "auc_ipcw_ci": [
+        0.5340250758279514,
+        0.6010292249235557
+      ],
+      "base_rate": 0.0018161779888759477,
+      "drives": 7455,
+      "horizon": 180,
+      "model": "hazard_nocritical",
+      "positive_drives": 368,
+      "positive_snapshots": 32751,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 483717
+    },
+    {
+      "ap": 0.002304390785861215,
+      "ap_ci": [
+        0.0020063403061992115,
+        0.002809980889135795
+      ],
+      "ap_ipcw": 0.0019319594979661679,
+      "ap_ipcw_ci": [
+        0.0016790676200862103,
+        0.002364387176104851
+      ],
+      "auc": 0.5636587520129512,
+      "auc_ci": [
+        0.5305460389087869,
+        0.5955906550474083
+      ],
+      "auc_ipcw": 0.5641527294364802,
+      "auc_ipcw_ci": [
+        0.5306304528362404,
+        0.5965535348914388
+      ],
+      "base_rate": 0.0018161779888759477,
+      "drives": 7455,
+      "horizon": 180,
+      "model": "hazard_nosmart",
+      "positive_drives": 368,
+      "positive_snapshots": 32751,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 483717
+    },
+    {
+      "ap": 0.018976874183425606,
+      "ap_ci": [
+        0.010298085965590304,
+        0.029419634159581532
+      ],
+      "ap_ipcw": 0.0166607526078929,
+      "ap_ipcw_ci": [
+        0.008967452517642404,
+        0.026663697761199454
+      ],
+      "auc": 0.61597150744618,
+      "auc_ci": [
+        0.5830276311446875,
+        0.6552474177266443
+      ],
+      "auc_ipcw": 0.6142509633873617,
+      "auc_ipcw_ci": [
+        0.5813147941688895,
+        0.6534216583241764
+      ],
+      "base_rate": 0.0018161779888759477,
+      "drives": 7455,
+      "horizon": 180,
+      "model": "hazard_smart",
+      "positive_drives": 368,
+      "positive_snapshots": 32751,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 483717
+    },
+    {
+      "ap": 0.01898324506339151,
+      "ap_ci": [
+        0.010301197968083901,
+        0.029440056524070148
+      ],
+      "ap_ipcw": 0.016665923143816555,
+      "ap_ipcw_ci": [
+        0.008970140764677087,
+        0.026669586238619744
+      ],
+      "auc": 0.616514499916411,
+      "auc_ci": [
+        0.5835385100027458,
+        0.655790453836326
+      ],
+      "auc_ipcw": 0.6147959391547938,
+      "auc_ipcw_ci": [
+        0.5819707266099189,
+        0.6539676199787717
+      ],
+      "base_rate": 0.0018161779888759477,
+      "drives": 7455,
+      "horizon": 180,
+      "model": "hazard_smart_recent",
+      "positive_drives": 368,
+      "positive_snapshots": 32751,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 483717
+    },
+    {
+      "ap": 0.02073598609681162,
+      "ap_ci": [
+        0.011661781486191451,
+        0.03389707635215441
+      ],
+      "ap_ipcw": 0.018279599132769754,
+      "ap_ipcw_ci": [
+        0.010028551829056152,
+        0.030655641041840223
+      ],
+      "auc": 0.6263814121518759,
+      "auc_ci": [
+        0.5978629228958439,
+        0.6606781413808994
+      ],
+      "auc_ipcw": 0.625012426092105,
+      "auc_ipcw_ci": [
+        0.5964884832641487,
+        0.6598213125761547
+      ],
+      "base_rate": 0.0018161779888759477,
+      "drives": 7455,
+      "horizon": 180,
+      "model": "hazard_smart_w075",
+      "positive_drives": 368,
+      "positive_snapshots": 32751,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 483717
+    },
+    {
+      "ap": 0.01926185156922003,
+      "ap_ci": [
+        0.010504575769983454,
+        0.030958425932356398
+      ],
+      "ap_ipcw": 0.016928501260683397,
+      "ap_ipcw_ci": [
+        0.008952672287620185,
+        0.027684899388015362
+      ],
+      "auc": 0.6165602088304084,
+      "auc_ci": [
+        0.5868027937015817,
+        0.651447946782881
+      ],
+      "auc_ipcw": 0.6153889571813156,
+      "auc_ipcw_ci": [
+        0.5853272741994793,
+        0.6499441561153834
+      ],
+      "base_rate": 0.0018161779888759477,
+      "drives": 7455,
+      "horizon": 180,
+      "model": "hazard_smart_w100",
+      "positive_drives": 368,
+      "positive_snapshots": 32751,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 483717
+    },
+    {
+      "ap": 0.0035060779926379417,
+      "ap_ci": [
+        0.0027059437630573904,
+        0.004859729399823589
+      ],
+      "ap_ipcw": 0.0029399327730997874,
+      "ap_ipcw_ci": [
+        0.0022558990460644344,
+        0.004107386200554022
+      ],
+      "auc": 0.5999492885441042,
+      "auc_ci": [
+        0.5687896407449813,
+        0.6327880887670266
+      ],
+      "auc_ipcw": 0.5995669362057366,
+      "auc_ipcw_ci": [
+        0.5679762668059029,
+        0.632228353675157
+      ],
+      "base_rate": 0.0018161779888759477,
+      "drives": 7455,
+      "horizon": 180,
+      "model": "hazard_usage",
+      "positive_drives": 368,
+      "positive_snapshots": 32751,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 483717
+    },
+    {
+      "ap": 0.0018161779888759477,
+      "ap_ci": [
+        0.001660784114049641,
+        0.0019907105989606082
+      ],
+      "ap_ipcw": 0.001523337387989917,
+      "ap_ipcw_ci": [
+        0.0013920067201935243,
+        0.001670024270928242
+      ],
+      "auc": 0.5,
+      "auc_ci": [
+        0.5,
+        0.5
+      ],
+      "auc_ipcw": 0.5,
+      "auc_ipcw_ci": [
+        0.5,
+        0.5
+      ],
+      "base_rate": 0.0018161779888759477,
+      "drives": 7455,
+      "horizon": 180,
+      "model": "rule_counters",
+      "positive_drives": 368,
+      "positive_snapshots": 32751,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 483717
+    },
+    {
       "ap": 0.13374769377946025,
       "ap_ci": [
         0.11479156320603685,
@@ -19624,6 +20866,246 @@
       "positive_snapshots": 151982,
       "slice": "failures with a critical counter above zero",
       "snapshots": 448014
+    },
+    {
+      "ap": 0.02421204920912307,
+      "ap_ci": [
+        0.01441507360635091,
+        0.038330852260992164
+      ],
+      "ap_ipcw": 0.017768257705872963,
+      "ap_ipcw_ci": [
+        0.00953440823241809,
+        0.029125942372783275
+      ],
+      "auc": 0.5782849648151013,
+      "auc_ci": [
+        0.5477459567622344,
+        0.6142854412433193
+      ],
+      "auc_ipcw": 0.570354027389231,
+      "auc_ipcw_ci": [
+        0.5398781575450552,
+        0.6080002378640914
+      ],
+      "base_rate": 0.004737178775437206,
+      "drives": 6575,
+      "horizon": 365,
+      "model": "hazard_nocritical",
+      "positive_drives": 368,
+      "positive_snapshots": 37726,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 316949
+    },
+    {
+      "ap": 0.00593120291542074,
+      "ap_ci": [
+        0.005017836057059431,
+        0.007284447692189387
+      ],
+      "ap_ipcw": 0.0036606856592204607,
+      "ap_ipcw_ci": [
+        0.003110751875368429,
+        0.004481397155991872
+      ],
+      "auc": 0.5580284096337633,
+      "auc_ci": [
+        0.5274727512463736,
+        0.5938239234231837
+      ],
+      "auc_ipcw": 0.5600958362837574,
+      "auc_ipcw_ci": [
+        0.5309232461847961,
+        0.5956215150532884
+      ],
+      "base_rate": 0.004737178775437206,
+      "drives": 6575,
+      "horizon": 365,
+      "model": "hazard_nosmart",
+      "positive_drives": 368,
+      "positive_snapshots": 37726,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 316949
+    },
+    {
+      "ap": 0.027135740100694184,
+      "ap_ci": [
+        0.016601475173479097,
+        0.04249080976570883
+      ],
+      "ap_ipcw": 0.019324703730692346,
+      "ap_ipcw_ci": [
+        0.01078356294321559,
+        0.03252483984531297
+      ],
+      "auc": 0.6049978659606721,
+      "auc_ci": [
+        0.5726762664400604,
+        0.6416627920566872
+      ],
+      "auc_ipcw": 0.5972773736386245,
+      "auc_ipcw_ci": [
+        0.5630028656339793,
+        0.6344807512299638
+      ],
+      "base_rate": 0.004737178775437206,
+      "drives": 6575,
+      "horizon": 365,
+      "model": "hazard_smart",
+      "positive_drives": 368,
+      "positive_snapshots": 37726,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 316949
+    },
+    {
+      "ap": 0.027174107338391474,
+      "ap_ci": [
+        0.016633164225308736,
+        0.04271218801376439
+      ],
+      "ap_ipcw": 0.01933497767445659,
+      "ap_ipcw_ci": [
+        0.010797668557514314,
+        0.032485445188488164
+      ],
+      "auc": 0.605624949308374,
+      "auc_ci": [
+        0.5731069612176767,
+        0.6421325611719323
+      ],
+      "auc_ipcw": 0.59787891143388,
+      "auc_ipcw_ci": [
+        0.563480758984024,
+        0.6350471507121281
+      ],
+      "base_rate": 0.004737178775437206,
+      "drives": 6575,
+      "horizon": 365,
+      "model": "hazard_smart_recent",
+      "positive_drives": 368,
+      "positive_snapshots": 37726,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 316949
+    },
+    {
+      "ap": 0.026313785918563575,
+      "ap_ci": [
+        0.015375434058986394,
+        0.045563433685220665
+      ],
+      "ap_ipcw": 0.01878282071345009,
+      "ap_ipcw_ci": [
+        0.010188433757486338,
+        0.03680176551043017
+      ],
+      "auc": 0.6264601359717611,
+      "auc_ci": [
+        0.598748551576285,
+        0.664185947125369
+      ],
+      "auc_ipcw": 0.6210945943054818,
+      "auc_ipcw_ci": [
+        0.592004562582617,
+        0.6592782478899697
+      ],
+      "base_rate": 0.004737178775437206,
+      "drives": 6575,
+      "horizon": 365,
+      "model": "hazard_smart_w075",
+      "positive_drives": 368,
+      "positive_snapshots": 37726,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 316949
+    },
+    {
+      "ap": 0.027865508655911326,
+      "ap_ci": [
+        0.015594935098835605,
+        0.05168897309610568
+      ],
+      "ap_ipcw": 0.01965001920491295,
+      "ap_ipcw_ci": [
+        0.009785147056420609,
+        0.04101151740782119
+      ],
+      "auc": 0.6149858862039183,
+      "auc_ci": [
+        0.5836192871997322,
+        0.6532508814029031
+      ],
+      "auc_ipcw": 0.6092379776795523,
+      "auc_ipcw_ci": [
+        0.5773538649203087,
+        0.6485543809125393
+      ],
+      "base_rate": 0.004737178775437206,
+      "drives": 6575,
+      "horizon": 365,
+      "model": "hazard_smart_w100",
+      "positive_drives": 368,
+      "positive_snapshots": 37726,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 316949
+    },
+    {
+      "ap": 0.009660243424059193,
+      "ap_ci": [
+        0.007643258488175977,
+        0.015112223707993694
+      ],
+      "ap_ipcw": 0.005953316651580163,
+      "ap_ipcw_ci": [
+        0.004708965848008678,
+        0.009744828973078847
+      ],
+      "auc": 0.6172365180803455,
+      "auc_ci": [
+        0.5889324642292223,
+        0.6541673887629508
+      ],
+      "auc_ipcw": 0.6160189265539189,
+      "auc_ipcw_ci": [
+        0.5864961326863317,
+        0.6521242073904838
+      ],
+      "base_rate": 0.004737178775437206,
+      "drives": 6575,
+      "horizon": 365,
+      "model": "hazard_usage",
+      "positive_drives": 368,
+      "positive_snapshots": 37726,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 316949
+    },
+    {
+      "ap": 0.004737178775437206,
+      "ap_ci": [
+        0.004285371548652396,
+        0.005162675781730581
+      ],
+      "ap_ipcw": 0.002966977105543928,
+      "ap_ipcw_ci": [
+        0.0026669361988789207,
+        0.0032434293150054557
+      ],
+      "auc": 0.5,
+      "auc_ci": [
+        0.5,
+        0.5
+      ],
+      "auc_ipcw": 0.5,
+      "auc_ipcw_ci": [
+        0.5,
+        0.5
+      ],
+      "base_rate": 0.004737178775437206,
+      "drives": 6575,
+      "horizon": 365,
+      "model": "rule_counters",
+      "positive_drives": 368,
+      "positive_snapshots": 37726,
+      "slice": "silent failures vs negatives with no critical counter",
+      "snapshots": 316949
     }
   ],
   "test": {
@@ -20522,6 +22004,652 @@
       }
     ],
     "nonfailing_drives": 7197,
+    "per_window": [
+      {
+        "matched": [
+          {
+            "model": "binary_30d",
+            "nonfailing_share": 0.009986970856722243,
+            "share_failing_drives_alerted": 0.5622876557191393,
+            "share_failing_drives_alerted_ci": [
+              0.5271359336486576,
+              0.5952579927154998
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_nocritical",
+            "nonfailing_share": 0.009986970856722243,
+            "share_failing_drives_alerted": 0.31653454133635334,
+            "share_failing_drives_alerted_ci": [
+              0.2909428452043938,
+              0.33973335928994897
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_nosmart",
+            "nonfailing_share": 0.009454794581996946,
+            "share_failing_drives_alerted": 0.028312570781426953,
+            "share_failing_drives_alerted_ci": [
+              0.020997379437756265,
+              0.04082757467034298
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "difference": 0.1415628539071347,
+            "difference_ci": [
+              0.10627260482362502,
+              0.17511745404407353
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.009986970856722243,
+            "share_failing_drives_alerted": 0.5685164212910532,
+            "share_failing_drives_alerted_ci": [
+              0.5357903986902928,
+              0.5970040258066002
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "model": "hazard_smart_recent",
+            "nonfailing_share": 0.009986970856722243,
+            "share_failing_drives_alerted": 0.5685164212910532,
+            "share_failing_drives_alerted_ci": [
+              0.53615571372198,
+              0.5970040258066002
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_smart_w075",
+            "nonfailing_share": 0.009984931867163909,
+            "share_failing_drives_alerted": 0.5679501698754247,
+            "share_failing_drives_alerted_ci": [
+              0.5366686181545963,
+              0.5935939362569798
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_smart_w100",
+            "nonfailing_share": 0.00998085388804724,
+            "share_failing_drives_alerted": 0.549263873159683,
+            "share_failing_drives_alerted_ci": [
+              0.521798866855524,
+              0.5787669303531824
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_usage",
+            "nonfailing_share": 0.009887060368363853,
+            "share_failing_drives_alerted": 0.028878822197055492,
+            "share_failing_drives_alerted_ci": [
+              0.019213099893215745,
+              0.044659895443548675
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "model": "rule_counters",
+            "nonfailing_share": 0.009993087825397247,
+            "share_failing_drives_alerted": 0.4269535673839185,
+            "share_failing_drives_alerted_ci": [
+              0.38912063977654376,
+              0.4629599361343639
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "model": "binary_30d",
+            "nonfailing_share": 0.024995972995622288,
+            "share_failing_drives_alerted": 0.6936579841449604,
+            "share_failing_drives_alerted_ci": [
+              0.670993771234428,
+              0.7176739668199296
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_nocritical",
+            "nonfailing_share": 0.024981700068713947,
+            "share_failing_drives_alerted": 0.4031710079275198,
+            "share_failing_drives_alerted_ci": [
+              0.37892032236623463,
+              0.42971699259428836
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_nosmart",
+            "nonfailing_share": 0.024865477663888882,
+            "share_failing_drives_alerted": 0.05605889014722537,
+            "share_failing_drives_alerted_ci": [
+              0.04581383217504073,
+              0.06905969689828152
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "difference": 0.09626274065685159,
+            "difference_ci": [
+              0.0646615906714359,
+              0.1308071127824546
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.02496946613136394,
+            "share_failing_drives_alerted": 0.6857304643261608,
+            "share_failing_drives_alerted_ci": [
+              0.6645751829823235,
+              0.7101895755042564
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "model": "hazard_smart_recent",
+            "nonfailing_share": 0.024989856026947286,
+            "share_failing_drives_alerted": 0.6857304643261608,
+            "share_failing_drives_alerted_ci": [
+              0.6645751829823235,
+              0.7101895755042564
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_smart_w075",
+            "nonfailing_share": 0.024979661079155613,
+            "share_failing_drives_alerted": 0.7044167610419027,
+            "share_failing_drives_alerted_ci": [
+              0.6770656258617263,
+              0.729404079076926
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_smart_w100",
+            "nonfailing_share": 0.024979661079155613,
+            "share_failing_drives_alerted": 0.6998867497168743,
+            "share_failing_drives_alerted_ci": [
+              0.6739649942218798,
+              0.7305385273700208
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_usage",
+            "nonfailing_share": 0.024902179475938903,
+            "share_failing_drives_alerted": 0.07304643261608154,
+            "share_failing_drives_alerted_ci": [
+              0.060510472623536087,
+              0.0873095507281488
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "model": "rule_counters",
+            "nonfailing_share": 0.024975583100038945,
+            "share_failing_drives_alerted": 0.5894677236693092,
+            "share_failing_drives_alerted_ci": [
+              0.5486409966024914,
+              0.626576594971591
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "model": "binary_30d",
+            "nonfailing_share": 0.04997971205389457,
+            "share_failing_drives_alerted": 0.7497168742921857,
+            "share_failing_drives_alerted_ci": [
+              0.7270876700205852,
+              0.7729929880321306
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_nocritical",
+            "nonfailing_share": 0.04998990700168624,
+            "share_failing_drives_alerted": 0.46319365798414497,
+            "share_failing_drives_alerted_ci": [
+              0.43670179303180134,
+              0.48671565856416055
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_nosmart",
+            "nonfailing_share": 0.04581609537577558,
+            "share_failing_drives_alerted": 0.09229898074745187,
+            "share_failing_drives_alerted_ci": [
+              0.07860995481479029,
+              0.10765677220369056
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          },
+          {
+            "difference": 0.04643261608154026,
+            "difference_ci": [
+              0.023171619503024262,
+              0.07446170422397257
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.049998062959919584,
+            "share_failing_drives_alerted": 0.7548131370328426,
+            "share_failing_drives_alerted_ci": [
+              0.7315815961219811,
+              0.7757115040679425
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "model": "hazard_smart_recent",
+            "nonfailing_share": 0.049998062959919584,
+            "share_failing_drives_alerted": 0.7548131370328426,
+            "share_failing_drives_alerted_ci": [
+              0.7315815961219811,
+              0.7757115040679425
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_smart_w075",
+            "nonfailing_share": 0.049991945991244575,
+            "share_failing_drives_alerted": 0.7616081540203851,
+            "share_failing_drives_alerted_ci": [
+              0.7395101925254813,
+              0.7860097771891804
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_smart_w100",
+            "nonfailing_share": 0.049981751043452906,
+            "share_failing_drives_alerted": 0.7610419026047565,
+            "share_failing_drives_alerted_ci": [
+              0.7380621171368269,
+              0.7838983371307895
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          },
+          {
+            "model": "hazard_usage",
+            "nonfailing_share": 0.049739111286011106,
+            "share_failing_drives_alerted": 0.11041902604756512,
+            "share_failing_drives_alerted_ci": [
+              0.09353344478708292,
+              0.1267308266740326
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          },
+          {
+            "model": "rule_counters",
+            "nonfailing_share": 0.048668641767885504,
+            "share_failing_drives_alerted": 0.7083805209513023,
+            "share_failing_drives_alerted_ci": [
+              0.6735952558989698,
+              0.7398738555763084
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          }
+        ],
+        "negative_units": 53669,
+        "positive_units": 1766,
+        "window": "Q"
+      },
+      {
+        "matched": [
+          {
+            "model": "binary_30d",
+            "nonfailing_share": 0.009961291104529167,
+            "share_failing_drives_alerted": 0.4309173272933182,
+            "share_failing_drives_alerted_ci": [
+              0.3895137950285009,
+              0.4831065759637188
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_nocritical",
+            "nonfailing_share": 0.009968866230844399,
+            "share_failing_drives_alerted": 0.25537938844847113,
+            "share_failing_drives_alerted_ci": [
+              0.22064037445829365,
+              0.2832129750263824
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_nosmart",
+            "nonfailing_share": 0.006908515199490951,
+            "share_failing_drives_alerted": 0.021517553793884484,
+            "share_failing_drives_alerted_ci": [
+              0.01521536279486414,
+              0.02890768299498605
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Y"
+          },
+          {
+            "difference": 0.07984144960362399,
+            "difference_ci": [
+              0.03335650739976711,
+              0.10423632809370441
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.009984016483474863,
+            "share_failing_drives_alerted": 0.45300113250283125,
+            "share_failing_drives_alerted_ci": [
+              0.4165685401279129,
+              0.49068939169870845
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "model": "hazard_smart_recent",
+            "nonfailing_share": 0.009984016483474863,
+            "share_failing_drives_alerted": 0.45300113250283125,
+            "share_failing_drives_alerted_ci": [
+              0.4165685401279129,
+              0.49068939169870845
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_smart_w075",
+            "nonfailing_share": 0.009991591609790093,
+            "share_failing_drives_alerted": 0.44960362400906,
+            "share_failing_drives_alerted_ci": [
+              0.4156050572329821,
+              0.5066141565271259
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_smart_w100",
+            "nonfailing_share": 0.009991591609790093,
+            "share_failing_drives_alerted": 0.43544733861834656,
+            "share_failing_drives_alerted_ci": [
+              0.4045029335071708,
+              0.47910901779373094
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_usage",
+            "nonfailing_share": 0.009984016483474863,
+            "share_failing_drives_alerted": 0.01812004530011325,
+            "share_failing_drives_alerted_ci": [
+              0.009054895302773062,
+              0.03061398423005566
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Y"
+          },
+          {
+            "model": "rule_counters",
+            "nonfailing_share": 0.00990826522032255,
+            "share_failing_drives_alerted": 0.37315968289920726,
+            "share_failing_drives_alerted_ci": [
+              0.3469992609503645,
+              0.4272481190670379
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Y"
+          },
+          {
+            "model": "binary_30d",
+            "nonfailing_share": 0.024960041208687153,
+            "share_failing_drives_alerted": 0.60079275198188,
+            "share_failing_drives_alerted_ci": [
+              0.5743370911885477,
+              0.6339806131520834
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_nocritical",
+            "nonfailing_share": 0.024861564566589146,
+            "share_failing_drives_alerted": 0.34711211778029444,
+            "share_failing_drives_alerted_ci": [
+              0.3199768603884048,
+              0.37147396858390574
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_nosmart",
+            "nonfailing_share": 0.017892448356576347,
+            "share_failing_drives_alerted": 0.03397508493771234,
+            "share_failing_drives_alerted_ci": [
+              0.02490084985835694,
+              0.04432667724446272
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Y"
+          },
+          {
+            "difference": 0.05266138165345413,
+            "difference_ci": [
+              0.009598443547754732,
+              0.07802875938615464
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.02492974070342623,
+            "share_failing_drives_alerted": 0.6041902604756512,
+            "share_failing_drives_alerted_ci": [
+              0.5826330850349153,
+              0.6339020918015186
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "model": "hazard_smart_recent",
+            "nonfailing_share": 0.02492974070342623,
+            "share_failing_drives_alerted": 0.6047565118912798,
+            "share_failing_drives_alerted_ci": [
+              0.581508151340037,
+              0.6339020918015186
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_smart_w075",
+            "nonfailing_share": 0.024960041208687153,
+            "share_failing_drives_alerted": 0.6115515288788222,
+            "share_failing_drives_alerted_ci": [
+              0.5870991568184837,
+              0.6383137596021703
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_smart_w100",
+            "nonfailing_share": 0.024793388429752067,
+            "share_failing_drives_alerted": 0.6126840317100792,
+            "share_failing_drives_alerted_ci": [
+              0.587710190552223,
+              0.6398804768527159
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_usage",
+            "nonfailing_share": 0.024960041208687153,
+            "share_failing_drives_alerted": 0.06342015855039637,
+            "share_failing_drives_alerted_ci": [
+              0.05093306586053515,
+              0.07631970962494665
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Y"
+          },
+          {
+            "model": "rule_counters",
+            "nonfailing_share": 0.02463431077713221,
+            "share_failing_drives_alerted": 0.551528878822197,
+            "share_failing_drives_alerted_ci": [
+              0.521231125601923,
+              0.6026344808369511
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Y"
+          },
+          {
+            "model": "binary_30d",
+            "nonfailing_share": 0.049995833680526625,
+            "share_failing_drives_alerted": 0.7032842582106456,
+            "share_failing_drives_alerted_ci": [
+              0.6794885881035726,
+              0.726536581506895
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_nocritical",
+            "nonfailing_share": 0.04998825855421139,
+            "share_failing_drives_alerted": 0.41336353340883353,
+            "share_failing_drives_alerted_ci": [
+              0.39038927385454053,
+              0.44017347271286245
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_nosmart",
+            "nonfailing_share": 0.049261046427949186,
+            "share_failing_drives_alerted": 0.05605889014722537,
+            "share_failing_drives_alerted_ci": [
+              0.045917716945134995,
+              0.06941997486874836
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Y"
+          },
+          {
+            "difference": 0.005662514156285381,
+            "difference_ci": [
+              -0.013079609314081397,
+              0.031179580453849165
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.049957958048950465,
+            "share_failing_drives_alerted": 0.6930917327293318,
+            "share_failing_drives_alerted_ci": [
+              0.6702436986392833,
+              0.7259407188696543
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "model": "hazard_smart_recent",
+            "nonfailing_share": 0.049957958048950465,
+            "share_failing_drives_alerted": 0.6930917327293318,
+            "share_failing_drives_alerted_ci": [
+              0.6702436986392833,
+              0.725961365876342
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_smart_w075",
+            "nonfailing_share": 0.049995833680526625,
+            "share_failing_drives_alerted": 0.7344280860702151,
+            "share_failing_drives_alerted_ci": [
+              0.7129002689694225,
+              0.7621684465833269
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_smart_w100",
+            "nonfailing_share": 0.04994280779632,
+            "share_failing_drives_alerted": 0.7349943374858438,
+            "share_failing_drives_alerted_ci": [
+              0.7087753911279938,
+              0.7598921045278038
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Y"
+          },
+          {
+            "model": "hazard_usage",
+            "nonfailing_share": 0.04957162660687367,
+            "share_failing_drives_alerted": 0.08380520951302378,
+            "share_failing_drives_alerted_ci": [
+              0.06952590907034147,
+              0.09950111935342502
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Y"
+          },
+          {
+            "model": "rule_counters",
+            "nonfailing_share": 0.04806417647014264,
+            "share_failing_drives_alerted": 0.6874292185730464,
+            "share_failing_drives_alerted_ci": [
+              0.6588592781213085,
+              0.7211384567456531
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Y"
+          }
+        ],
+        "negative_units": 13850,
+        "positive_units": 1766,
+        "window": "Y"
+      }
+    ],
     "stride_days": 7
   }
 }

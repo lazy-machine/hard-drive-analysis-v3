@@ -144,7 +144,8 @@ class Doc:
         """A pipe table. Tabela: open sides, rules above, below and under the header
         (IBGE style, as ABNT asks); Quadro: a closed grid."""
         ncol = len(rows[0])
-        widths = column_widths(rows, ncol)
+        size = 18 if ncol >= 7 else 20          # 9 pt in the widest tables, 10 pt otherwise
+        widths = column_widths(rows, ncol, size)
         line = '<w:{0} w:val="single" w:sz="6" w:space="0" w:color="000000"/>'
         if kind == "Quadro":
             borders = "".join(line.format(b) for b in ("top", "left", "bottom", "right",
@@ -167,7 +168,7 @@ class Doc:
                         + (f"<w:tcBorders>{bottom}</w:tcBorders>" if bottom else "")
                         + '<w:vAlign w:val="center"/></w:tcPr>')
                 numeric = bool(re.fullmatch(r"[\s\d.,%+−\-\[\];×/]+", plain(txt))) and c > 0
-                cells.append(f"<w:tc>{tcpr}" + para(inline(txt, size=20, bold=head),
+                cells.append(f"<w:tc>{tcpr}" + para(inline(txt, size=size, bold=head),
                                                      jc="center" if head or numeric else "left",
                                                      first=0, after=0, before=0) + "</w:tc>")
             out.append(f"<w:tr>{trpr}{''.join(cells)}</w:tr>")
@@ -210,7 +211,7 @@ class Doc:
         return "".join(out)
 
 
-def column_widths(rows: list[list[str]], ncol: int, char=105, pad=180) -> list[int]:
+def column_widths(rows: list[list[str]], ncol: int, size: int = 20, pad: int = 200) -> list[int]:
     """Column widths in twips: each column fits its longest word (no word is broken) and
     keeps a bracketed interval such as "[0,895; 0,914]" on one line when it can; the
     rest of the text width goes to the columns with the most text."""
@@ -224,7 +225,9 @@ def column_widths(rows: list[list[str]], ncol: int, char=105, pad=180) -> list[i
         return max((len(u) for t in texts for u in unit(t)), default=0)
 
     # header cells are bold and often capitalized, so their letters are wider
-    minw = [max(longest(cells(c)[:1]) * (char + 25), longest(cells(c)[1:]) * char) + pad
+    # Arial digits are 0.556 em wide; bold capitals in headers about 0.68 em (in twips)
+    char, head = 0.556 * size * 10, 0.68 * size * 10
+    minw = [max(longest(cells(c)[:1]) * head, longest(cells(c)[1:]) * char) + pad
             for c in range(ncol)]
     body = [max((len(t) for t in cells(c)[1:]), default=0) for c in range(ncol)]
     pref = [max(minw[c], min(body[c], 45) * char + pad) for c in range(ncol)]

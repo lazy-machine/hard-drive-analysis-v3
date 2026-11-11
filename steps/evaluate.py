@@ -339,8 +339,13 @@ def slices(test, D, models, horizons, binary_horizon, rounds, seed, cfg, log,
         todo = dict(positive_side)
         if H == binary_horizon:
             todo.update(population)
+        clean = ~test["critical_nonzero"].to_numpy().astype(bool)
+        todo["silent failures vs negatives with no critical counter"] = silent
         for name, keep in todo.items():
-            mask = (status == 0) | keep if name in positive_side else keep
+            if name == "silent failures vs negatives with no critical counter":
+                mask = ((status == 0) & clean) | keep
+            else:
+                mask = (status == 0) | keep if name in positive_side else keep
             res, _ = _ranking_metrics(test, D, models, H, mask, rounds, seed + H)
             if res is None:
                 continue
@@ -672,6 +677,76 @@ def weekly_alerts(val, test, D, models, horizon, rates, stride, targets, rounds,
             "nonfailing_drives": int(quiet.sum()), "budgets": budgets, "matched": matched}
 
 
+def windowed_alerts(test, D, models, horizon, stride, targets, rounds, seed, freq,
+                    pair=("hazard_smart", "rule_counters")):
+    """Per-drive alerts counted per calendar window (quarter "Q" or year "Y").
+
+    weekly_alerts() counts a non-failing drive as alerted if any of its weekly checks over
+    the whole test period fires, but a failing drive only on its checks in the last
+    `horizon` days; a score that only accumulates (the counter rule) gains from that. Here
+    the unit is a drive in one window. A negative unit is a drive with weekly snapshots in
+    the window that does not fail in it nor within `horizon` days after it; its score is
+    its highest weekly score in the window. A positive unit is a failing drive in the
+    window where it fails, scored on its weekly snapshots of the last `horizon` days
+    (weekly_alerts' rule). Units of a drive that fails within `horizon` days after a window
+    are left out of that window. At each target share of negative units alerted, each
+    model's threshold is set on test and the share of positive units caught is compared,
+    with a paired drive bootstrap for the pair.
+    """
+    week = on_stride(test, stride)
+    date = pd.to_datetime(test["date"])
+    period = date.dt.to_period(freq)
+    ends = period.dt.end_time.dt.normalize().to_numpy()
+    fail_day = np.full(D.n, np.datetime64("NaT", "ns"))
+    ev = D.e == 1
+    fail_day[D.codes[ev]] = (date[ev] + pd.to_timedelta(D.d[ev], unit="D")).to_numpy()
+    fd = fail_day[D.codes]
+    clear = np.isnat(fd) | (fd > ends + np.timedelta64(horizon, "D"))
+    neg_rows = week & clear
+    pos_rows = week & ev & (D.d < horizon)
+    neg_key = pd.MultiIndex.from_arrays([D.codes[neg_rows], period[neg_rows].astype(str)])
+    neg_units = neg_key.drop_duplicates()
+    neg_drive = neg_units.get_level_values(0).to_numpy()
+    pos_drive = np.unique(D.codes[pos_rows])
+    counts_list = list(D.boot(rounds, seed))
+    dw = D.weight_of_drive
+
+    maxima = {}
+    for name, info in models.items():
+        s = score_of(test, name, info, horizon)
+        if s is None:
+            continue
+        qmax = pd.Series(s[neg_rows], index=neg_key).groupby(level=[0, 1]).max()
+        qmax = qmax.reindex(neg_units).to_numpy()
+        fmax = np.full(D.n, -np.inf)
+        np.maximum.at(fmax, D.codes[pos_rows], s[pos_rows])
+        maxima[name] = (qmax, fmax[pos_drive])
+
+    def caught(name, c, target):
+        qmax, fmax = maxima[name]
+        qw, fw = (c * dw)[neg_drive], c[pos_drive].astype(float)
+        t = weighted_quantile_threshold(qmax, qw, target)
+        return (float(np.sum(fw * (fmax >= t)) / fw.sum()),
+                float(np.sum(qw * (qmax >= t)) / qw.sum()))
+
+    rows = []
+    for target in targets:
+        boot = {n: [caught(n, c, target) for c in counts_list] for n in maxima}
+        for name in maxima:
+            share, achieved = caught(name, np.ones(D.n), target)
+            row = {"window": freq, "model": name, "target_nonfailing_share": target,
+                   "nonfailing_share": achieved, "share_failing_drives_alerted": share,
+                   "share_failing_drives_alerted_ci": _interval([b[0] for b in boot[name]])}
+            if name == pair[0] and pair[1] in maxima:
+                row["versus"] = pair[1]
+                row["difference"] = share - caught(pair[1], np.ones(D.n), target)[0]
+                row["difference_ci"] = _interval([a[0] - b[0] for a, b in
+                                                  zip(boot[name], boot[pair[1]], strict=True)])
+            rows.append(row)
+    return {"window": freq, "negative_units": int(len(neg_units)),
+            "positive_units": int(pos_drive.size), "matched": rows}
+
+
 def concordance_table(test, models, cap, rounds, seed, tau, binary_horizon, log):
     """Harrell's and Uno's C on whole drives (up to `cap` rows), with drive bootstrap
     intervals. Every probability model is also scored by its p<binary_horizon>, so the
@@ -748,10 +823,15 @@ def quantile_calibration(d, e, w, t, G=None) -> tuple[float | None, float | None
     return share, float(wf.sum() / (wf.sum() + ws.sum())), int(known.sum())
 
 
-def life(test, models, edges) -> tuple[list[dict], pd.DataFrame]:
+def life(test, models, edges, D=None, rounds=0, seed=0) -> tuple[list[dict], pd.DataFrame]:
     """Remaining-life estimates: are the predicted days right, and how early is a failure
-    visible?"""
+    visible?
+
+    With D and rounds, the headline shares and the mean error get drive-bootstrap intervals
+    (`<key>_ci`), resampling drives as discrimination() does; the censoring curve G stays
+    fixed, as in the other IPCW intervals."""
     summary, table = [], []
+    counts_list = list(D.boot(rounds, seed)) if D is not None and rounds else []
     d, e, w = (test[c].to_numpy() for c in ("duration_days", "event", "weight"))
     status = known_status(d, e, edges[-1])
     G = censoring_survival(d, e == 1, w)
@@ -773,9 +853,33 @@ def life(test, models, edges) -> tuple[list[dict], pd.DataFrame]:
             share, share_ipcw, n = quantile_calibration(d, e, w, col, G)
             qcal[str(q)] = {"target": q, "share_failed_by_predicted_day": share,
                             "share_failed_by_predicted_day_ipcw": share_ipcw, "snapshots": n}
+        boot_ci = {}
+        if counts_list:
+            def one_round(i, med=med, q10=q10, q90=q90, covered=covered, finite=finite,
+                          fails=fails):
+                wb = w * counts_list[i][D.codes]
+
+                def bmean(x, keep):
+                    tot = np.sum(wb[keep])
+                    return float(np.sum(wb[keep] * x[keep]) / tot) if tot > 0 else np.nan
+
+                out = {"share_median_within_horizon": bmean(finite.astype(float), fails),
+                       "median_abs_error_days": bmean(np.abs(med - d), fails & finite),
+                       "interval_q10_q90_coverage": bmean(covered.astype(float), fails)}
+                for q, col in ((0.1, q10), (0.5, med), (0.9, q90)):
+                    share, share_ipcw, _ = quantile_calibration(d, e, wb, col, G)
+                    out[f"q{q}"], out[f"q{q}_ipcw"] = share, share_ipcw
+                return out
+
+            res = parallel_rounds(one_round, len(counts_list))
+            boot_ci = {k: _interval([r[k] for r in res if r[k] is not None]) for k in res[0]}
+            for q in ("0.1", "0.5", "0.9"):
+                qcal[q]["share_failed_by_predicted_day_ci"] = boot_ci.pop(f"q{q}")
+                qcal[q]["share_failed_by_predicted_day_ipcw_ci"] = boot_ci.pop(f"q{q}_ipcw")
         summary.append({
             "model": name,
             "quantile_calibration": qcal,
+            **{f"{k}_ci": v for k, v in boot_ci.items()},
             "failing_snapshots": int(fails.sum()),
             "share_median_within_horizon": wmean(finite.astype(float), fails),
             # only failing snapshots with a finite predicted median (the rest are "> 1 year")
@@ -992,11 +1096,12 @@ def evaluate(ctx):
     alerts, detection = alerting(val_cal, test, D, models, H, rates, ev["alert_false_alarm_rate"],
                                  ev["min_lead_days"], edges, rounds, seed)
     stride = load_sample(ctx.inputs["sample"])["stride_days"]
-    weekly = weekly_alerts(val_cal, test, D, models, H, rates, stride,
-                           ev.get("matched_nonfailing_shares", [0.01, 0.025, 0.05]),
-                           rounds, seed)
+    targets = ev.get("matched_nonfailing_shares", [0.01, 0.025, 0.05])
+    weekly = weekly_alerts(val_cal, test, D, models, H, rates, stride, targets, rounds, seed)
+    weekly["per_window"] = [windowed_alerts(test, D, models, H, stride, targets, rounds, seed, f)
+                            for f in ("Q", "Y")]
     log("alerting done")
-    life_summary, life_table = life(test, models, edges)
+    life_summary, life_table = life(test, models, edges, D, rounds, seed)
     cal_rows = calibration_in_the_large(preds, models, label["horizons"], H, rounds, seed)
     thresholds = {a["model"]: a["threshold"] for a in alerts
                   if a["budget"] == ev["alert_false_alarm_rate"]}

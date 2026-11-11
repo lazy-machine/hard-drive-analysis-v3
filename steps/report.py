@@ -632,7 +632,9 @@ def _life(metrics, life_table, ref, labels) -> list[str]:
         cells = [_label(r["model"], labels)]
         for q in ("0.1", "0.5", "0.9"):
             c = r["quantile_calibration"][q]
-            cells.append(f"{_pct(_share(c))} [{_pct(c['share_failed_by_predicted_day'])}] "
+            ci = c.get("share_failed_by_predicted_day_ipcw_ci")
+            cells.append(f"{est(_share(c), ci, 1, pct=True)} "
+                         f"[{_pct(c['share_failed_by_predicted_day'])}] "
                          f"(target {_pct(c['target'], 0)}, {c['snapshots']} snapshots)")
         body.append(cells)
     lines += table(["model", "failed by predicted 10% day", "failed by predicted median",
@@ -645,8 +647,10 @@ def _life(metrics, life_table, ref, labels) -> list[str]:
     lines += table(["model", "failing snapshots: median within a year",
                     "abs. error of median (days)", "all test snapshots: median within a year",
                     "healthy snapshots: median beyond a year"],
-                   [[_label(r["model"], labels), _pct(r["share_median_within_horizon"]),
-                     f"{_fmt(r['median_abs_error_days'], 0)} "
+                   [[_label(r["model"], labels),
+                     est(r["share_median_within_horizon"], r.get("share_median_within_horizon_ci"),
+                         1, pct=True),
+                     f"{est(r['median_abs_error_days'], r.get('median_abs_error_days_ci'), 0)} "
                      f"({r.get('median_abs_error_snapshots', 'n/a')} snapshots)",
                      _pct(r.get("share_finite_median_all")),
                      _pct(r["healthy_share_median_beyond_horizon"])] for r in life])
@@ -757,6 +761,25 @@ def _alerting(metrics, ref, labels) -> list[str]:
                              if "difference" in m else "-"]
                             for m in sorted(matched, key=lambda m: (m["target_nonfailing_share"],
                                                                     _rank(m["model"])))])
+    for win in (weekly or {}).get("per_window", []):
+        matched = [m for m in win["matched"] if m["model"] in shown]
+        if not matched:
+            continue
+        name = {"Q": "quarter", "Y": "year"}.get(win["window"], win["window"])
+        lines += ["", f"**Per drive and {name}.** The unit is a drive in one {name}: a non-failing "
+                  f"unit ({win['negative_units']}) is alerted if a weekly check in that {name} "
+                  f"fires; a failing drive ({win['positive_units']}) is caught on its weekly "
+                  "checks "
+                  f"in its last {main['horizon']} days. Thresholds set on test for each share:", ""]
+        lines += table(["non-failing units alerted", "model", "failing drives caught",
+                        "difference vs the rule (paired)"],
+                       [[_pct(m["nonfailing_share"], 2), _label(m["model"], labels),
+                         est(m["share_failing_drives_alerted"],
+                             m.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                         est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                         if "difference" in m else "-"]
+                        for m in sorted(matched, key=lambda m: (m["target_nonfailing_share"],
+                                                                _rank(m["model"])))])
     lines += ["", "![detection](detection.png)"]
     return lines
 

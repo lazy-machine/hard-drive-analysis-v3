@@ -141,3 +141,26 @@ def test_weekly_alerts_use_only_stride_days():
     assert out["failing_drives_checked"] == 1
     assert b["share_failing_drives_alerted"] == 0.0      # its alerts fall between checks
     assert b["share_nonfailing_drives_alerted"] == 0.5
+
+
+def test_windowed_alerts_count_drive_quarters():
+    from evaluate import windowed_alerts
+    rows = []
+    # non-failing drive N1: alerts only in Q1; N2 never alerts; both seen in Q1 and Q2
+    for d in pd.date_range("2025-01-01", "2025-06-30"):
+        rows.append(("N1", d, 400, 0, 0.9 if d.month <= 3 else 0.1, "healthy", "X", "V", 4))
+        rows.append(("N2", d, 400, 0, 0.1, "healthy", "X", "V", 4))
+    # failing drive F1 fails on 2025-06-20, alerting every day of its last 30
+    for d in pd.date_range("2025-04-01", "2025-06-20"):
+        left = (pd.Timestamp("2025-06-20") - d).days
+        rows.append(("F1", d, left, 1, 0.95 if left < 30 else 0.1, "failing", "X", "V", 4))
+    test = _frame(rows)
+    test["m__p30"] = test["s"]
+    D = Drives(test)
+    models = {"m": {"kind": "binary", "horizons": [30]}}
+    out = windowed_alerts(test, D, models, 30, 7, [0.25], 5, 1, "Q", pair=("m", "m"))
+    assert out["negative_units"] == 4          # N1 and N2 in Q1 and Q2; F1's Q2 is its failure
+    assert out["positive_units"] == 1
+    (r,) = out["matched"]
+    assert r["nonfailing_share"] == 0.25       # only N1 in Q1 alerts
+    assert r["share_failing_drives_alerted"] == 1.0
