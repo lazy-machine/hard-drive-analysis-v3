@@ -35,7 +35,7 @@
   "Figura 2 – ROC-AUC por horizonte no conjunto de teste, com intervalos de confiança de 95%": 23,
   "Tabela 3 – Raridade do evento e precisão média do modelo principal, por horizonte e por estimador": 23,
   "Tabela 4 – ROC-AUC em 30 dias por modelo e por recorte do conjunto de teste": 24,
-  "Tabela 5 – Síntese da comparação entre o modelo e a regra dos contadores críticos, por forma de contagem dos alertas": 25,
+  "Tabela 5 – Síntese da comparação entre o modelo e a regra dos contadores críticos, por forma de contagem dos alertas": 26,
   "Tabela 6 – Desempenho dos alertas por retrato no conjunto de teste, por orçamento de falsos alarmes": 27,
   "Figura 3 – Proporção de retratos de discos que falham com alerta, por dias até a falha (limiar do orçamento de 1%)": 28,
   "Tabela 7 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente": 28,
@@ -48,5 +48,5 @@
   "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 44,
   "Tabela 13 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente": 46
  },
- "total_pages": 46
+ "total_pages": 47
 }
