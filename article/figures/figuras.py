@@ -2,7 +2,7 @@
 
 Uso, na raiz do repositório:  python3 article/figures/figuras.py
 
-Lê apenas results/full-2026-11-09-leakfix/ (metrics.json, detection.csv, calibration.csv) e grava
+Lê apenas results/full-2026-11-11/ (metrics.json, detection.csv, calibration.csv) e grava
 os arquivos SVG nesta pasta. Não recalcula nenhuma métrica.
 """
 
@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator, FuncFormatter, NullFormatter
 
 RAIZ = Path(__file__).resolve().parents[2]
-RUN = RAIZ / "results" / "full-2026-11-09-leakfix"
+RUN = RAIZ / "results" / "full-2026-11-11"
 SAIDA = Path(__file__).resolve().parent
 
 TEXTO, TEXTO_2, GRADE = "#0b0b0b", "#52514e", "#e4e3df"
@@ -67,6 +67,8 @@ def gravar(fig, nome: str) -> None:
     svg = caminho.read_text(encoding="utf-8").replace(
         "'Liberation Sans'", "Arial, 'Liberation Sans', Helvetica, sans-serif")
     caminho.write_text(svg, encoding="utf-8")
+    # Cópia em PNG para a versão Word do relatório (article/docx/build_docx.py).
+    fig.savefig(caminho.with_suffix(".png"), format="png", dpi=200, metadata={"Software": None})
     plt.close(fig)
 
 

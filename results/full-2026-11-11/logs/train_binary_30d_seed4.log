@@ -1,0 +1,5 @@
+[    12.0s] binary / all: 64 features, 7597961 train, 543346 early-stopping and 534083 calibration snapshots
+[    12.0s] memory estimate 3.8 GiB (row-wise histograms), budget 11.9 GiB
+[    12.5s] {'train_rows': 7475517, 'train_events': 354044, 'val_rows': 534678, 'val_events': 25736}
+[    78.1s] best iteration 380, val logloss 0.0374934
+[    79.3s] calibration (a, b) per bin: [[-0.738, 1.243]]

@@ -307,6 +307,9 @@ def report(ctx):
     lines += _alerting(metrics, ref, labels)
     lines += _calibration(metrics, ref, labels)
     lines += _retirement(metrics, ref, labels)
+    lines += _full_follow_up(metrics, ref, labels)
+    lines += _calibration_by_group(metrics, ref, labels)
+    lines += _seed_spread(metrics)
     lines += ["", "## Which SMART attributes matter", "",
               "Single-attribute ROC-AUC on train snapshots (fails within "
               f"{meta_ref['binary_horizon']} days), computed only on the drive-days where "
@@ -709,6 +712,22 @@ def _alerting(metrics, ref, labels) -> list[str]:
         lines += ["", "At the main budget no model's test false-alarm rate is above the budget "
                   "with an interval that excludes it, so the validation thresholds carry over "
                   "to the test years (see Calibration over time for the risk levels)."]
+    per_drive = [a for a in rows if a.get("share_nonfailing_drives_alerted") is not None]
+    if per_drive:
+        lines += ["", "**Per drive.** Non-failing drives = test drives that do not fail in the "
+                  "test period. Alerted = at least one alert on any of their test snapshots, "
+                  "which are weekly, so a daily monitor would alert at least as many. The "
+                  "last column divides the alerted non-failing drives by the failing drives "
+                  f"alerted in their last {main['horizon']} days (both weighted to the fleet).",
+                  ""]
+        lines += table(
+            ["budget", "model", "non-failing drives alerted", "per failing drive alerted"],
+            [[_pct(a["budget"], 1), _label(a["model"], labels),
+              est(a["share_nonfailing_drives_alerted"],
+                  a.get("share_nonfailing_drives_alerted_ci"), 1, pct=True),
+              est(a.get("nonfailing_alerted_per_failing_alerted"),
+                  a.get("nonfailing_alerted_per_failing_alerted_ci"), 1)]
+             for a in per_drive])
     lines += ["", "![detection](detection.png)"]
     return lines
 
@@ -944,3 +963,77 @@ def _answer(disc, gains, metrics, ref, labels, tolerance) -> list[str]:
             f"gains {rule['auc_gain']:+.3f} ROC-AUC {_ci(rule['auc_gain_ci'])} at "
             f"{rule['horizon']} days.")
     return out
+
+
+def _full_follow_up(metrics, ref, labels) -> list[str]:
+    rows = metrics.get("full_follow_up", [])
+    if not rows:
+        return []
+    gains = {(g["horizon"], g["other"]): g for g in metrics.get("full_follow_up_gain", [])}
+    main = {(r["horizon"], r["model"]): r for r in metrics["discrimination"]}
+    lines = ["", "## Full follow-up", "",
+             "The main estimator keeps every snapshot whose status at the horizon is known, "
+             "so failures near the panel's end count while healthy snapshots of the same "
+             "days drop out. Here only snapshots dated at least H - 1 days before the panel's "
+             "last day count, for positives and negatives alike (drives retired inside the "
+             "horizon are still dropped). Gain = reference minus the model in the row, paired.",
+             ""]
+    body = []
+    for r in _sorted([r for r in rows if r["model"] in CORE], "horizon"):
+        g = gains.get((r["horizon"], r["model"]))
+        m = main.get((r["horizon"], r["model"]))
+        body.append([f"{r['horizon']} d", _label(r["model"], labels), r["last_snapshot_date"],
+                     _pct(r["base_rate"], 3), _pct(r["observed_km"], 3),
+                     est(r["auc"], r["auc_ci"]), _fmt(m["auc"]) if m else "n/a",
+                     est(r["ap"], r["ap_ci"], 4),
+                     est(g["auc_gain"], g["auc_gain_ci"], sign=True) if g else "-"])
+    lines += table(["horizon", "model", "snapshots up to", "positive share",
+                    "observed (Kaplan-Meier)", "ROC-AUC", "ROC-AUC, main estimator", "PR-AUC",
+                    f"ROC-AUC gain of {_label(ref, labels)}"], body)
+    return lines
+
+
+def _calibration_by_group(metrics, ref, labels) -> list[str]:
+    rows = [r for r in metrics.get("calibration_by_group", []) if r["split"] == "test"
+            or r["year"] == max(x["year"] for x in metrics["calibration_by_group"]
+                                if x["split"] == "val")]
+    if not rows:
+        return []
+    mix = {(r["split"], r["year"], r["group"]): r["weight_share"]
+           for r in metrics.get("composition", [])}
+    lines = ["", "## Calibration by group", "",
+             f"Predicted / observed {rows[0]['horizon']}-day risk of {_label(ref, labels)} by "
+             "part of the fleet, for the last validation year and the test years (95% drive "
+             "bootstrap). Weight share = the group's share of the year's weighted snapshots.",
+             ""]
+    body = [[r["split"], r["year"], r["group"],
+             _pct(mix.get((r["split"], r["year"], r["group"])), 1),
+             r["failing_drives"], _pct(r["observed_km"], 3), _pct(r["predicted"], 3),
+             est(r["ratio"], r.get("ratio_ci"), 2)]
+            for r in sorted(rows, key=lambda r: (r["split"] != "val", r["year"], r["group"]))]
+    lines += table(["split", "year", "group", "weight share", "failing drives", "observed",
+                    "predicted", "ratio"], body)
+    return lines
+
+
+def _seed_spread(metrics) -> list[str]:
+    spread = metrics.get("seed_spread") or {}
+    summary = spread.get("summary", [])
+    if not summary:
+        return []
+    lines = ["", "## Training variation (seeds)", "",
+             "The reference survival model and the 30-day classifier retrained with other "
+             "seeds, all else equal. Point estimates on the known-status test snapshots.", ""]
+    lines += table(["model", "horizon", "trainings", "ROC-AUC min-max", "ROC-AUC sd",
+                    "PR-AUC min-max", "PR-AUC sd"],
+                   [[r["family"], f"{r['horizon']} d", r["replicates"],
+                     f"{_fmt(r['auc_min'])}-{_fmt(r['auc_max'])}", _fmt(r["auc_std"], 4),
+                     f"{_fmt(r['ap_min'], 4)}-{_fmt(r['ap_max'], 4)}", _fmt(r["ap_std"], 4)]
+                    for r in sorted(summary, key=lambda r: (r["family"], r["horizon"]))])
+    diffs = spread.get("pair_differences", [])
+    if diffs:
+        lines += ["", "Survival minus classifier, per seed pair (seed 0 = the models above):", ""]
+        lines += table(["seed", "horizon", "ROC-AUC difference", "PR-AUC difference"],
+                       [[d["seed_index"], f"{d['horizon']} d", _fmt(d["auc_diff"], 4),
+                         _fmt(d["ap_diff"], 4)] for d in diffs])
+    return lines

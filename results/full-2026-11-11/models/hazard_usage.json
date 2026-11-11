@@ -1,0 +1,133 @@
+{
+  "best_iteration": 219,
+  "bin_edges": [
+    0,
+    7,
+    14,
+    30,
+    60,
+    90,
+    180,
+    365
+  ],
+  "binary_horizon": 30,
+  "calibration": [
+    [
+      0.2907186809469881,
+      1.372066276166369
+    ],
+    [
+      0.17835708304096193,
+      1.3509564531996108
+    ],
+    [
+      -0.7608233193309515,
+      1.2188999770193218
+    ],
+    [
+      -1.574146791075159,
+      1.0663546801203707
+    ],
+    [
+      -1.5031194726358,
+      1.084603718487569
+    ],
+    [
+      -0.512671671065121,
+      1.0861893556604343
+    ],
+    [
+      -0.4799401835944716,
+      1.1034617238674678
+    ]
+  ],
+  "calibration_notes": {
+    "fallback_bins": [],
+    "fixed_slope_bins": []
+  },
+  "calibration_snapshots": 534083,
+  "categorical": [
+    "model_code",
+    "vendor_code"
+  ],
+  "exclude": [],
+  "feature_set": "context",
+  "features": [
+    "days_in_service",
+    "left_truncated",
+    "capacity_tb",
+    "model_code",
+    "vendor_code",
+    "smart_4_raw",
+    "smart_9_raw",
+    "smart_12_raw",
+    "smart_193_raw",
+    "smart_240_raw",
+    "smart_241_raw",
+    "smart_242_raw"
+  ],
+  "importance_gain": {
+    "bin_start": 14631658.385223389,
+    "capacity_tb": 944987.3489685059,
+    "days_in_service": 1399283.9826965332,
+    "left_truncated": 257932.8519897461,
+    "model_code": 8493388.136779785,
+    "smart_12_raw": 1656198.6935424805,
+    "smart_193_raw": 1978190.40725708,
+    "smart_240_raw": 766813.3112487793,
+    "smart_241_raw": 1358712.6484985352,
+    "smart_242_raw": 1306151.9801177979,
+    "smart_4_raw": 2004027.7906799316,
+    "smart_9_raw": 974067.1119689941,
+    "vendor_code": 941531.3448791504
+  },
+  "include": [
+    "smart_4_raw",
+    "smart_9_raw",
+    "smart_12_raw",
+    "smart_193_raw",
+    "smart_240_raw",
+    "smart_241_raw",
+    "smart_242_raw"
+  ],
+  "kind": "hazard",
+  "model_features": [
+    "days_in_service",
+    "left_truncated",
+    "capacity_tb",
+    "model_code",
+    "vendor_code",
+    "smart_4_raw",
+    "smart_9_raw",
+    "smart_12_raw",
+    "smart_193_raw",
+    "smart_240_raw",
+    "smart_241_raw",
+    "smart_242_raw",
+    "bin_start"
+  ],
+  "name": "train_hazard_usage",
+  "params": {
+    "bagging_fraction": 0.8,
+    "bagging_freq": 1,
+    "cat_smooth": 20,
+    "deterministic": true,
+    "feature_fraction": 0.8,
+    "force_row_wise": true,
+    "lambda_l2": 5.0,
+    "learning_rate": 0.03,
+    "metric": "binary_logloss",
+    "min_child_samples": 200,
+    "num_leaves": 31,
+    "num_threads": 0,
+    "objective": "binary",
+    "seed": 42,
+    "verbosity": -1
+  },
+  "train_events": 1440968,
+  "train_rows": 48083205,
+  "val_events": 105110,
+  "val_logloss": 0.042237481226691756,
+  "val_rows": 3435318,
+  "weight_power": 0.5
+}

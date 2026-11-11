@@ -322,12 +322,13 @@ full panel (no look-ahead). The report is `build/verify-report.json`.
   too low. The check does not say how many retired drives would have failed, so the size
   of that bias is unknown. Treating "leaves the panel" as an event of its own was not
   tried.
-- **Training noise is not in the intervals.** Each model is trained once, and the
-  drive-level bootstrap only resamples test drives. Two full runs that differed in 10
-  of 7.6 million training snapshots moved the 30-day ROC-AUC by 0.002 and the
-  survival-minus-classifier difference from -0.006 [-0.009, -0.002] to -0.001 [-0.004,
-  +0.002]. Differences of a few thousandths between models are
-  ties.
+- **Training noise is not in the intervals.** The drive-level bootstrap only resamples
+  test drives. The seed replicates (`*_seed<N>`, `seed_spread` in metrics.json) measure the
+  rest: over five seeds the reference model's 30-day ROC-AUC ranges 0.871-0.877 and its
+  PR-AUC 0.124-0.129, and the survival-minus-classifier ROC-AUC difference ranges -0.009 to
+  -0.001 (the classifier ranks slightly better) while the PR-AUC difference stays at or
+  above zero. Differences of a few thousandths between single trainings are not
+  conclusive.
 - **Label circularity.** Backblaze's replacement decisions use counters 5, 187, 188,
   197 and 198, so part of the SMART signal is the operator's policy. `hazard_nocritical`
   measures how much of the gain survives without those counters; it does not separate
