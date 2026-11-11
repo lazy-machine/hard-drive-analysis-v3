@@ -16,7 +16,7 @@ NOVEMBRO/2026
 
 # RESUMO
 
-Prever a falha de discos rígidos permite planejar substituições. Este relatório avalia se os atributos de Tecnologia de Automonitoramento, Análise e Relatório (SMART), lidos pelo `smartctl`, estimam a probabilidade e o momento da falha. Usou-se o *dataset* Drive Stats, da Backblaze: 646.777.037 registros diários de 478.464 unidades, de 2016 a 2025. Aplicou-se análise de sobrevivência em tempo discreto, com *gradient boosting*, avaliada em discos e anos fora do treino. Em 30 dias, os atributos SMART elevaram a área sob a curva *Receiver Operating Characteristic* de 0,603 para 0,877 (média de cinco treinos: 0,873), contra 0,824 de uma regra de contadores SMART de setores e de erros. Sem os contadores usados pelo operador, permanecem 61% do ganho no teste e 45% na validação. Por dia de disco, com igual taxa nominal de alarmes, o modelo alertou mais dias anteriores a falhas que a regra (61,3% contra 45,5%). Por disco, com igual proporção de discos saudáveis alertados, o modelo superou essa regra com revisão trimestral dos alertas e com inspeção no primeiro alerta, semanas ou meses antes da falha, mas não com apenas os alertas dos 30 dias anteriores à falha. Nessa contagem, a regra de qualquer contador crítico acima de zero igualou ou superou o modelo. As falhas sem sinal nesses contadores, um quinto, foram pouco previsíveis, e o risco de 2025 foi superestimado. Conclui-se que os atributos SMART ordenam os discos por risco, mas as probabilidades perdem calibração com o tempo, e o modelo não prevê a data de falha.
+Prever a falha de discos rígidos permite planejar substituições. Este relatório avalia se os atributos de Tecnologia de Automonitoramento, Análise e Relatório (SMART), lidos pelo `smartctl`, estimam a probabilidade e o momento da falha. Usou-se o *dataset* Drive Stats, da Backblaze: 646.777.037 registros diários de 478.464 unidades, de 2016 a 2025. Aplicou-se análise de sobrevivência em tempo discreto, com *gradient boosting*, avaliada em discos e anos fora do treino. Em 30 dias, os atributos SMART elevaram a área sob a curva *Receiver Operating Characteristic* de 0,603 para 0,877 (média de cinco treinos: 0,873), contra 0,824 de uma regra de contadores SMART de setores e de erros. Sem os contadores usados pelo operador, permanecem 61% do ganho no teste e 45% na validação. Por dia de disco, com igual taxa nominal de alarmes, o modelo alertou mais dias anteriores a falhas que a regra (61,3% contra 45,5%). Por disco, com igual proporção de discos saudáveis alertados, o modelo superou essa regra com revisão trimestral dos alertas e com inspeção no primeiro alerta, mas não com apenas os alertas dos 30 dias anteriores à falha. Nessas duas últimas contagens, a regra de qualquer contador crítico acima de zero superou o modelo principal no teste. As falhas sem sinal nesses contadores, um quinto, foram pouco previsíveis, e o risco de 2025 foi superestimado. Conclui-se que os atributos SMART ordenam os discos por risco, mas as probabilidades perdem calibração com o tempo, e o modelo não prevê a data de falha.
 
 Palavras-chave: análise de sobrevivência; atributos SMART; discos rígidos; manutenção preditiva; aprendizado de máquina.
 
@@ -50,19 +50,19 @@ Tabela 5 – Síntese da comparação entre o modelo e a regra dos contadores cr
 
 Tabela 6 – Desempenho dos alertas por retrato no conjunto de teste, por orçamento de falsos alarmes
 
-Tabela 7 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente
+Tabela 7 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem
 
-Tabela 8 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem
+Tabela 8 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência
 
-Tabela 9 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência
+Tabela 9 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha
 
-Tabela 10 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha
+Tabela 10 – Risco de falha em 30 dias previsto e observado, por conjunto e ano
 
-Tabela 11 – Risco de falha em 30 dias previsto e observado, por conjunto e ano
+Tabela 11 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos
 
-Tabela 12 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos
+Tabela 12 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente
 
-Tabela 13 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente
+Tabela 13 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente
 
 # LISTA DE ABREVIATURAS E SIGLAS
 
@@ -389,7 +389,7 @@ Os resultados referem-se à execução completa de 10 e 11 de novembro de 2026. 
 
 ## 4.1 GANHO DOS ATRIBUTOS SMART
 
-Os atributos SMART elevam a ROC-AUC em todos os horizontes, com intervalos de confiança que excluem zero, conforme a Tabela 2, calculada com o estimador de acompanhamento completo. O modelo sem SMART, que conhece apenas as cinco variáveis de contexto, ordena pouco melhor que o acaso (0,59 a 0,61). Com a média de cinco treinos do modelo completo (0,873; seção 4.6), o ganho em 30 dias seria de 0,269, e não de 0,273. O modelo completo também supera a regra dos contadores críticos em todos os horizontes, com diferença pareada de +0,052 [0,045; 0,060] em 7 dias a +0,060 [0,050; 0,071] em 365 dias. Na PR-AUC em 30 dias, com o mesmo estimador, a ordem se mantém: 0,123 no modelo completo, 0,052 na regra, 0,041 no modelo sem contadores críticos e 0,002 no modelo sem SMART. A vantagem pareada do modelo completo é de +0,121 [0,102; 0,144] sobre o modelo sem SMART, de +0,082 [0,062; 0,100] sobre o modelo sem contadores críticos e de +0,071 [0,050; 0,087] sobre a regra.
+Os atributos SMART elevam a ROC-AUC em todos os horizontes, com intervalos de confiança que excluem zero, conforme a Tabela 2, calculada com o estimador de acompanhamento completo. O modelo sem SMART, que conhece apenas as cinco variáveis de contexto, ordena pouco melhor que o acaso (0,59 a 0,61). Com a média de cinco treinos do modelo completo (0,873, no estimador de situação conhecida, praticamente igual em 30 dias; seção 4.6), o ganho em 30 dias seria de 0,269, e não de 0,273. O modelo completo também supera a regra dos contadores críticos em todos os horizontes, com diferença pareada de +0,052 [0,045; 0,060] em 7 dias a +0,060 [0,050; 0,071] em 365 dias. Na PR-AUC em 30 dias, com o mesmo estimador, a ordem se mantém: 0,123 no modelo completo, 0,052 na regra, 0,041 no modelo sem contadores críticos e 0,002 no modelo sem SMART. A vantagem pareada do modelo completo é de +0,121 [0,102; 0,144] sobre o modelo sem SMART, de +0,082 [0,062; 0,100] sobre o modelo sem contadores críticos e de +0,071 [0,050; 0,087] sobre a regra.
 
 As duas referências mudam entre a validação e o teste. Nos discos de validação, observados no período de treino, a ROC-AUC em 30 dias foi de 0,715 no modelo sem SMART, 0,761 na regra e 0,866 no modelo completo (estimador de situação conhecida; esses discos também serviram à parada antecipada e à recalibração). O ganho do SMART foi, portanto, de 0,151 na validação, contra 0,273 no teste, e a vantagem sobre a regra caiu de 0,105 para 0,053. As duas mudanças vêm das referências, e não do modelo completo, que variou pouco (de 0,866 para 0,877). O modelo sem SMART ordena pior em anos posteriores ao treino (de 0,715 para 0,603), e a maior parte do aumento do ganho vem dessa piora, e não de mais sinal nos atributos SMART. A regra, por sua vez, ordena melhor em 2024 e 2025 (de 0,761 para 0,824). A causa não foi isolada; o período e a composição da frota podem explicar as duas mudanças.
 
@@ -431,7 +431,7 @@ Em 365 dias, o estimador de situação conhecida eleva a proporção de positivo
 
 ## 4.2 POLÍTICA DE SUBSTITUIÇÃO, USO E FALHAS SILENCIOSAS
 
-Sem os atributos 5, 187, 188, 197 e 198, que a Backblaze usa para decidir substituições, o modelo ainda atinge ROC-AUC de 0,770 [0,758; 0,784] em 30 dias (estimador de situação conhecida, usado nos recortes), e o modelo completo fica à frente por +0,106 [0,098; 0,114]. Dos 0,273 pontos de ROC-AUC em 30 dias que o SMART acrescenta ao modelo sem SMART, 0,167, cerca de 61% [58; 64], permanecem sem esses contadores, com intervalo calculado nas mesmas reamostragens pareadas. Nos discos de validação, a parcela é menor: 45% em 30 dias (de 43% a 51% entre os horizontes, contra 55% a 65% no teste), porque o modelo sem SMART ordena melhor dentro do período de treino (seção 4.1).
+Sem os atributos 5, 187, 188, 197 e 198, que a Backblaze usa para decidir substituições, o modelo ainda atinge ROC-AUC de 0,770 [0,758; 0,784] em 30 dias (estimador de situação conhecida, usado nos recortes), e o modelo completo fica à frente por +0,106 [0,098; 0,114]. Dos 0,273 pontos de ROC-AUC em 30 dias que o SMART acrescenta ao modelo sem SMART, 0,167, cerca de 61% [58; 64], permanecem sem esses contadores, com intervalo calculado nas mesmas reamostragens pareadas. Nos discos de validação, a parcela é menor: 45% em 30 dias (de 43% a 51% entre os horizontes, contra 55% a 65% no teste, ambos com o estimador de situação conhecida), porque o modelo sem SMART ordena melhor dentro do período de treino (seção 4.1).
 
 O modelo sem contadores críticos foi treinado com parada antecipada após 40 iterações sem melhora, contra 100 no modelo principal, e teve a melhor iteração em 284. A paciência de 40 iterações fica acima da maior sequência sem melhora observada antes da melhor iteração desse mesmo modelo em uma execução completa anterior (28 iterações, contra 90 no modelo principal), o que sugere efeito pequeno, mas não o mede. Um treino com a paciência do modelo principal poderia elevar ou reduzir essa parcela, de modo que 61% e 45% não são limites.
 
@@ -464,32 +464,34 @@ O desempenho varia entre fabricantes, de 0,779 na Toshiba a 0,931 na HGST. Parte
 
 ## 4.3 ALERTA ANTECIPADO
 
-Para uma equipe de operação, a utilidade do modelo depende de como os alertas são contados. A Tabela 5 resume as formas de contagem por disco. A Tabela 6 traz a contagem por retrato, as Tabelas 7 a 9, os valores por disco, e a Tabela 13, no APÊNDICE B, as cinco sementes e o expoente 0,75.
+Para uma equipe de operação, a utilidade do modelo depende de como os alertas são contados. A Tabela 5 resume as formas de contagem por disco. A Tabela 6 traz a contagem por retrato, as Tabelas 7 e 8, os valores por disco, e a Tabela 12, no APÊNDICE B, as cinco sementes e o expoente 0,75.
 
 **Tabela 5 – Síntese da comparação entre o modelo e a regra dos contadores críticos, por forma de contagem dos alertas**
 
 | Forma de contagem | Situação de operação representada | Teste, modelo principal | Teste, sementes com intervalo acima de zero | Validação, modelo principal |
 |---|---|---|---|---|
-| Por disco e trimestre, ponto de 2,5% | revisão trimestral da lista de alertas | +9,6 | 5 de 5 | +6,9 |
-| Por disco e ano, ponto de 2,5% | revisão anual da lista de alertas | +5,3 | 4 de 5 | não calculado |
-| Por disco no período inteiro, 30 dias antes da falha, ponto de 2,5% | uma inspeção por disco, alerta próximo da falha | +2,2 | 0 de 5 (nenhuma abaixo de zero) | +0,3 |
-| Por disco no período inteiro, qualquer antecedência, ponto de 2,5% | inspeção no primeiro alerta | +7,9 | 5 de 5 | +6,5 |
-| Limiar zero da regra (6,9% no teste, 5,0% na validação), 30 dias antes da falha | qualquer contador crítico acima de zero | −6,5 | 0 de 5 (5 abaixo de zero) | −3,9 |
-| Limiar zero da regra (6,9% e 5,0%), qualquer antecedência | qualquer contador crítico acima de zero, primeiro alerta | −1,7 | 0 de 5 (5 abaixo de zero) | +1,3 |
+| **Contra a regra ordenada, no ponto de 2,5%** | | | | |
+| Por disco e trimestre | revisão trimestral da lista de alertas | +9,6 | 5 de 5 | +6,9 |
+| Por disco e ano | revisão anual da lista de alertas | +5,3 | 4 de 5 | não calculado |
+| Por disco no período inteiro, 30 dias antes da falha | uma inspeção por disco, alerta próximo da falha | +2,2 | 0 de 5 (nenhuma abaixo de zero) | +0,3 |
+| Por disco no período inteiro, qualquer antecedência | inspeção no primeiro alerta | +7,9 | 5 de 5 | +6,5 |
+| **Contra a regra de limiar zero, na proporção que ela alerta** | | | | |
+| Por disco no período inteiro, 30 dias antes da falha | uma inspeção por disco, alerta próximo da falha | −6,5 | 0 de 5 (5 abaixo de zero) | −3,9 |
+| Por disco no período inteiro, qualquer antecedência | inspeção no primeiro alerta | −1,7 | 0 de 5 (5 abaixo de zero) | +1,3 |
 
-Fonte: Elaborado pelo autor com base em Backblaze (2026). Diferença, em pontos percentuais, na proporção de discos que falham alertados, com a mesma proporção de unidades sem falha alertadas, indicada na primeira coluna. Nas quatro primeiras linhas, a comparação é com a regra ordenada (Tabelas 8 e 9); nas duas últimas, com a regra de limiar zero, na proporção que ela alerta, e essa regra não foi avaliada por trimestre nem por ano. Sementes: as cinco com expoente 0,5, incluída a do modelo principal; um intervalo que não fica acima nem abaixo de zero não demonstra diferença. Período inteiro: 2024 e 2025 no teste, 2016 a 2023 na validação.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). Diferença, em pontos percentuais, na proporção de discos que falham alertados, com a mesma proporção de unidades sem falha alertadas. Nas quatro primeiras linhas, a comparação é com a regra ordenada (Tabelas 7 e 8); nas duas últimas, com a regra de qualquer contador crítico acima de zero, que alerta 6,9% dos discos sem falha no teste e 5,0% na validação e não foi avaliada por trimestre nem por ano. Sementes: as cinco com expoente 0,5, incluída a do modelo principal; um intervalo que não fica acima nem abaixo de zero não demonstra diferença. Período inteiro: 2024 e 2025 no teste, 2016 a 2023 na validação.
 
 Em síntese:
 
 a) por dia de disco, o modelo supera a regra em todos os orçamentos (Tabela 6), comparação feita apenas no teste e com o modelo principal;
 
-b) com revisão trimestral da lista de alertas, o modelo alerta mais discos que falham do que a regra ordenada, nas cinco sementes e na validação (linha 1 da Tabela 5); fica em aberto se essa vantagem se mantém contra a regra de limiar zero, a mais próxima do uso do operador, que não foi avaliada por trimestre;
+b) com revisão trimestral da lista de alertas, o modelo alerta mais discos que falham do que a regra ordenada, nas cinco sementes e na validação (primeira linha da Tabela 5); fica em aberto se essa vantagem se mantém contra a regra de limiar zero, a mais próxima do uso do operador, que não foi avaliada por trimestre;
 
-c) com uma inspeção por disco motivada pelos alertas dos 30 dias anteriores à falha, o modelo principal não supera a regra ordenada (linha 3), e a regra de limiar zero o iguala ou supera em todas as configurações avaliadas (linha 5);
+c) com uma inspeção por disco motivada pelos alertas dos 30 dias anteriores à falha, o modelo principal não supera a regra ordenada, e a regra de limiar zero o iguala ou supera em todas as configurações avaliadas;
 
-d) com inspeção no primeiro alerta de qualquer antecedência, o modelo supera a regra ordenada nas cinco sementes e na validação (linha 4); contra a regra de limiar zero, as diferenças são de até três pontos, de sinal variável (linha 6), e os alertas chegam, em mediana, de 40 a 105 dias antes da falha (Tabela 9).
+d) com inspeção no primeiro alerta de qualquer antecedência, o modelo supera a regra ordenada no ponto de 2,5%, nas cinco sementes e na validação; contra a regra de limiar zero, o modelo principal fica 1,7 ponto atrás no teste, com os intervalos das cinco sementes abaixo de zero, e 1,3 à frente na validação; os alertas chegam, em mediana, de 40 a 105 dias antes da falha (Tabela 8).
 
-Nos casos c e d, estes dados não dão motivo para trocar a regra de limiar zero pelo modelo. A regra ordenada é uma única especificação (a soma dos logaritmos dos contadores); outras combinações dos mesmos contadores não foram testadas, e só o limiar zero independe dessa escolha. As cinco sementes usam os mesmos discos de teste e medem a variação do treino, e não uma replicação independente. O efeito do expoente 0,75 sobre os casos c e d e os pontos de operação da literatura, comparáveis apenas como ordem de grandeza, estão no APÊNDICE B.
+Nos casos c e d, estes dados não dão motivo para trocar a regra de limiar zero pelo modelo. A regra ordenada é uma única especificação (a soma dos logaritmos dos contadores); outras combinações dos mesmos contadores não foram testadas, e só o limiar zero independe dessa escolha. As cinco sementes usam os mesmos discos de teste e medem a variação do treino, e não uma replicação independente. Com expoente 0,75, a diferença nesses dois casos fica, no teste, entre −0,5 e +1,3 ponto, pequena demais para mudar essa leitura (APÊNDICE B, que também compara os pontos de operação da literatura, apenas como ordem de grandeza).
 
 A Tabela 6 apresenta a contagem por retrato.
 
@@ -522,28 +524,11 @@ Fonte: Elaborado pelo autor com base em Backblaze (2026). As faixas de dias têm
 
 A proporção de retratos alertados cai de 69% na última semana antes da falha para 23% entre 180 e 364 dias antes. Entre 30 e 59 dias antes da falha, 49% dos retratos já recebem alerta, de modo que parte dos falsos alarmes da Tabela 6 recai sobre discos que falham depois do horizonte de 30 dias.
 
-Para uma equipe de operação, porém, o custo é contado em discos inspecionados, e não em dias. A Tabela 7 avalia todos os discos no mesmo calendário semanal. Um disco que falha conta como alertado se um de seus retratos semanais nos 30 dias anteriores à falha gerar alerta; um disco sem falha conta como falso alarme se qualquer de seus retratos semanais no período de teste gerar alerta. A última coluna divide o número estimado de discos sem falha alertados na frota pelo número de discos que falham alertados.
+Para uma equipe de operação, porém, o custo é contado em discos inspecionados, e não em dias. Para isso, todos os discos foram avaliados no mesmo calendário semanal: um disco que falha conta como alertado se um de seus retratos semanais nos 30 dias anteriores à falha gerar alerta, e um disco sem falha, se qualquer de seus retratos semanais no período de teste gerar alerta. Com os limiares da Tabela 6, a regra é mais parcimoniosa por disco: no orçamento de 1%, alerta 2,4% dos discos sem falha e 52,7% dos que falham, contra 7,9% e 72,3% do modelo (Tabela 13, no APÊNDICE B). Seus alertas se repetem nos mesmos discos, que mantêm contadores acima de zero, enquanto os do modelo se distribuem por mais discos. Para comparar os dois com a mesma proporção de discos sem falha alertados, as Tabelas 7 e 8 fixam o limiar de cada um no próprio teste, o que torna a comparação descritiva.
 
-**Tabela 7 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente**
+Na Tabela 7, a unidade negativa depende da janela de contagem. Por trimestre ou por ano, é um disco em uma janela em que tem retratos e que não falha nela nem nos 30 dias seguintes (53.669 e 13.850 pares de disco e janela), como em uma revisão periódica da lista de alertas. No período de teste inteiro, cada disco sem falha conta uma única vez, como no total de discos distintos inspecionados em dois anos. Um disco que falha conta na janela da falha, avaliado nos retratos semanais dos 30 dias anteriores a ela.
 
-| Orçamento | Modelo | Discos que falham alertados | Discos sem falha alertados | Razão entre discos sem falha e discos que falham alertados |
-|---|---|---|---|---|
-| 0,1% | SMART + contexto | 46,5% [44,4; 48,9] | 1,4% [1,2; 1,7] | 1,3 [1,0; 1,5] |
-| 0,1% | Regra | 31,5% [29,8; 33,7] | 0,8% [0,6; 0,9] | 1,0 [0,7; 1,2] |
-| 0,3% | SMART + contexto | 61,7% [59,6; 64,0] | 3,8% [3,4; 4,2] | 2,5 [2,2; 2,8] |
-| 0,3% | Regra | 40,9% [38,5; 43,1] | 1,4% [1,1; 1,6] | 1,4 [1,1; 1,6] |
-| 1% | SMART + contexto | 72,3% [70,1; 74,3] | 7,9% [7,3; 8,5] | 4,5 [4,1; 4,8] |
-| 1% | Classificador de 30 dias | 73,7% [71,6; 75,8] | 13,6% [12,9; 14,5] | 7,5 [7,1; 8,1] |
-| 1% | Regra | 52,7% [50,3; 54,9] | 2,4% [2,1; 2,8] | 1,9 [1,6; 2,2] |
-| 1% | Sem SMART | 7,7% [6,5; 9,1] | 10,4% [9,8; 11,2] | 55,1 [45,3; 65,5] |
-
-Fonte: Elaborado pelo autor com base em Backblaze (2026). Limiares da Tabela 6. A razão da última coluna usa as contagens de discos ponderadas para a população, e não as duas colunas de porcentagem. Valores no calendário semanal comum, que diferem dos calculados com todos os retratos diários anteriores à falha. No orçamento de 1%, as outras quatro sementes do classificador de 30 dias alertaram de 9,1% a 11,0% dos discos sem falha, e as outras quatro do modelo principal, de 8,1% a 8,7%. Discos que falham: os 1.766 com ao menos um retrato semanal nos 30 dias anteriores à falha. Discos sem falha: os 7.197 discos de teste que não falham no período (os 7.198 da Tabela 1, menos o disco sem retrato), ponderados para a população.
-
-Por disco, a regra é mais parcimoniosa: no orçamento de 1%, alerta 2,4% dos discos sem falha, contra 7,9% do modelo, porque seus alertas se repetem nos mesmos discos, que mantêm contadores acima de zero, enquanto os do modelo se distribuem por mais discos. Para comparar os dois com a mesma proporção de discos sem falha alertados, as Tabelas 8 e 9 fixam o limiar de cada um no próprio teste, o que torna a comparação descritiva.
-
-Na Tabela 8, a unidade negativa depende da janela de contagem. Por trimestre ou por ano, é um disco em uma janela em que tem retratos e que não falha nela nem nos 30 dias seguintes (53.669 e 13.850 pares de disco e janela), como em uma revisão periódica da lista de alertas. No período de teste inteiro, cada disco sem falha conta uma única vez, como no total de discos distintos inspecionados em dois anos. Um disco que falha conta na janela da falha, avaliado nos retratos semanais dos 30 dias anteriores a ela.
-
-**Tabela 8 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem**
+**Tabela 7 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem**
 
 | Janela de contagem | Unidades sem falha alertadas | SMART + contexto | Regra (5, 187, 197, 198) | Diferença (pontos percentuais) |
 |---|---|---|---|---|
@@ -558,15 +543,15 @@ Na Tabela 8, a unidade negativa depende da janela de contagem. Por trimestre ou 
 | Período de teste (dois anos) | 5% | 66,9% | 68,4% | −1,5 [−3,6; 2,6] |
 | Período de teste (dois anos) | 6,9% (regra com limiar zero) | 68,8% | 75,3% | −6,5 [−7,9; −4,6] |
 
-Fonte: Elaborado pelo autor com base em Backblaze (2026). Todos os discos avaliados semanalmente, como na Tabela 7. Os retratos dos 30 dias anteriores a uma falha podem cair na janela anterior, e fica de fora a janela de um disco que falha nos 30 dias seguintes ao fim dela. Na última linha, a proporção é a alertada pela regra com limiar zero, isto é, com qualquer contador acima de zero. Por empates nos escores, a regra ficou em alguns pontos um pouco abaixo da proporção-alvo (no pior caso, 4,81% em vez de 5%, por ano), o que a desfavorece levemente. Diferença pareada no mesmo *bootstrap*.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). Todos os discos avaliados no calendário semanal comum. Os retratos dos 30 dias anteriores a uma falha podem cair na janela anterior, e fica de fora a janela de um disco que falha nos 30 dias seguintes ao fim dela. Na última linha, a proporção é a alertada pela regra com limiar zero, isto é, com qualquer contador acima de zero. Por empates nos escores, a regra ficou em alguns pontos um pouco abaixo da proporção-alvo (no pior caso, 4,81% em vez de 5%, por ano), o que a desfavorece levemente. Diferença pareada no mesmo *bootstrap*.
 
 Com os alertas contados por trimestre, o modelo alerta de 4,6 a 14,2 pontos percentuais mais discos que falham do que a regra, com intervalos acima de zero. Das 53.669 unidades negativas por trimestre, 5.139 são de discos que falham depois; sem elas, a vantagem do modelo quase não muda (+14,1, +9,2 e +3,5 pontos, com intervalos acima de zero). Por ano, a vantagem diminui e desaparece no ponto de 5%; no período inteiro, os intervalos incluem zero nos pontos de 1% a 5%. A diferença vem da persistência dos alertas da regra, já descrita: uma janela longa conta cada disco uma única vez. A ordenação dos discos em si favorece o modelo, pois, com um único retrato sorteado por disco, sua ROC-AUC é de 0,862 [0,838; 0,886], contra 0,811 [0,785; 0,836] da regra.
 
-A contagem por janela supõe que um novo alerta de um disco já inspecionado gere uma nova inspeção na janela seguinte; se um disco inspecionado não for reavaliado, o custo se aproxima do da contagem no período inteiro. Como os limiares foram fixados com os desfechos do teste, resta verificar, em um piloto prospectivo, se uma revisão trimestral real alcança esse resultado com a mesma proporção de discos sem falha alertados.
+A contagem por janela supõe que um novo alerta de um disco já inspecionado gere uma nova inspeção na janela seguinte; se um disco inspecionado não for reavaliado, o custo se aproxima do da contagem no período inteiro. Só um piloto prospectivo pode verificar se uma revisão trimestral real alcança esse resultado (seção 4.7).
 
-A contagem do período inteiro só considera os alertas dos 30 dias anteriores à falha. Ela é uma contagem retrospectiva, e não uma política de inspeção avaliada, pois credita um alerta desses 30 dias mesmo quando um alerta anterior já teria levado à única inspeção. Em uma política em que o primeiro alerta leva à inspeção, qualquer que seja a antecedência, um disco que falha conta como alertado se qualquer de seus retratos semanais anteriores à falha gerar alerta. A Tabela 9 apresenta essa contagem, com os 1.770 discos que falham com ao menos um retrato semanal no teste.
+A contagem do período inteiro só considera os alertas dos 30 dias anteriores à falha. Ela é uma contagem retrospectiva, e não uma política de inspeção avaliada, pois credita um alerta desses 30 dias mesmo quando um alerta anterior já teria levado à única inspeção. Em uma política em que o primeiro alerta leva à inspeção, qualquer que seja a antecedência, um disco que falha conta como alertado se qualquer de seus retratos semanais anteriores à falha gerar alerta. A Tabela 8 apresenta essa contagem, com os 1.770 discos que falham com ao menos um retrato semanal no teste.
 
-**Tabela 9 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência**
+**Tabela 8 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência**
 
 | Discos sem falha alertados | SMART + contexto | Regra (5, 187, 197, 198) | Diferença (pontos percentuais) | Antecedência do primeiro alerta, modelo (dias) | Antecedência do primeiro alerta, regra (dias) |
 |---|---|---|---|---|---|
@@ -574,19 +559,19 @@ A contagem do período inteiro só considera os alertas dos 30 dias anteriores �
 | 2,5% | 61,3% | 53,4% | +7,9 [5,1; 11,2] | 75 [22; 165] | 90 [25; 217] |
 | 5% | 72,4% | 68,9% | +3,4 [1,6; 7,5] | 105 [31; 226] | 124,5 [35; 268] |
 
-Fonte: Elaborado pelo autor com base em Backblaze (2026). Limiares da Tabela 8 no período de teste. Antecedência: mediana [primeiro quartil; terceiro quartil] dos dias, com a média dos dois valores centrais quando o número de discos é par, entre o primeiro alerta e a falha, entre os discos que falham alertados. Diferença pareada no mesmo *bootstrap*.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). Limiares da Tabela 7 no período de teste. Antecedência: mediana [primeiro quartil; terceiro quartil] dos dias, com a média dos dois valores centrais quando o número de discos é par, entre o primeiro alerta e a falha, entre os discos que falham alertados. Diferença pareada no mesmo *bootstrap*.
 
-Nessa contagem, o modelo principal supera a regra nos três pontos, com intervalos acima de zero; entre as cinco sementes, incluída a principal, isso ocorre em todas no ponto de 2,5%, em quatro no de 1% e em duas no de 5% (Tabela 13). Os primeiros alertas, porém, chegam cedo: no ponto de 1%, só 42% dos discos alertados pelo modelo recebem o primeiro alerta nos 30 dias anteriores à falha. Um alerta com meses de antecedência só tem valor se a inspeção nessa data encontrar o problema ou se o disco for substituído preventivamente, o que estes dados não permitem verificar.
+Nessa contagem, o modelo principal supera a regra nos três pontos, com intervalos acima de zero; entre as cinco sementes, incluída a principal, isso ocorre em todas no ponto de 2,5%, em quatro no de 1% e em duas no de 5% (Tabela 12). Os primeiros alertas, porém, chegam cedo: no ponto de 1%, só 42% dos discos alertados pelo modelo recebem o primeiro alerta nos 30 dias anteriores à falha. Um alerta com meses de antecedência só tem valor se a inspeção nessa data encontrar o problema ou se o disco for substituído preventivamente, o que estes dados não permitem verificar.
 
 A regra também pode ser lida no limiar zero, em que alerta qualquer disco com um dos contadores 5, 187, 197 e 198 acima de zero (o atributo 188 fica fora, como explicado na seção 3.2). Esse ponto aproxima, de forma simplificada, o uso que a Backblaze faz desses contadores, mas não é sua regra de substituição. Em 2014, a empresa agendava a troca quando o atributo 187 passava de zero (BEACH, 2014) e tratava os demais como motivo de investigação (KLEIN, 2016); em 2025, o principal indicador de substituição eram erros de leitura não corrigidos, registrados por um monitor próprio (BACKBLAZE, 2025). No teste, 6,9% [6,3; 7,4] dos discos sem falha tiveram algum desses contadores acima de zero, e a regra alertou 75,3% [73,1; 77,3] dos discos que falham nos 30 dias anteriores à falha.
 
-Com a mesma proporção de discos sem falha alertados, recalculada em cada reamostragem, o modelo principal alerta 6,5 pontos percentuais a menos (última linha da Tabela 8). As outras quatro sementes e as cinco do classificador de 30 dias também ficam atrás da regra, todas com intervalos abaixo de zero. Com o primeiro alerta de qualquer antecedência, a diferença cai para −1,7 [−2,8; −0,5] (74,1% contra 75,8%). Parte da vantagem da regra pode vir da circularidade do rótulo (seção 4.2), porque o operador decide substituições com base nesses contadores.
+Com a mesma proporção de discos sem falha alertados, recalculada em cada reamostragem, o modelo principal alerta 6,5 pontos percentuais a menos (última linha da Tabela 7). As outras quatro sementes e as cinco do classificador de 30 dias também ficam atrás da regra, todas com intervalos abaixo de zero. Com o primeiro alerta de qualquer antecedência, a diferença cai para −1,7 [−2,8; −0,5] (74,1% contra 75,8%). Parte da vantagem da regra pode vir da circularidade do rótulo (seção 4.2), porque o operador decide substituições com base nesses contadores.
 
 ## 4.4 VIDA ÚTIL REMANESCENTE
 
-As curvas previstas vão até 365 dias (seção 3.2). A mediana da vida útil remanescente só recebe um valor quando a probabilidade acumulada de falha chega a 50% nesse prazo; nos demais casos, sabe-se apenas que ela fica além de um ano. Entre os retratos de discos que falham em até um ano, a mediana prevista fica dentro do ano em apenas 15,0% [14,0; 16,3]. Entre os de discos observados em operação durante todo o ano seguinte, ela fica além de um ano em 99,9% dos casos, o que apenas confirma a coerência das previsões, dado que a falha é rara. A Tabela 10 mostra que a proporção de 15,0% cresce à medida que a falha se aproxima, mas não chega à metade nem na última semana.
+As curvas previstas vão até 365 dias (seção 3.2). A mediana da vida útil remanescente só recebe um valor quando a probabilidade acumulada de falha chega a 50% nesse prazo; nos demais casos, sabe-se apenas que ela fica além de um ano. Entre os retratos de discos que falham em até um ano, a mediana prevista fica dentro do ano em apenas 15,0% [14,0; 16,3]. Entre os de discos observados em operação durante todo o ano seguinte, ela fica além de um ano em 99,9% dos casos, o que apenas confirma a coerência das previsões, dado que a falha é rara. A Tabela 9 mostra que a proporção de 15,0% cresce à medida que a falha se aproxima, mas não chega à metade nem na última semana.
 
-**Tabela 10 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha**
+**Tabela 9 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha**
 
 | Dias reais até a falha | Retratos | Mediana prevista dentro de um ano |
 |---|---|---|
@@ -604,11 +589,11 @@ Esse resultado não indica ausência de sinal, pois um modelo calibrado pode atr
 
 Quando o modelo indica um dia dentro do ano, as falhas ocorrem com menos frequência que a nominal. Até o dia previsto para 10%, 50% e 90% de probabilidade de falha, falharam 6,0% [5,3; 6,8], 33,7% [28,2; 41,3] e 79,8% [73,5; 85,6] dos retratos, com a ponderação IPCW; sem ela, 7,0%, 38,3% e 82,5%. Os três intervalos ficam abaixo dos valores nominais, o que indica previsões pessimistas. A ponderação supõe que a censura independe do tempo de falha e do dia previsto, hipótese apenas aproximada, pois a maior parte da censura decorre do fim do painel. Além disso, os resultados juntam 2024 e 2025 e refletem em parte a superestimação de 2025 (seção 4.5). Esses valores indicam, portanto, a direção do desvio, e não sua magnitude na população.
 
-A mediana prevista difere do dia real da falha em 110 [106; 114] dias, em média, nos 43.922 retratos de falha em que cai dentro do ano, subconjunto dos retratos da Tabela 10. Entre os retratos de discos que falham em até um ano, a falha ocorre entre os dias previstos para 10% e 90% em 25,4% [24,0; 27,0] dos casos. Essa proporção é condicionada à falha observada e, por isso, não tem 80% como referência.
+A mediana prevista difere do dia real da falha em 110 [106; 114] dias, em média, nos 43.922 retratos de falha em que cai dentro do ano, subconjunto dos retratos da Tabela 9. Entre os retratos de discos que falham em até um ano, a falha ocorre entre os dias previstos para 10% e 90% em 25,4% [24,0; 27,0] dos casos. Essa proporção é condicionada à falha observada e, por isso, não tem 80% como referência.
 
 ## 4.5 CALIBRAÇÃO, DERIVA E RETIRADA DE DISCOS
 
-A Figura 4 compara, por decil de risco, a probabilidade prevista com a proporção observada por Kaplan-Meier, com 2024 e 2025 reunidos; como 2025 foi superestimado (Tabela 11, adiante), parte do desvio vem desse ano.
+A Figura 4 compara, por decil de risco, a probabilidade prevista com a proporção observada por Kaplan-Meier, com 2024 e 2025 reunidos; como 2025 foi superestimado (Tabela 10, adiante), parte do desvio vem desse ano.
 
 **Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)**
 
@@ -620,9 +605,9 @@ Os pontos acompanham a diagonal ao longo de mais de três ordens de grandeza, co
 
 Como resumo numérico da qualidade das probabilidades, usou-se o escore de Brier relativo (*Brier skill score*), que compara o escore de Brier com o de uma previsão constante igual à proporção de positivos. Nos retratos de situação conhecida, ele foi de 4,2% em 30 dias e de 9,0% em 90 dias (estimativas pontuais, sem intervalo de confiança); em 7 dias, foi ligeiramente negativo (−0,3%), isto é, as probabilidades foram um pouco piores que a previsão constante, o que acompanha a superestimação no decil de maior risco (0,39% previsto contra 0,22% observado). Os horizontes longos foram omitidos, porque esse estimador é enviesado neles.
 
-A Tabela 11 mostra a razão entre o risco previsto e o observado em 30 dias, por ano. Os discos de validação pertencem ao período de treino e foram usados na recalibração e na parada antecipada, de modo que a faixa de razões desses anos serve de referência descritiva.
+A Tabela 10 mostra a razão entre o risco previsto e o observado em 30 dias, por ano. Os discos de validação pertencem ao período de treino e foram usados na recalibração e na parada antecipada, de modo que a faixa de razões desses anos serve de referência descritiva.
 
-**Tabela 11 – Risco de falha em 30 dias previsto e observado, por conjunto e ano**
+**Tabela 10 – Risco de falha em 30 dias previsto e observado, por conjunto e ano**
 
 | Conjunto | Ano | Retratos | Observado | Previsto | Razão previsto/observado | Razão, sem SMART | Razão, recalibrado com 2023 |
 |---|---|---|---|---|---|---|---|
@@ -641,7 +626,7 @@ Fonte: Elaborado pelo autor com base em Backblaze (2026). Observado: estimativa 
 
 O risco observado em 2024, de 0,133% em 30 dias, equivale a uma taxa anualizada de cerca de 1,6%, próxima dos 1,57% publicados pela Backblaze para 2024 (BACKBLAZE, 2025). Como as duas medidas têm construções diferentes, a concordância é uma verificação de plausibilidade dos pesos amostrais, e não uma prova. O risco de 2025 equivale a cerca de 1,25%, abaixo das taxas publicadas para o segundo e o terceiro trimestres desse ano (1,36% e 1,55%; BACKBLAZE, 2025) e acima da do quarto, inferior a 1,24% (DOYLE, 2026a). Se o risco observado de 2025 estiver subestimado, a superestimação desse ano será menor que a medida; com uma taxa de 1,4%, por exemplo, a razão cairia de 2,18 para cerca de 1,95.
 
-Nos anos de validação, a razão do modelo principal variou de 0,86 a 1,38: uma calibração única não acompanha a variação anual da taxa de falhas nem dentro do período de treino. Em 2023, a razão (0,86) foi a menor da validação, mas seu intervalo se sobrepõe ao de 2019, e a superestimação de 2025 vai no sentido oposto. Em 2024, a razão ficou dentro da faixa da validação (1,18). Em 2025, o modelo previu mais que o dobro das falhas observadas (2,18), e o risco previsto médio subiu 44% em relação a 2024, enquanto o observado caiu 23%. A recalibração com dados de 2023 elevou o desvio (2,64): como 2023 foi subestimado, o reajuste elevou todas as probabilidades, e 2025 tinha risco observado menor. O modelo sem SMART também superestimou o risco em 2025 (1,66), de modo que a mudança não está apenas nos atributos SMART, mas também no risco de base associado ao modelo, à capacidade e ao tempo de serviço dos discos. A Tabela 12, no APÊNDICE B, separa a razão por grupos de discos.
+Nos anos de validação, a razão do modelo principal variou de 0,86 a 1,38: uma calibração única não acompanha a variação anual da taxa de falhas nem dentro do período de treino. Em 2023, a razão (0,86) foi a menor da validação, mas seu intervalo se sobrepõe ao de 2019, e a superestimação de 2025 vai no sentido oposto. Em 2024, a razão ficou dentro da faixa da validação (1,18). Em 2025, o modelo previu mais que o dobro das falhas observadas (2,18), e o risco previsto médio subiu 44% em relação a 2024, enquanto o observado caiu 23%. A recalibração com dados de 2023 elevou o desvio (2,64): como 2023 foi subestimado, o reajuste elevou todas as probabilidades, e 2025 tinha risco observado menor. O modelo sem SMART também superestimou o risco em 2025 (1,66), de modo que a mudança não está apenas nos atributos SMART, mas também no risco de base associado ao modelo, à capacidade e ao tempo de serviço dos discos. A Tabela 11, no APÊNDICE B, separa a razão por grupos de discos.
 
 A superestimação de 2025 aparece nas duas faixas de capacidade (2,17 e 2,21), nas três faixas de tempo em serviço (de 1,73 a 3,10) e em todos os fabricantes, com maior intensidade na Seagate (2,97). O desvio persiste dentro de cada faixa examinada e, portanto, não se deve apenas à mudança na proporção de discos grandes ou ao envelhecimento da frota, embora mudanças de composição dentro das faixas continuem possíveis. O maior desvio está nos discos com menos de 2 anos em serviço (3,10) e nos modelos de disco fora dos 30 mais frequentes no treino (3,75), que a variável de modelo reúne em uma única categoria e cujo peso subiu para 7,7% em 2025. Esses modelos ampliam o desvio, mas não o explicam, pois os 30 modelos mais frequentes, que respondem por 92,3% do peso, também tiveram o risco superestimado (2,07). O modelo Toshiba MG08ACA16TEY segue a direção oposta: em 2025, falhou três vezes mais que o previsto (razão de 0,33), o que é coerente com as retiradas por atualização de *firmware* registradas como falhas (BACKBLAZE, 2025) e mostra que a definição de falha do operador afeta diretamente a calibração. A causa do desvio geral permanece em aberto; ela é compatível com a deriva de conceito descrita por Han *et al.* (2023) e com mudanças nos critérios de registro de falha ou de retirada de discos do operador.
 
@@ -685,7 +670,7 @@ Quanto aos objetivos específicos, a formulação como análise de sobrevivênci
 
 O ganho de discriminação dos atributos SMART sobre o modelo de contexto (objetivo b) foi positivo em todos os horizontes e com todos os estimadores, embora menor nos discos de validação, observados no período de treino. A ablação dos contadores usados pelo operador (objetivo c) mostrou que entre 45% e 61% desse ganho permanece sem eles, conforme o período avaliado. Ela não permite estimar o efeito da política de substituição, e as falhas silenciosas foram pouco previsíveis.
 
-Como sistema de alerta (objetivo d), o modelo superou a regra ordenada dos contadores críticos por dia de disco e, por disco, com revisão trimestral dos alertas e com inspeção no primeiro alerta de qualquer antecedência. Não a superou quando só contam os alertas dos 30 dias anteriores à falha, contagem em que a regra com limiar zero o igualou ou superou. Os orçamentos de falsos alarmes fixados na validação não foram cumpridos no teste, nem pelo modelo nem pela regra.
+Como sistema de alerta (objetivo d), o modelo superou a regra ordenada dos contadores críticos por dia de disco e, por disco, com revisão trimestral dos alertas e com inspeção no primeiro alerta de qualquer antecedência. Não a superou quando só contam os alertas dos 30 dias anteriores à falha. Nessas duas contagens de inspeção única, a regra com limiar zero superou o modelo principal no teste, de modo que estes dados não dão motivo para substituí-la pelo modelo. Os orçamentos de falsos alarmes fixados na validação não foram cumpridos no teste, nem pelo modelo nem pela regra.
 
 A calibração e a estabilidade ao longo do tempo (objetivo e) mostraram previsões de vida útil pessimistas e superestimação do risco no segundo ano de teste, presente em todas as faixas de capacidade e de tempo em serviço.
 
@@ -830,9 +815,9 @@ A escolha do estimador quase não altera a ROC-AUC do modelo principal até 180 
 
 As estatísticas C de Harrell e de Uno do modelo principal, que comparam o escore de risco com o tempo até a falha, são 0,762 [0,739; 0,779] e 0,756 [0,733; 0,774]; os intervalos usam 50 reamostragens, por custo computacional. Com a probabilidade em 30 dias como escore, a estatística C de Harrell é de 0,771 no modelo principal, 0,777 no classificador de 30 dias e 0,782 no modelo com expoente 0,75. Nos discos de validação, a PR-AUC em 30 dias favorece o classificador (0,161 a 0,165 em suas cinco sementes, contra 0,154 a 0,156 no modelo de sobrevivência).
 
-A Tabela 12 detalha, por grupo de discos, a razão entre risco previsto e observado discutida na seção 4.5.
+A Tabela 11 detalha, por grupo de discos, a razão entre risco previsto e observado discutida na seção 4.5.
 
-**Tabela 12 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos**
+**Tabela 11 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos**
 
 | Grupo | Peso nos retratos de 2025 | Discos que falham em 2025 | Razão em 2024 | Razão em 2025 |
 |---|---|---|---|---|
@@ -857,15 +842,15 @@ O expoente dos pesos de treino pouco alterou a ordenação. Os modelos com expoe
 
 Por retrato, a validação favorece o expoente 0,5: em 30 dias, a ROC-AUC foi de 0,866 a 0,867 nas cinco sementes com 0,5, de 0,862 a 0,863 com 0,75 e de 0,860 com 1,0, e a PR-AUC, de 0,154 a 0,156, 0,150 a 0,154 e 0,145. No teste, a ordem se inverte: a ROC-AUC média em 30 dias foi de 0,873 com 0,5 e de 0,879 com 0,75 (de 0,876 a 0,880), e o modelo com 1,0 ficou em 0,877; na PR-AUC em 30 dias, o modelo principal superou o de expoente 1,0 por +0,0190 [0,0074; 0,0297], mas não o de 0,75 (+0,0063 [−0,0008; 0,0142]). Na validação, o modelo principal teve a menor ROC-AUC em 30 dias das cinco sementes com 0,5 (0,866, contra 0,867 nas outras quatro), o que indica que sua vantagem no teste não reflete melhor ajuste na validação.
 
-Por disco, a Tabela 13 compara as cinco sementes de cada expoente com a regra. No teste, o expoente 0,75 fica à frente do 0,5 em quase todas as contagens: as cinco sementes de 0,75 superam a regra, todas com intervalos acima de zero, em 10 das 14 linhas, contra 5 das 14 com 0,5, e nenhum intervalo das sementes de 0,75 fica abaixo de zero.
+Por disco, a Tabela 12 compara as cinco sementes de cada expoente com a regra. No teste, o expoente 0,75 fica à frente do 0,5 em quase todas as contagens: as cinco sementes de 0,75 superam a regra, todas com intervalos acima de zero, em 10 das 14 linhas, contra 5 das 14 com 0,5, e nenhum intervalo das sementes de 0,75 fica abaixo de zero.
 
 Nos discos de validação, as diferenças entre os expoentes são menores, mas também favorecem levemente o 0,75. Nas dez sementes, o modelo supera a regra por trimestre (de +6,1 a +11,3 pontos, contra +4,0 a +14,4 no teste, nos três pontos) e com o primeiro alerta de qualquer antecedência (de +3,7 a +8,1), sempre com intervalos acima de zero; no período inteiro, com os alertas dos 30 dias anteriores à falha, as diferenças vão de −2,7 a +1,1, e, no ponto de 5%, as cinco sementes com 0,5 ficam atrás da regra (de −1,6 a −1,0). A contagem anual não foi calculada na validação.
 
-No limiar zero, ainda na validação, a regra supera as dez sementes nos 30 dias anteriores à falha (de −4,1 a −1,7) e fica atrás delas com o primeiro alerta (de +1,2 a +2,0); no teste, os valores correspondentes estão na Tabela 13. No orçamento de 1% fixado na validação, os expoentes 0,75 e 1,0 alertaram a mesma proporção de discos que falham que o 0,5 (72%), com menos discos sem falha alertados (5,7% e 5,8%, contra 7,9%).
+No limiar zero, ainda na validação, a regra supera as dez sementes nos 30 dias anteriores à falha (de −4,1 a −1,7) e fica atrás delas com o primeiro alerta (de +1,2 a +2,0); no teste, os valores correspondentes estão na Tabela 12. No orçamento de 1% fixado na validação, os expoentes 0,75 e 1,0 alertaram a mesma proporção de discos que falham que o 0,5 (72%), com menos discos sem falha alertados (5,7% e 5,8%, contra 7,9%).
 
 O expoente 0,5 foi mantido no modelo principal por ter sido fixado antes do teste e por ser o que a validação escolhe por retrato. Para alertas por disco, a validação por disco indicaria o 0,75, por pequena margem, de modo que o expoente adequado depende do uso pretendido.
 
-**Tabela 13 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente**
+**Tabela 12 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente**
 
 | Contagem | Discos sem falha alertados | Modelo principal | Expoente 0,5: cinco sementes | Expoente 0,5: acima/abaixo de zero | Expoente 0,75: cinco sementes | Expoente 0,75: acima/abaixo de zero |
 |---|---|---|---|---|---|---|
@@ -884,6 +869,23 @@ O expoente 0,5 foi mantido no modelo principal por ter sido fixado antes do test
 | Período, qualquer antecedência | 5% | +3,4 [1,6; 7,5] | −0,3 a +3,4 | 2/0 | +4,0 a +4,4 | 5/0 |
 | Período, qualquer antecedência | 6,9% (limiar zero) | −1,7 [−2,8; −0,5] | −3,2 a −1,7 | 0/5 | +1,0 a +1,3 | 4/0 |
 
-Fonte: Elaborado pelo autor com base em Backblaze (2026). Diferença em pontos percentuais na proporção de discos que falham alertados, com a mesma proporção de discos sem falha alertados, como nas Tabelas 8 e 9; intervalos pareados no mesmo *bootstrap*. Período: os dois anos de teste, com os alertas dos 30 dias anteriores à falha ou com o primeiro alerta de qualquer antecedência. Acima/abaixo de zero: número de sementes cujo intervalo fica acima ou abaixo de zero.
+Fonte: Elaborado pelo autor com base em Backblaze (2026). Diferença em pontos percentuais na proporção de discos que falham alertados, com a mesma proporção de discos sem falha alertados, como nas Tabelas 7 e 8; intervalos pareados no mesmo *bootstrap*. Período: os dois anos de teste, com os alertas dos 30 dias anteriores à falha ou com o primeiro alerta de qualquer antecedência. Acima/abaixo de zero: número de sementes cujo intervalo fica acima ou abaixo de zero; um limite arredondado para 0,0 não conta.
+
+A Tabela 13 traz os alertas por disco com os limiares fixados na validação, resumidos na seção 4.3. A última coluna divide o número estimado de discos sem falha alertados na frota pelo número de discos que falham alertados.
+
+**Tabela 13 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente**
+
+| Orçamento | Modelo | Discos que falham alertados | Discos sem falha alertados | Razão entre discos sem falha e discos que falham alertados |
+|---|---|---|---|---|
+| 0,1% | SMART + contexto | 46,5% [44,4; 48,9] | 1,4% [1,2; 1,7] | 1,3 [1,0; 1,5] |
+| 0,1% | Regra | 31,5% [29,8; 33,7] | 0,8% [0,6; 0,9] | 1,0 [0,7; 1,2] |
+| 0,3% | SMART + contexto | 61,7% [59,6; 64,0] | 3,8% [3,4; 4,2] | 2,5 [2,2; 2,8] |
+| 0,3% | Regra | 40,9% [38,5; 43,1] | 1,4% [1,1; 1,6] | 1,4 [1,1; 1,6] |
+| 1% | SMART + contexto | 72,3% [70,1; 74,3] | 7,9% [7,3; 8,5] | 4,5 [4,1; 4,8] |
+| 1% | Classificador de 30 dias | 73,7% [71,6; 75,8] | 13,6% [12,9; 14,5] | 7,5 [7,1; 8,1] |
+| 1% | Regra | 52,7% [50,3; 54,9] | 2,4% [2,1; 2,8] | 1,9 [1,6; 2,2] |
+| 1% | Sem SMART | 7,7% [6,5; 9,1] | 10,4% [9,8; 11,2] | 55,1 [45,3; 65,5] |
+
+Fonte: Elaborado pelo autor com base em Backblaze (2026). Limiares da Tabela 6. A razão da última coluna usa as contagens de discos ponderadas para a população, e não as duas colunas de porcentagem. Valores no calendário semanal comum, que diferem dos calculados com todos os retratos diários anteriores à falha. No orçamento de 1%, as outras quatro sementes do classificador de 30 dias alertaram de 9,1% a 11,0% dos discos sem falha, e as outras quatro do modelo principal, de 8,1% a 8,7%. Discos que falham: os 1.766 com ao menos um retrato semanal nos 30 dias anteriores à falha. Discos sem falha: os 7.197 discos de teste que não falham no período (os 7.198 da Tabela 1, menos o disco sem retrato), ponderados para a população.
 
 Os pontos de operação da literatura usam outros rótulos, unidades e janelas e servem apenas como ordem de grandeza para os resultados da seção 4.3. Rincón C. *et al.* (2017) relatam que o preditor original da Backblaze identificava 60% das falhas com quatro a cinco falsos alarmes por previsão correta, ao passo que o modelo, no orçamento de 1%, alerta 72,3% dos discos que falham com 4,5 discos sem falha alertados para cada um deles, contados por disco em dois anos. Amram *et al.* (2021) relatam, para um único modelo de disco, sensibilidade de 52% com 12,6% de falsos alarmes por disco em 30 dias, em uma das configurações de sua tabela (cerca de 50% e 10% no resumo do artigo), enquanto o modelo, no orçamento de 0,3%, alerta 61,7% dos discos que falham e 3,8% dos discos sem falha em dois anos. Xu *et al.* (2018) obtiveram 36,50% de verdadeiros positivos a 0,1% de falsos positivos em um de seus conjuntos de dados, contra revocação por retrato de 30,6% deste modelo no limiar do orçamento de 0,1%, cuja taxa no teste foi de 0,21%.
