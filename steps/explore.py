@@ -4,6 +4,8 @@ stops the run.
 Reads the drive index and the snapshot table, never the raw panel, so it is cheap at
 every scale.
 - models.csv: per drive model, drives, failures, drive-years, annualized failure rate.
+- split_counts.csv: per split, drives with snapshots, drives whose failure falls inside the
+  split's window (a train drive that fails in 2024 is censored, not counted), snapshots.
 - feature_signal.csv: per feature, fill rate and univariate weighted ROC-AUC for
   "fails within the binary horizon" on train snapshots (how much a single SMART
   attribute separates failing from healthy drive-days). `auc` uses only the drive-days
@@ -71,6 +73,12 @@ def explore(ctx):
     con = connect(ctx.workdir, ctx.name)
     models = model_table(con, ctx.inputs["drives"], study["data"]["ssd_model_pattern"])
     models.to_csv(out / "models.csv", index=False)
+    con.sql(f"""
+        SELECT split, count(DISTINCT serial_number) AS drives,
+               count(DISTINCT serial_number) FILTER (WHERE event = 1) AS drives_failing_in_window,
+               count(*) AS snapshots
+        FROM read_parquet({q(ctx.inputs["snapshots"])})
+        GROUP BY split ORDER BY split""").df().to_csv(out / "split_counts.csv", index=False)
 
     features = schema["features"]
     meta, X = load_snapshots(ctx.inputs["snapshots"], ["train"], features)

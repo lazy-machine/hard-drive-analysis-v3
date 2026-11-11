@@ -728,6 +728,35 @@ def _alerting(metrics, ref, labels) -> list[str]:
               est(a.get("nonfailing_alerted_per_failing_alerted"),
                   a.get("nonfailing_alerted_per_failing_alerted_ci"), 1)]
              for a in per_drive])
+    weekly = metrics.get("weekly_alerts")
+    if weekly and weekly.get("budgets"):
+        shown_w = [b for b in weekly["budgets"] if b["model"] in shown]
+        lines += ["", f"**Per drive, one schedule.** Every drive judged only on its weekly "
+                  f"snapshots (every {weekly['stride_days']} days): a failing drive is caught if "
+                  f"one in its last {main['horizon']} days alerts "
+                  f"({weekly['failing_drives_checked']} of {weekly['failing_drives_total']} "
+                  "failing drives have one), a non-failing drive is a false alarm if any of its "
+                  "test-period ones alerts. Thresholds from validation, as above.", ""]
+        lines += table(["budget", "model", "failing drives caught", "non-failing drives alerted"],
+                       [[_pct(b["budget"], 1), _label(b["model"], labels),
+                         est(b["share_failing_drives_alerted"],
+                             b.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                         est(b["share_nonfailing_drives_alerted"],
+                             b.get("share_nonfailing_drives_alerted_ci"), 1, pct=True)]
+                        for b in _sorted(shown_w, "budget")])
+        matched = [m for m in weekly.get("matched", []) if m["model"] in shown]
+        if matched:
+            lines += ["", "At the same share of non-failing drives alerted (each model's threshold "
+                      "set on test for that share, a point on a drive-level ROC curve):", ""]
+            lines += table(["non-failing drives alerted", "model", "failing drives caught",
+                            "difference vs the rule (paired)"],
+                           [[_pct(m["nonfailing_share"], 2), _label(m["model"], labels),
+                             est(m["share_failing_drives_alerted"],
+                                 m.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                             est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                             if "difference" in m else "-"]
+                            for m in sorted(matched, key=lambda m: (m["target_nonfailing_share"],
+                                                                    _rank(m["model"])))])
     lines += ["", "![detection](detection.png)"]
     return lines
 

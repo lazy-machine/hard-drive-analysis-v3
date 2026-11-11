@@ -1692,6 +1692,57 @@
       "year": 2024
     },
     {
+      "drives": 3145,
+      "failing_drives": 417,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0007892079161567755,
+      "predicted": 0.0009065837123926992,
+      "ratio": 1.148726075642413,
+      "ratio_ci": [
+        0.9832282123415647,
+        1.3893995463346618
+      ],
+      "snapshots": 125511,
+      "split": "test",
+      "year": 2024
+    },
+    {
+      "drives": 3535,
+      "failing_drives": 754,
+      "group": "in service 2-4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0010966799262988047,
+      "predicted": 0.0010939353684635599,
+      "ratio": 0.997497393934703,
+      "ratio_ci": [
+        0.8582632107532694,
+        1.1405150037850358
+      ],
+      "snapshots": 154397,
+      "split": "test",
+      "year": 2024
+    },
+    {
+      "drives": 3222,
+      "failing_drives": 871,
+      "group": "in service >= 4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0023317250157984803,
+      "predicted": 0.003023382680317364,
+      "ratio": 1.2966291736086346,
+      "ratio_ci": [
+        1.1275421478899001,
+        1.4669587601926621
+      ],
+      "snapshots": 142293,
+      "split": "test",
+      "year": 2024
+    },
+    {
       "drives": 155,
       "failing_drives": 74,
       "group": "model MG08ACA16TEY",
@@ -1845,6 +1896,57 @@
       "year": 2025
     },
     {
+      "drives": 3257,
+      "failing_drives": 182,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0005468796625387462,
+      "predicted": 0.0016966019334771119,
+      "ratio": 3.1023313714045972,
+      "ratio_ci": [
+        2.3481903736933045,
+        3.9708882601654736
+      ],
+      "snapshots": 128472,
+      "split": "test",
+      "year": 2025
+    },
+    {
+      "drives": 3089,
+      "failing_drives": 273,
+      "group": "in service 2-4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.000943778589681088,
+      "predicted": 0.0016331288456329423,
+      "ratio": 1.7304152303187896,
+      "ratio_ci": [
+        1.403361522675869,
+        2.225467260731845
+      ],
+      "snapshots": 96770,
+      "split": "test",
+      "year": 2025
+    },
+    {
+      "drives": 3724,
+      "failing_drives": 519,
+      "group": "in service >= 4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0015088499832806024,
+      "predicted": 0.0030998552722997807,
+      "ratio": 2.0544489555946117,
+      "ratio_ci": [
+        1.783833201273455,
+        2.4285502561651526
+      ],
+      "snapshots": 177878,
+      "split": "test",
+      "year": 2025
+    },
+    {
       "drives": 140,
       "failing_drives": 58,
       "group": "model MG08ACA16TEY",
@@ -1981,6 +2083,23 @@
       "year": 2016
     },
     {
+      "drives": 1458,
+      "failing_drives": 708,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0016176343757071665,
+      "predicted": 0.0018283623533298754,
+      "ratio": 1.1302692257207918,
+      "ratio_ci": [
+        0.9445665473819972,
+        1.3732404059426575
+      ],
+      "snapshots": 70518,
+      "split": "val",
+      "year": 2016
+    },
+    {
       "drives": 1939,
       "failing_drives": 868,
       "group": "all",
@@ -2083,6 +2202,23 @@
       "year": 2017
     },
     {
+      "drives": 1939,
+      "failing_drives": 868,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0015449989129904251,
+      "predicted": 0.001616854009512695,
+      "ratio": 1.0465081858104293,
+      "ratio_ci": [
+        0.8630039088578867,
+        1.3035019492638198
+      ],
+      "snapshots": 85198,
+      "split": "val",
+      "year": 2017
+    },
+    {
       "drives": 2142,
       "failing_drives": 896,
       "group": "all",
@@ -2181,6 +2317,40 @@
         10.031475647269785
       ],
       "snapshots": 1176,
+      "split": "val",
+      "year": 2018
+    },
+    {
+      "drives": 1521,
+      "failing_drives": 631,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0011362642383616617,
+      "predicted": 0.0010214245209274133,
+      "ratio": 0.8989322082336838,
+      "ratio_ci": [
+        0.7493141564113763,
+        1.1644405930148054
+      ],
+      "snapshots": 60444,
+      "split": "val",
+      "year": 2018
+    },
+    {
+      "drives": 997,
+      "failing_drives": 426,
+      "group": "in service 2-4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.00163085966266463,
+      "predicted": 0.0016150105128403445,
+      "ratio": 0.9902817206243303,
+      "ratio_ci": [
+        0.7989066555683356,
+        1.2105481103202944
+      ],
+      "snapshots": 41824,
       "split": "val",
       "year": 2018
     },
@@ -2304,6 +2474,40 @@
       "year": 2019
     },
     {
+      "drives": 1674,
+      "failing_drives": 588,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0018921498973674122,
+      "predicted": 0.0018290628076531945,
+      "ratio": 0.9666585137879445,
+      "ratio_ci": [
+        0.7324394418074666,
+        1.2748662253186374
+      ],
+      "snapshots": 61065,
+      "split": "val",
+      "year": 2019
+    },
+    {
+      "drives": 1312,
+      "failing_drives": 535,
+      "group": "in service 2-4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0013791312758312246,
+      "predicted": 0.0011301495926777918,
+      "ratio": 0.819464841732802,
+      "ratio_ci": [
+        0.6409766198596227,
+        1.1000642186790492
+      ],
+      "snapshots": 55036,
+      "split": "val",
+      "year": 2019
+    },
+    {
       "drives": 3002,
       "failing_drives": 917,
       "group": "all",
@@ -2419,6 +2623,57 @@
         null
       ],
       "snapshots": 890,
+      "split": "val",
+      "year": 2020
+    },
+    {
+      "drives": 1823,
+      "failing_drives": 461,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0006871531700818334,
+      "predicted": 0.000924226084293907,
+      "ratio": 1.3450073790445303,
+      "ratio_ci": [
+        1.0558285879316531,
+        1.885624504638697
+      ],
+      "snapshots": 63299,
+      "split": "val",
+      "year": 2020
+    },
+    {
+      "drives": 1210,
+      "failing_drives": 366,
+      "group": "in service 2-4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0008118827675700491,
+      "predicted": 0.0013676667608362339,
+      "ratio": 1.6845618794566075,
+      "ratio_ci": [
+        1.1619236697759951,
+        2.4527845204516097
+      ],
+      "snapshots": 46776,
+      "split": "val",
+      "year": 2020
+    },
+    {
+      "drives": 621,
+      "failing_drives": 271,
+      "group": "in service >= 4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0012778505186313849,
+      "predicted": 0.0013439458853322258,
+      "ratio": 1.0517238642056748,
+      "ratio_ci": [
+        0.805247177116742,
+        1.4766333056269512
+      ],
+      "snapshots": 26937,
       "split": "val",
       "year": 2020
     },
@@ -2576,6 +2831,57 @@
       "year": 2021
     },
     {
+      "drives": 2281,
+      "failing_drives": 486,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.000677153204605152,
+      "predicted": 0.0007141889480731092,
+      "ratio": 1.0546933001514076,
+      "ratio_ci": [
+        0.8807111006725542,
+        1.3262069305566693
+      ],
+      "snapshots": 91739,
+      "split": "val",
+      "year": 2021
+    },
+    {
+      "drives": 1248,
+      "failing_drives": 333,
+      "group": "in service 2-4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0011962388655614165,
+      "predicted": 0.0013509590695408016,
+      "ratio": 1.129338887435974,
+      "ratio_ci": [
+        0.7901368017694663,
+        1.5431322256507247
+      ],
+      "snapshots": 31123,
+      "split": "val",
+      "year": 2021
+    },
+    {
+      "drives": 997,
+      "failing_drives": 355,
+      "group": "in service >= 4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0011413202308231396,
+      "predicted": 0.0014079158871164086,
+      "ratio": 1.2335853243405628,
+      "ratio_ci": [
+        0.9648901328439833,
+        1.6002948503684213
+      ],
+      "snapshots": 46292,
+      "split": "val",
+      "year": 2021
+    },
+    {
       "drives": 49,
       "failing_drives": 5,
       "group": "model MG08ACA16TEY",
@@ -2729,6 +3035,57 @@
       "year": 2022
     },
     {
+      "drives": 2068,
+      "failing_drives": 295,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0006239865479860107,
+      "predicted": 0.000805190383006438,
+      "ratio": 1.2903970215468326,
+      "ratio_ci": [
+        1.032730164770665,
+        1.6022705945046738
+      ],
+      "snapshots": 82408,
+      "split": "val",
+      "year": 2022
+    },
+    {
+      "drives": 1362,
+      "failing_drives": 290,
+      "group": "in service 2-4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0012710434037785934,
+      "predicted": 0.001333846409784555,
+      "ratio": 1.0494105911877274,
+      "ratio_ci": [
+        0.8609514689566692,
+        1.2733484425539845
+      ],
+      "snapshots": 51721,
+      "split": "val",
+      "year": 2022
+    },
+    {
+      "drives": 1034,
+      "failing_drives": 318,
+      "group": "in service >= 4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0017647306913870509,
+      "predicted": 0.002053367830035445,
+      "ratio": 1.163558745851204,
+      "ratio_ci": [
+        0.9728870917236841,
+        1.3827874975278627
+      ],
+      "snapshots": 57694,
+      "split": "val",
+      "year": 2022
+    },
+    {
       "drives": 101,
       "failing_drives": 7,
       "group": "model MG08ACA16TEY",
@@ -2878,6 +3235,57 @@
         2.0195569139289735
       ],
       "snapshots": 17309,
+      "split": "val",
+      "year": 2023
+    },
+    {
+      "drives": 1812,
+      "failing_drives": 103,
+      "group": "in service < 2 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.000583758375155008,
+      "predicted": 0.0005777197621195603,
+      "ratio": 0.989655629293808,
+      "ratio_ci": [
+        0.7921196035788982,
+        1.318357975974536
+      ],
+      "snapshots": 54190,
+      "split": "val",
+      "year": 2023
+    },
+    {
+      "drives": 2007,
+      "failing_drives": 239,
+      "group": "in service 2-4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0018025474402743047,
+      "predicted": 0.001441742893135523,
+      "ratio": 0.7998363099481721,
+      "ratio_ci": [
+        0.7020501641018242,
+        0.9498402565442836
+      ],
+      "snapshots": 88128,
+      "split": "val",
+      "year": 2023
+    },
+    {
+      "drives": 1310,
+      "failing_drives": 224,
+      "group": "in service >= 4 years",
+      "horizon": 30,
+      "model": "hazard_smart",
+      "observed_km": 0.0027665389792578265,
+      "predicted": 0.0024511282006977413,
+      "ratio": 0.8859908423756604,
+      "ratio_ci": [
+        0.7309128385970974,
+        1.0462872476000429
+      ],
+      "snapshots": 63037,
       "split": "val",
       "year": 2023
     },
@@ -6876,6 +7284,24 @@
       "year": 2024
     },
     {
+      "group": "in service < 2 years",
+      "split": "test",
+      "weight_share": 0.3410341226834919,
+      "year": 2024
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "test",
+      "weight_share": 0.37956104025395115,
+      "year": 2024
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "test",
+      "weight_share": 0.2794048370625569,
+      "year": 2024
+    },
+    {
       "group": "model MG08ACA16TEY",
       "split": "test",
       "weight_share": 0.015483464819437468,
@@ -6921,6 +7347,24 @@
       "group": "vendor WDC",
       "split": "test",
       "weight_share": 0.23445402733733148,
+      "year": 2025
+    },
+    {
+      "group": "in service < 2 years",
+      "split": "test",
+      "weight_share": 0.3484445639997228,
+      "year": 2025
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "test",
+      "weight_share": 0.24323657631583548,
+      "year": 2025
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "test",
+      "weight_share": 0.4083188596844417,
       "year": 2025
     },
     {
@@ -6972,6 +7416,24 @@
       "year": 2016
     },
     {
+      "group": "in service < 2 years",
+      "split": "val",
+      "weight_share": 1.0,
+      "year": 2016
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "val",
+      "weight_share": 0.0,
+      "year": 2016
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "val",
+      "weight_share": 0.0,
+      "year": 2016
+    },
+    {
       "group": "capacity >= 16 TB",
       "split": "val",
       "weight_share": 0.0,
@@ -7005,6 +7467,24 @@
       "group": "vendor WDC",
       "split": "val",
       "weight_share": 0.022697816622910504,
+      "year": 2017
+    },
+    {
+      "group": "in service < 2 years",
+      "split": "val",
+      "weight_share": 1.0,
+      "year": 2017
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "val",
+      "weight_share": 0.0,
+      "year": 2017
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "val",
+      "weight_share": 0.0,
       "year": 2017
     },
     {
@@ -7044,6 +7524,24 @@
       "year": 2018
     },
     {
+      "group": "in service < 2 years",
+      "split": "val",
+      "weight_share": 0.5848059685525723,
+      "year": 2018
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "val",
+      "weight_share": 0.4151940314474278,
+      "year": 2018
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "val",
+      "weight_share": 0.0,
+      "year": 2018
+    },
+    {
       "group": "capacity >= 16 TB",
       "split": "val",
       "weight_share": 2.1492627133367125e-05,
@@ -7080,6 +7578,24 @@
       "year": 2019
     },
     {
+      "group": "in service < 2 years",
+      "split": "val",
+      "weight_share": 0.5336972410375105,
+      "year": 2019
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "val",
+      "weight_share": 0.46630275896248946,
+      "year": 2019
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "val",
+      "weight_share": 0.0,
+      "year": 2019
+    },
+    {
       "group": "capacity >= 16 TB",
       "split": "val",
       "weight_share": 0.0006583176514017873,
@@ -7113,6 +7629,24 @@
       "group": "vendor WDC",
       "split": "val",
       "weight_share": 0.008434229302742017,
+      "year": 2020
+    },
+    {
+      "group": "in service < 2 years",
+      "split": "val",
+      "weight_share": 0.45748312889479287,
+      "year": 2020
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "val",
+      "weight_share": 0.36194453467940146,
+      "year": 2020
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "val",
+      "weight_share": 0.18057233642580567,
       "year": 2020
     },
     {
@@ -7164,6 +7698,24 @@
       "year": 2021
     },
     {
+      "group": "in service < 2 years",
+      "split": "val",
+      "weight_share": 0.5703129453166628,
+      "year": 2021
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "val",
+      "weight_share": 0.16097399660475087,
+      "year": 2021
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "val",
+      "weight_share": 0.26871305807858636,
+      "year": 2021
+    },
+    {
       "group": "model MG08ACA16TEY",
       "split": "val",
       "weight_share": 0.010307028413526475,
@@ -7212,6 +7764,24 @@
       "year": 2022
     },
     {
+      "group": "in service < 2 years",
+      "split": "val",
+      "weight_share": 0.49668457878687033,
+      "year": 2022
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "val",
+      "weight_share": 0.22759276600687506,
+      "year": 2022
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "val",
+      "weight_share": 0.2757226552062546,
+      "year": 2022
+    },
+    {
       "group": "model MG08ACA16TEY",
       "split": "val",
       "weight_share": 0.017285868893314765,
@@ -7257,6 +7827,24 @@
       "group": "vendor WDC",
       "split": "val",
       "weight_share": 0.11177126207498567,
+      "year": 2023
+    },
+    {
+      "group": "in service < 2 years",
+      "split": "val",
+      "weight_share": 0.32611883992685947,
+      "year": 2023
+    },
+    {
+      "group": "in service 2-4 years",
+      "split": "val",
+      "weight_share": 0.40508617742796116,
+      "year": 2023
+    },
+    {
+      "group": "in service >= 4 years",
+      "split": "val",
+      "weight_share": 0.26879498264517937,
       "year": 2023
     },
     {
@@ -19043,5 +19631,897 @@
     "failing_drives": 1784,
     "silent_failing_drives": 368,
     "snapshots": 825321
+  },
+  "weekly_alerts": {
+    "budgets": [
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 921,
+        "model": "binary_30d",
+        "nonfailing_alerted_per_failing_alerted": 1.6612377850162867,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.394176577734919,
+          1.9143936743404941
+        ],
+        "share_failing_drives_alerted": 0.5215175537938845,
+        "share_failing_drives_alerted_ci": [
+          0.4994254291214837,
+          0.5479980009182386
+        ],
+        "share_nonfailing_drives_alerted": 0.0212588578574406,
+        "share_nonfailing_drives_alerted_ci": [
+          0.017785188272891484,
+          0.024326108100597474
+        ],
+        "threshold": 0.11585722543450372
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1119,
+        "model": "binary_30d",
+        "nonfailing_alerted_per_failing_alerted": 2.6630920464700627,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.342230775620346,
+          2.931013413674959
+        ],
+        "share_failing_drives_alerted": 0.6336353340883352,
+        "share_failing_drives_alerted_ci": [
+          0.6122978655005893,
+          0.6566871425943885
+        ],
+        "share_nonfailing_drives_alerted": 0.041406141447825486,
+        "share_nonfailing_drives_alerted_ci": [
+          0.03708837015423093,
+          0.04543907183548701
+        ],
+        "threshold": 0.05004115121063189
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1301,
+        "model": "binary_30d",
+        "nonfailing_alerted_per_failing_alerted": 7.54803996925442,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          7.102983805117039,
+          8.094268845419847
+        ],
+        "share_failing_drives_alerted": 0.7366930917327293,
+        "share_failing_drives_alerted_ci": [
+          0.7162273498852085,
+          0.7579225826944365
+        ],
+        "share_nonfailing_drives_alerted": 0.13644574128108936,
+        "share_nonfailing_drives_alerted_ci": [
+          0.1287967208559122,
+          0.14534180908711963
+        ],
+        "threshold": 0.011577825452007369
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 494,
+        "model": "hazard_nocritical",
+        "nonfailing_alerted_per_failing_alerted": 2.6315789473684212,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.2257140112704916,
+          3.1505197322057787
+        ],
+        "share_failing_drives_alerted": 0.2797281993204983,
+        "share_failing_drives_alerted_ci": [
+          0.2611608109532341,
+          0.2997223891684907
+        ],
+        "share_nonfailing_drives_alerted": 0.018063081839655413,
+        "share_nonfailing_drives_alerted_ci": [
+          0.015558566069195498,
+          0.021130332082812286
+        ],
+        "threshold": 0.0404257175150019
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 649,
+        "model": "hazard_nocritical",
+        "nonfailing_alerted_per_failing_alerted": 4.9306625577812015,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          4.343793443065888,
+          5.5311654655460805
+        ],
+        "share_failing_drives_alerted": 0.3674971687429219,
+        "share_failing_drives_alerted_ci": [
+          0.3429237288135593,
+          0.3891433701840648
+        ],
+        "share_nonfailing_drives_alerted": 0.04446297068222871,
+        "share_nonfailing_drives_alerted_ci": [
+          0.040839933305543974,
+          0.048499374739474785
+        ],
+        "threshold": 0.018652125751017157
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 811,
+        "model": "hazard_nocritical",
+        "nonfailing_alerted_per_failing_alerted": 9.950678175092479,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          9.21862523034398,
+          10.875923629473792
+        ],
+        "share_failing_drives_alerted": 0.4592298980747452,
+        "share_failing_drives_alerted_ci": [
+          0.43624365725686554,
+          0.48167020743021827
+        ],
+        "share_nonfailing_drives_alerted": 0.11213005418924551,
+        "share_nonfailing_drives_alerted_ci": [
+          0.10544671390857302,
+          0.11921981381131026
+        ],
+        "threshold": 0.008355390867005319
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 6,
+        "model": "hazard_nosmart",
+        "nonfailing_alerted_per_failing_alerted": 35.0,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          19.07070707070707,
+          111.99999999999989
+        ],
+        "share_failing_drives_alerted": 0.0033975084937712344,
+        "share_failing_drives_alerted_ci": [
+          0.0005671668782366765,
+          0.006256228965724107
+        ],
+        "share_nonfailing_drives_alerted": 0.0029178824510212586,
+        "share_nonfailing_drives_alerted_ci": [
+          0.001945254967347506,
+          0.004171877171043491
+        ],
+        "threshold": 0.01243516681540724
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 35,
+        "model": "hazard_nosmart",
+        "nonfailing_alerted_per_failing_alerted": 13.428571428571429,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          8.857323232323232,
+          20.01
+        ],
+        "share_failing_drives_alerted": 0.019818799546998868,
+        "share_failing_drives_alerted_ci": [
+          0.014131481040428997,
+          0.02667097555524703
+        ],
+        "share_nonfailing_drives_alerted": 0.006530498818952341,
+        "share_nonfailing_drives_alerted_ci": [
+          0.004859663748784216,
+          0.008343754342086982
+        ],
+        "threshold": 0.007924588551947553
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 136,
+        "model": "hazard_nosmart",
+        "nonfailing_alerted_per_failing_alerted": 55.14705882352941,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          45.281967492611955,
+          65.52361928791703
+        ],
+        "share_failing_drives_alerted": 0.07701019252548132,
+        "share_failing_drives_alerted_ci": [
+          0.06503974898865973,
+          0.09092579269232746
+        ],
+        "share_nonfailing_drives_alerted": 0.10421008753647353,
+        "share_nonfailing_drives_alerted_ci": [
+          0.09753022092538557,
+          0.11199110740586356
+        ],
+        "threshold": 0.004540940646526437
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 821,
+        "model": "hazard_smart",
+        "nonfailing_alerted_per_failing_alerted": 1.266747868453106,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.010158699736705,
+          1.5415942284274458
+        ],
+        "share_failing_drives_alerted": 0.46489241223103056,
+        "share_failing_drives_alerted_ci": [
+          0.4435053885422575,
+          0.4892839481815899
+        ],
+        "share_nonfailing_drives_alerted": 0.014450465471724329,
+        "share_nonfailing_drives_alerted_ci": [
+          0.011800055578713354,
+          0.017378768931499238
+        ],
+        "threshold": 0.10816811172263185
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1089,
+        "model": "hazard_smart",
+        "nonfailing_alerted_per_failing_alerted": 2.5160697887970613,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.22281104028805,
+          2.7924096280848105
+        ],
+        "share_failing_drives_alerted": 0.616647791619479,
+        "share_failing_drives_alerted_ci": [
+          0.5959083032639477,
+          0.639922573361408
+        ],
+        "share_nonfailing_drives_alerted": 0.03807141864665833,
+        "share_nonfailing_drives_alerted_ci": [
+          0.03389954147561484,
+          0.04182298179797138
+        ],
+        "threshold": 0.04728152744596559
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1277,
+        "model": "hazard_smart",
+        "nonfailing_alerted_per_failing_alerted": 4.455755677368833,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          4.117601635248693,
+          4.807066121235946
+        ],
+        "share_failing_drives_alerted": 0.7231030577576444,
+        "share_failing_drives_alerted_ci": [
+          0.7008888742271634,
+          0.7431392055939927
+        ],
+        "share_nonfailing_drives_alerted": 0.07906071974433791,
+        "share_nonfailing_drives_alerted_ci": [
+          0.07348895373072113,
+          0.08489648464638043
+        ],
+        "threshold": 0.012245518636480046
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 820,
+        "model": "hazard_smart_recent",
+        "nonfailing_alerted_per_failing_alerted": 1.2682926829268293,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.0114508475430464,
+          1.543449505406027
+        ],
+        "share_failing_drives_alerted": 0.464326160815402,
+        "share_failing_drives_alerted_ci": [
+          0.4429381735677822,
+          0.48867529196537923
+        ],
+        "share_nonfailing_drives_alerted": 0.014450465471724329,
+        "share_nonfailing_drives_alerted_ci": [
+          0.011800055578713354,
+          0.017378768931499238
+        ],
+        "threshold": 0.13432987532246554
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1088,
+        "model": "hazard_smart_recent",
+        "nonfailing_alerted_per_failing_alerted": 2.5183823529411766,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.2229114535941763,
+          2.7974531328696437
+        ],
+        "share_failing_drives_alerted": 0.6160815402038505,
+        "share_failing_drives_alerted_ci": [
+          0.5953461975028377,
+          0.6392990085958822
+        ],
+        "share_nonfailing_drives_alerted": 0.03807141864665833,
+        "share_nonfailing_drives_alerted_ci": [
+          0.03389954147561484,
+          0.04182298179797138
+        ],
+        "threshold": 0.05887095671329157
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1276,
+        "model": "hazard_smart_recent",
+        "nonfailing_alerted_per_failing_alerted": 4.45141065830721,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          4.11110980706544,
+          4.802965237448917
+        ],
+        "share_failing_drives_alerted": 0.7225368063420159,
+        "share_failing_drives_alerted_ci": [
+          0.6997742343376473,
+          0.7420239844798787
+        ],
+        "share_nonfailing_drives_alerted": 0.07892177296095595,
+        "share_nonfailing_drives_alerted_ci": [
+          0.07321800750312629,
+          0.0846185910796165
+        ],
+        "threshold": 0.015132591304969023
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 819,
+        "model": "hazard_smart_w075",
+        "nonfailing_alerted_per_failing_alerted": 1.2454212454212454,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          0.9981933169220484,
+          1.5043962103984783
+        ],
+        "share_failing_drives_alerted": 0.4637599093997735,
+        "share_failing_drives_alerted_ci": [
+          0.44121741679031345,
+          0.48592673949369897
+        ],
+        "share_nonfailing_drives_alerted": 0.0141725719049604,
+        "share_nonfailing_drives_alerted_ci": [
+          0.011383215228567459,
+          0.016951507572599694
+        ],
+        "threshold": 0.11271976258644567
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1072,
+        "model": "hazard_smart_w075",
+        "nonfailing_alerted_per_failing_alerted": 2.2574626865671643,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.0236278571644055,
+          2.5349520111382633
+        ],
+        "share_failing_drives_alerted": 0.6070215175537939,
+        "share_failing_drives_alerted_ci": [
+          0.5854003221606463,
+          0.6309715792427083
+        ],
+        "share_nonfailing_drives_alerted": 0.03362512157843546,
+        "share_nonfailing_drives_alerted_ci": [
+          0.03014450465471724,
+          0.03751910518271502
+        ],
+        "threshold": 0.04838697078402365
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1276,
+        "model": "hazard_smart_w075",
+        "nonfailing_alerted_per_failing_alerted": 3.1818181818181817,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.8937986915293807,
+          3.491040856529026
+        ],
+        "share_failing_drives_alerted": 0.7225368063420159,
+        "share_failing_drives_alerted_ci": [
+          0.6992098201817655,
+          0.7432348618178571
+        ],
+        "share_nonfailing_drives_alerted": 0.05641239405307767,
+        "share_nonfailing_drives_alerted_ci": [
+          0.051125468945393916,
+          0.06086216479088509
+        ],
+        "threshold": 0.012200577400028778
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 759,
+        "model": "hazard_smart_w100",
+        "nonfailing_alerted_per_failing_alerted": 1.251646903820817,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.0206452348381212,
+          1.5458092654438822
+        ],
+        "share_failing_drives_alerted": 0.4297848244620612,
+        "share_failing_drives_alerted_ci": [
+          0.4076957809449007,
+          0.45300887159263736
+        ],
+        "share_nonfailing_drives_alerted": 0.013199944421286648,
+        "share_nonfailing_drives_alerted_ci": [
+          0.010837849103793247,
+          0.016121300541892456
+        ],
+        "threshold": 0.11346775505604412
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1085,
+        "model": "hazard_smart_w100",
+        "nonfailing_alerted_per_failing_alerted": 2.313364055299539,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.004864110598398,
+          2.602252631363743
+        ],
+        "share_failing_drives_alerted": 0.6143827859569649,
+        "share_failing_drives_alerted_ci": [
+          0.594283395198573,
+          0.6361723163841808
+        ],
+        "share_nonfailing_drives_alerted": 0.03487564262887314,
+        "share_nonfailing_drives_alerted_ci": [
+          0.03042934556065027,
+          0.03891899402528832
+        ],
+        "threshold": 0.043223762392036846
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1274,
+        "model": "hazard_smart_w100",
+        "nonfailing_alerted_per_failing_alerted": 3.1397174254317113,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.864746756183254,
+          3.4305411274008235
+        ],
+        "share_failing_drives_alerted": 0.7214043035107588,
+        "share_failing_drives_alerted_ci": [
+          0.7003795203851427,
+          0.7425106083902562
+        ],
+        "share_nonfailing_drives_alerted": 0.055578713352785886,
+        "share_nonfailing_drives_alerted_ci": [
+          0.05070515492566347,
+          0.05989301097679589
+        ],
+        "threshold": 0.011852395954242145
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 35,
+        "model": "hazard_usage",
+        "nonfailing_alerted_per_failing_alerted": 28.0,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          18.887596899224807,
+          42.31481481481482
+        ],
+        "share_failing_drives_alerted": 0.019818799546998868,
+        "share_failing_drives_alerted_ci": [
+          0.013531381326044338,
+          0.026078579158936303
+        ],
+        "share_nonfailing_drives_alerted": 0.013616784771432541,
+        "share_nonfailing_drives_alerted_ci": [
+          0.011254689453939141,
+          0.01597888008892594
+        ],
+        "threshold": 0.012758613599395563
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 77,
+        "model": "hazard_usage",
+        "nonfailing_alerted_per_failing_alerted": 20.0,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          15.36277527823822,
+          27.053278688524593
+        ],
+        "share_failing_drives_alerted": 0.04360135900339751,
+        "share_failing_drives_alerted_ci": [
+          0.03342587239793933,
+          0.054401992451041464
+        ],
+        "share_nonfailing_drives_alerted": 0.021397804640822565,
+        "share_nonfailing_drives_alerted_ci": [
+          0.01834097540641934,
+          0.02460052799777685
+        ],
+        "threshold": 0.009264966896543547
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 188,
+        "model": "hazard_usage",
+        "nonfailing_alerted_per_failing_alerted": 41.59574468085106,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          36.29521437198067,
+          47.71107115615125
+        ],
+        "share_failing_drives_alerted": 0.10645526613816535,
+        "share_failing_drives_alerted_ci": [
+          0.09268711964733992,
+          0.11986096431111627
+        ],
+        "share_nonfailing_drives_alerted": 0.1086563846046964,
+        "share_nonfailing_drives_alerted_ci": [
+          0.10170557176601362,
+          0.11560719744337918
+        ],
+        "threshold": 0.005958698266281259
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 557,
+        "model": "rule_counters",
+        "nonfailing_alerted_per_failing_alerted": 0.9874326750448833,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          0.7198625195934072,
+          1.2344006166550847
+        ],
+        "share_failing_drives_alerted": 0.31540203850509624,
+        "share_failing_drives_alerted_ci": [
+          0.2976190476190476,
+          0.33711216914628667
+        ],
+        "share_nonfailing_drives_alerted": 0.007642073086008059,
+        "share_nonfailing_drives_alerted_ci": [
+          0.005696818118660553,
+          0.00945185493955815
+        ],
+        "threshold": 10.434703826904297
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 722,
+        "model": "rule_counters",
+        "nonfailing_alerted_per_failing_alerted": 1.3850415512465375,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.0693841199270406,
+          1.6231611377640345
+        ],
+        "share_failing_drives_alerted": 0.4088335220838052,
+        "share_failing_drives_alerted_ci": [
+          0.38531167771643793,
+          0.4306373937677054
+        ],
+        "share_nonfailing_drives_alerted": 0.013894678338196471,
+        "share_nonfailing_drives_alerted_ci": [
+          0.010837849103793247,
+          0.016395720439071837
+        ],
+        "threshold": 7.487173557281494
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 930,
+        "model": "rule_counters",
+        "nonfailing_alerted_per_failing_alerted": 1.89247311827957,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.5808338158656632,
+          2.1753726306516237
+        ],
+        "share_failing_drives_alerted": 0.5266138165345413,
+        "share_failing_drives_alerted_ci": [
+          0.5025028441227579,
+          0.5486412782659414
+        ],
+        "share_nonfailing_drives_alerted": 0.024454633875225788,
+        "share_nonfailing_drives_alerted_ci": [
+          0.020696123384743643,
+          0.027792830345977494
+        ],
+        "threshold": 4.532599449157715
+      }
+    ],
+    "failing_drives_checked": 1766,
+    "failing_drives_total": 1784,
+    "matched": [
+      {
+        "model": "binary_30d",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.3408833522083805,
+        "share_failing_drives_alerted_ci": [
+          0.30015969154544453,
+          0.40723253354116795
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "model": "hazard_nocritical",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.21574178935447338,
+        "share_failing_drives_alerted_ci": [
+          0.1789121745338377,
+          0.23504823398285868
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "model": "hazard_nosmart",
+        "nonfailing_share": 0.0068083923857162705,
+        "share_failing_drives_alerted": 0.021517553793884484,
+        "share_failing_drives_alerted_ci": [
+          0.01521536279486414,
+          0.02890768299498605
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "difference": 0.026613816534541368,
+        "difference_ci": [
+          -0.0172368307205209,
+          0.07517934614366538
+        ],
+        "model": "hazard_smart",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.3708946772366931,
+        "share_failing_drives_alerted_ci": [
+          0.32725690010671343,
+          0.435527980806301
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "model": "hazard_smart_recent",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.37315968289920726,
+        "share_failing_drives_alerted_ci": [
+          0.32725690010671343,
+          0.43208639186900055
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "model": "hazard_smart_w075",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.3873159682899207,
+        "share_failing_drives_alerted_ci": [
+          0.3406262515449694,
+          0.4376417233560091
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "model": "hazard_smart_w100",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.3929784824462061,
+        "share_failing_drives_alerted_ci": [
+          0.31798747334583105,
+          0.4286563525730848
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "model": "hazard_usage",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.009060022650056626,
+        "share_failing_drives_alerted_ci": [
+          0.0039311156473921015,
+          0.015921199701937408
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "model": "rule_counters",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.34428086070215175,
+        "share_failing_drives_alerted_ci": [
+          0.31076177642900266,
+          0.3927672099924489
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "model": "binary_30d",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.5622876557191393,
+        "share_failing_drives_alerted_ci": [
+          0.5251760443772191,
+          0.589640974967062
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "model": "hazard_nocritical",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.31087202718006796,
+        "share_failing_drives_alerted_ci": [
+          0.2842747551470908,
+          0.3329788159355253
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "model": "hazard_nosmart",
+        "nonfailing_share": 0.02306516604140614,
+        "share_failing_drives_alerted": 0.03227633069082673,
+        "share_failing_drives_alerted_ci": [
+          0.01808640122715753,
+          0.04260908961923435
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "difference": 0.021517553793884536,
+        "difference_ci": [
+          -0.007937301836039043,
+          0.058224985867721846
+        ],
+        "model": "hazard_smart",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.5526613816534541,
+        "share_failing_drives_alerted_ci": [
+          0.5254457746596092,
+          0.5870222505560242
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "model": "hazard_smart_recent",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.5532276330690826,
+        "share_failing_drives_alerted_ci": [
+          0.5244963999545964,
+          0.5871536710154581
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "model": "hazard_smart_w075",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.5702151755379389,
+        "share_failing_drives_alerted_ci": [
+          0.547676867432793,
+          0.606861298159697
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "model": "hazard_smart_w100",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.5639864099660249,
+        "share_failing_drives_alerted_ci": [
+          0.5349887133182845,
+          0.5936030969071217
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "model": "hazard_usage",
+        "nonfailing_share": 0.024732527441989716,
+        "share_failing_drives_alerted": 0.05605889014722537,
+        "share_failing_drives_alerted_ci": [
+          0.040791470652327175,
+          0.06896551724137931
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "model": "rule_counters",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.5311438278595696,
+        "share_failing_drives_alerted_ci": [
+          0.4849846860398642,
+          0.5612225129379174
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "model": "binary_30d",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.6625141562853907,
+        "share_failing_drives_alerted_ci": [
+          0.6387292159991763,
+          0.6896313580895966
+        ],
+        "target_nonfailing_share": 0.05
+      },
+      {
+        "model": "hazard_nocritical",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.3793884484711212,
+        "share_failing_drives_alerted_ci": [
+          0.3563216547242126,
+          0.4054551213043638
+        ],
+        "target_nonfailing_share": 0.05
+      },
+      {
+        "model": "hazard_nosmart",
+        "nonfailing_share": 0.026677782409337224,
+        "share_failing_drives_alerted": 0.03397508493771234,
+        "share_failing_drives_alerted_ci": [
+          0.02490084985835694,
+          0.04432667724446272
+        ],
+        "target_nonfailing_share": 0.05
+      },
+      {
+        "difference": -0.014722536806342057,
+        "difference_ci": [
+          -0.03566524353554826,
+          0.025976380399875612
+        ],
+        "model": "hazard_smart",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.6693091732729332,
+        "share_failing_drives_alerted_ci": [
+          0.647647394191428,
+          0.6904661016949153
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "model": "hazard_smart_recent",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.6698754246885618,
+        "share_failing_drives_alerted_ci": [
+          0.6478196005834681,
+          0.6915677966101694
+        ],
+        "target_nonfailing_share": 0.05
+      },
+      {
+        "model": "hazard_smart_w075",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.6902604756511891,
+        "share_failing_drives_alerted_ci": [
+          0.6602304784183907,
+          0.7134343060035923
+        ],
+        "target_nonfailing_share": 0.05
+      },
+      {
+        "model": "hazard_smart_w100",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.6862967157417894,
+        "share_failing_drives_alerted_ci": [
+          0.6549534508027447,
+          0.716014459143341
+        ],
+        "target_nonfailing_share": 0.05
+      },
+      {
+        "model": "hazard_usage",
+        "nonfailing_share": 0.049604001667361404,
+        "share_failing_drives_alerted": 0.07361268403171008,
+        "share_failing_drives_alerted_ci": [
+          0.06087296517848303,
+          0.08762012436404748
+        ],
+        "target_nonfailing_share": 0.05
+      },
+      {
+        "model": "rule_counters",
+        "nonfailing_share": 0.04974294845074337,
+        "share_failing_drives_alerted": 0.6840317100792752,
+        "share_failing_drives_alerted_ci": [
+          0.6345559023836549,
+          0.7074936584803413
+        ],
+        "target_nonfailing_share": 0.05
+      }
+    ],
+    "nonfailing_drives": 7197,
+    "stride_days": 7
   }
 }

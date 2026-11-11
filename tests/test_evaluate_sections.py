@@ -4,8 +4,10 @@ alerts, calibration by group and seed replicates, on small hand-made test sets."
 import numpy as np
 import pandas as pd
 
+from common import stable_unit
 from evaluate import (
-    Drives, _groups, alerting, full_follow_up, seed_spread, split_seeds,
+    Drives, _groups, alerting, full_follow_up, on_stride, seed_spread, split_seeds,
+    weekly_alerts,
 )
 
 END = pd.Timestamp("2025-12-31")
@@ -106,3 +108,36 @@ def test_seed_spread_pairs_replicates():
     assert diffs == {0: 0.0, 1: -0.5}
     fam = {r["family"]: r for r in out["summary"]}
     assert fam["hazard_smart"]["replicates"] == 2
+
+
+def test_on_stride_follows_the_drive_offset():
+    serial = "Z1"
+    off = int(stable_unit(serial, "stride") * 7)
+    days = pd.date_range("2025-01-01", periods=21)
+    frame = pd.DataFrame({"serial_number": serial, "date": days})
+    hit = on_stride(frame, 7)
+    assert hit.sum() == 3
+    first = days[hit][0]
+    assert ((first - pd.Timestamp("2000-01-01")).days + off) % 7 == 0
+
+
+def test_weekly_alerts_use_only_stride_days():
+    # one failing drive with daily rows in its last 30 days; alerts only off its stride days
+    days = pd.date_range("2025-03-01", periods=30)
+    serial = "F1"
+    hit = on_stride(pd.DataFrame({"serial_number": serial, "date": days}), 7)
+    rows = [(serial, d, 29 - i, 1, 0.1 if hit[i] else 0.99, "failing", "X", "V", 4)
+            for i, d in enumerate(days)]
+    # a non-failing drive, alerting on every row
+    rows += [("Q1", d, 300, 0, 0.99, "healthy", "X", "V", 4) for d in days]
+    rows += [("Q2", d, 300, 0, 0.1, "healthy", "X", "V", 4) for d in days]
+    test = _frame(rows)
+    val = _frame([(f"v{i}", "2023-01-01", 300, 0, i / 100, "healthy", "X", "V", 4)
+                  for i in range(100)])
+    D = Drives(test)
+    models = {"m": {"kind": "binary", "horizons": [30]}}
+    out = weekly_alerts(val, test, D, models, 30, [0.05], 7, [0.5], 5, 1, pair=("m", "m"))
+    (b,) = out["budgets"]
+    assert out["failing_drives_checked"] == 1
+    assert b["share_failing_drives_alerted"] == 0.0      # its alerts fall between checks
+    assert b["share_nonfailing_drives_alerted"] == 0.5

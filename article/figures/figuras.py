@@ -73,7 +73,8 @@ def gravar(fig, nome: str) -> None:
 
 
 def figura_roc_auc(metricas: dict) -> None:
-    linhas = {(r["model"], r["horizon"]): r for r in metricas["discrimination"]}
+    # Estimador de acompanhamento completo, o mesmo da Tabela 2.
+    linhas = {(r["model"], r["horizon"]): r for r in metricas["full_follow_up"]}
     fig, ax = plt.subplots(figsize=(6.3, 3.7), layout="constrained")
     desloc = {"hazard_smart": -0.24, "rule_counters": -0.08,
               "hazard_nocritical": 0.08, "hazard_nosmart": 0.24}
@@ -125,7 +126,7 @@ def figura_alertas() -> None:
     ax.set_xticks(range(len(faixas)), faixas)
     ax.set_ylim(0, 80)
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.0f}%"))
-    ax.set_xlabel("Dias até a falha")
+    ax.set_xlabel("Dias até a falha (faixas de largura desigual)")
     ax.set_ylabel("Retratos com alerta")
     ax.grid(axis="y", color=GRADE, linewidth=0.8)
     ax.set_axisbelow(True)

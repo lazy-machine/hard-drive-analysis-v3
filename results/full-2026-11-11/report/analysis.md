@@ -279,6 +279,46 @@ At the main budget the test false-alarm rate is above the budget, with an interv
 | 1.0% | rule: critical SMART counters (5, 187, 197, 198) | 2.4% [2.1%, 2.8%] | 1.7 [1.4, 1.9] |
 | 1.0% | survival model, SMART + context, recalibrated on the last year | 7.9% [7.3%, 8.5%] | 4.1 [3.8, 4.4] |
 
+**Per drive, one schedule.** Every drive judged only on its weekly snapshots (every 7 days): a failing drive is caught if one in its last 30 days alerts (1766 of 1784 failing drives have one), a non-failing drive is a false alarm if any of its test-period ones alerts. Thresholds from validation, as above.
+
+| budget | model | failing drives caught | non-failing drives alerted |
+|---|---|---|---|
+| 0.1% | survival model, SMART + context | 46.5% [44.4%, 48.9%] | 1.4% [1.2%, 1.7%] |
+| 0.1% | survival model, context only (no SMART) | 0.3% [0.1%, 0.6%] | 0.3% [0.2%, 0.4%] |
+| 0.1% | 30-day yes/no classifier (SMART + context) | 52.2% [49.9%, 54.8%] | 2.1% [1.8%, 2.4%] |
+| 0.1% | rule: critical SMART counters (5, 187, 197, 198) | 31.5% [29.8%, 33.7%] | 0.8% [0.6%, 0.9%] |
+| 0.1% | survival model, SMART + context, recalibrated on the last year | 46.4% [44.3%, 48.9%] | 1.4% [1.2%, 1.7%] |
+| 0.3% | survival model, SMART + context | 61.7% [59.6%, 64.0%] | 3.8% [3.4%, 4.2%] |
+| 0.3% | survival model, context only (no SMART) | 2.0% [1.4%, 2.7%] | 0.7% [0.5%, 0.8%] |
+| 0.3% | 30-day yes/no classifier (SMART + context) | 63.4% [61.2%, 65.7%] | 4.1% [3.7%, 4.5%] |
+| 0.3% | rule: critical SMART counters (5, 187, 197, 198) | 40.9% [38.5%, 43.1%] | 1.4% [1.1%, 1.6%] |
+| 0.3% | survival model, SMART + context, recalibrated on the last year | 61.6% [59.5%, 63.9%] | 3.8% [3.4%, 4.2%] |
+| 1.0% | survival model, SMART + context | 72.3% [70.1%, 74.3%] | 7.9% [7.3%, 8.5%] |
+| 1.0% | survival model, context only (no SMART) | 7.7% [6.5%, 9.1%] | 10.4% [9.8%, 11.2%] |
+| 1.0% | 30-day yes/no classifier (SMART + context) | 73.7% [71.6%, 75.8%] | 13.6% [12.9%, 14.5%] |
+| 1.0% | rule: critical SMART counters (5, 187, 197, 198) | 52.7% [50.3%, 54.9%] | 2.4% [2.1%, 2.8%] |
+| 1.0% | survival model, SMART + context, recalibrated on the last year | 72.3% [70.0%, 74.2%] | 7.9% [7.3%, 8.5%] |
+
+At the same share of non-failing drives alerted (each model's threshold set on test for that share, a point on a drive-level ROC curve):
+
+| non-failing drives alerted | model | failing drives caught | difference vs the rule (paired) |
+|---|---|---|---|
+| 0.99% | survival model, SMART + context | 37.1% [32.7%, 43.6%] | 2.7% [-1.7%, 7.5%] |
+| 0.68% | survival model, context only (no SMART) | 2.2% [1.5%, 2.9%] | - |
+| 0.99% | 30-day yes/no classifier (SMART + context) | 34.1% [30.0%, 40.7%] | - |
+| 0.99% | rule: critical SMART counters (5, 187, 197, 198) | 34.4% [31.1%, 39.3%] | - |
+| 0.99% | survival model, SMART + context, recalibrated on the last year | 37.3% [32.7%, 43.2%] | - |
+| 2.49% | survival model, SMART + context | 55.3% [52.5%, 58.7%] | 2.2% [-0.8%, 5.8%] |
+| 2.31% | survival model, context only (no SMART) | 3.2% [1.8%, 4.3%] | - |
+| 2.49% | 30-day yes/no classifier (SMART + context) | 56.2% [52.5%, 59.0%] | - |
+| 2.49% | rule: critical SMART counters (5, 187, 197, 198) | 53.1% [48.5%, 56.1%] | - |
+| 2.49% | survival model, SMART + context, recalibrated on the last year | 55.3% [52.4%, 58.7%] | - |
+| 4.99% | survival model, SMART + context | 66.9% [64.8%, 69.0%] | -1.5% [-3.6%, 2.6%] |
+| 2.67% | survival model, context only (no SMART) | 3.4% [2.5%, 4.4%] | - |
+| 4.99% | 30-day yes/no classifier (SMART + context) | 66.3% [63.9%, 69.0%] | - |
+| 4.97% | rule: critical SMART counters (5, 187, 197, 198) | 68.4% [63.5%, 70.7%] | - |
+| 4.99% | survival model, SMART + context, recalibrated on the last year | 67.0% [64.8%, 69.2%] | - |
+
 ![detection](detection.png)
 
 ## Calibration
@@ -355,6 +395,9 @@ Predicted / observed 30-day risk of survival model, SMART + context by part of t
 | val | 2023 | all | n/a | 489 | 0.166% | 0.143% | 0.86 [0.77, 0.97] |
 | val | 2023 | capacity < 16 TB | 71.4% | 438 | 0.208% | 0.175% | 0.84 [0.75, 0.96] |
 | val | 2023 | capacity >= 16 TB | 28.6% | 51 | 0.060% | 0.063% | 1.05 [0.84, 1.56] |
+| val | 2023 | in service 2-4 years | 40.5% | 239 | 0.180% | 0.144% | 0.80 [0.70, 0.95] |
+| val | 2023 | in service < 2 years | 32.6% | 103 | 0.058% | 0.058% | 0.99 [0.79, 1.32] |
+| val | 2023 | in service >= 4 years | 26.9% | 224 | 0.277% | 0.245% | 0.89 [0.73, 1.05] |
 | val | 2023 | model MG08ACA16TEY | 2.2% | 6 | 0.089% | 0.060% | 0.68 [0.39, 2.18] |
 | val | 2023 | vendor HGST | 15.7% | 72 | 0.154% | 0.100% | 0.65 [0.44, 1.02] |
 | val | 2023 | vendor Seagate | 46.6% | 317 | 0.231% | 0.200% | 0.87 [0.77, 0.97] |
@@ -364,6 +407,9 @@ Predicted / observed 30-day risk of survival model, SMART + context by part of t
 | test | 2024 | all | n/a | 1739 | 0.133% | 0.157% | 1.18 [1.09, 1.28] |
 | test | 2024 | capacity < 16 TB | 56.0% | 1250 | 0.182% | 0.208% | 1.15 [1.06, 1.29] |
 | test | 2024 | capacity >= 16 TB | 44.0% | 489 | 0.072% | 0.092% | 1.27 [1.07, 1.51] |
+| test | 2024 | in service 2-4 years | 38.0% | 754 | 0.110% | 0.109% | 1.00 [0.86, 1.14] |
+| test | 2024 | in service < 2 years | 34.1% | 417 | 0.079% | 0.091% | 1.15 [0.98, 1.39] |
+| test | 2024 | in service >= 4 years | 27.9% | 871 | 0.233% | 0.302% | 1.30 [1.13, 1.47] |
 | test | 2024 | model MG08ACA16TEY | 1.5% | 74 | 0.153% | 0.093% | 0.60 [0.37, 1.12] |
 | test | 2024 | vendor HGST | 12.8% | 379 | 0.245% | 0.205% | 0.83 [0.64, 1.03] |
 | test | 2024 | vendor Seagate | 38.0% | 738 | 0.157% | 0.222% | 1.41 [1.25, 1.59] |
@@ -373,6 +419,9 @@ Predicted / observed 30-day risk of survival model, SMART + context by part of t
 | test | 2025 | all | n/a | 850 | 0.103% | 0.225% | 2.18 [1.89, 2.51] |
 | test | 2025 | capacity < 16 TB | 46.0% | 546 | 0.139% | 0.302% | 2.17 [1.84, 2.59] |
 | test | 2025 | capacity >= 16 TB | 54.0% | 304 | 0.073% | 0.161% | 2.21 [1.83, 2.74] |
+| test | 2025 | in service 2-4 years | 24.3% | 273 | 0.094% | 0.163% | 1.73 [1.40, 2.23] |
+| test | 2025 | in service < 2 years | 34.8% | 182 | 0.055% | 0.170% | 3.10 [2.35, 3.97] |
+| test | 2025 | in service >= 4 years | 40.8% | 519 | 0.151% | 0.310% | 2.05 [1.78, 2.43] |
 | test | 2025 | model MG08ACA16TEY | 1.3% | 58 | 0.585% | 0.192% | 0.33 [0.18, 0.56] |
 | test | 2025 | vendor HGST | 9.0% | 164 | 0.209% | 0.365% | 1.75 [1.29, 2.37] |
 | test | 2025 | vendor Seagate | 34.9% | 335 | 0.115% | 0.342% | 2.97 [2.41, 3.59] |

@@ -32,6 +32,11 @@ Sections of metrics.json:
 - calibration_by_group: the binary-horizon predicted/observed ratio of the reference
   model per split, year and group (capacity class, vendor, the firmware_model and the
   rest of its vendor), and the weighted fleet composition per split and year.
+- weekly_alerts: alerts per drive with every drive on the same weekly schedule (its
+  stride days), so failing and non-failing drives are watched alike: per budget, the
+  share of failing drives alerted in their last H days and of non-failing drives alerted
+  at least once; and, at fixed shares of non-failing drives alerted, the share of failing
+  drives each model catches, with paired bootstrap differences.
 - seed_spread: ranking metrics of the seed replicates (models named <family>_seed<N>),
   which every other section leaves out, and the survival-minus-classifier difference per
   seed pair.
@@ -48,7 +53,9 @@ from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import pandas as pd
 
-from common import Progress, left_truncated, load_study, val_roles, write_json
+from common import (
+    Progress, left_truncated, load_sample, load_study, stable_unit, val_roles, write_json,
+)
 from metrics import (
     DriveCells, RankedScores, bootstrap_drive_counts, censoring_survival, concordance,
     ipcw_weights, km_failure, one_per_drive, uno_concordance, weighted_auc, weighted_brier,
@@ -567,6 +574,104 @@ def alerting(val, test, D, models, horizon, rates, main_rate, lead, edges, round
     return summary, pd.DataFrame(curves)
 
 
+def on_stride(frame: pd.DataFrame, stride: int) -> np.ndarray:
+    """Rows on their drive's stride days: the weekly schedule every drive is sampled on
+    (panel._register_cohort's offsets). Near a failure the snapshot step keeps every
+    day; these rows are the ones a weekly check would have seen."""
+    serials, codes = np.unique(frame["serial_number"].to_numpy(), return_inverse=True)
+    offset = np.array([int(stable_unit(s, "stride") * stride) for s in serials])
+    days = (pd.to_datetime(frame["date"]) - pd.Timestamp("2000-01-01")).dt.days.to_numpy()
+    return (days + offset[codes]) % stride == 0
+
+
+def weekly_alerts(val, test, D, models, horizon, rates, stride, targets, rounds, seed,
+                  pair=("hazard_smart", "rule_counters")):
+    """Alerts per drive on a common weekly schedule.
+
+    alerting() counts failing drives on their daily snapshots before failure and
+    non-failing drives on weekly ones, so its per-drive figures mix two schedules. Here
+    only stride-day snapshots count, for every drive: a failing drive is caught if one of
+    them in its last `horizon` days alerts, a non-failing drive is a false alarm if any of
+    its test-period ones alerts. Failing drives with no stride day in that window are left
+    out (they could not be checked).
+
+    budgets: the validation thresholds of alerting(). matched: for each target share of
+    non-failing drives alerted, each model's threshold is set on test so that it alerts
+    that share, and the share of failing drives caught is compared (a point on a
+    drive-level ROC curve); the pair's difference gets a paired bootstrap interval.
+    """
+    week = on_stride(test, stride)
+    st_val = known_status(val["duration_days"].to_numpy(), val["event"].to_numpy(), horizon)
+    healthy_val, w_val = st_val == 0, val["weight"].to_numpy()
+    quiet = ~D.fails
+    window = week & (D.e == 1) & (D.d < horizon)
+    failing = np.unique(D.codes[window])
+    qrows = week & quiet[D.codes]
+    dw = D.weight_of_drive
+    counts_list = list(D.boot(rounds, seed))
+
+    def drive_max(score, rows):
+        out = np.full(D.n, -np.inf)
+        np.maximum.at(out, D.codes[rows], score[rows])
+        return out
+
+    maxima, budgets = {}, []
+    for name, info in models.items():
+        s_val, s = score_of(val, name, info, horizon), score_of(test, name, info, horizon)
+        if s_val is None:
+            continue
+        qmax, fmax = drive_max(s, qrows)[quiet], drive_max(s, window)[failing]
+        maxima[name] = (qmax, fmax)
+        for rate in rates:
+            t = weighted_quantile_threshold(s_val[healthy_val], w_val[healthy_val], rate)
+
+            def stats(c, t=t, qmax=qmax, fmax=fmax):
+                qw, fw = (c * dw)[quiet], c[failing].astype(float)
+                hit, false = np.sum(fw * (fmax >= t)), np.sum(qw * (qmax >= t))
+                return (float(hit / fw.sum()), float(false / qw.sum()),
+                        float(false / hit) if hit > 0 else np.nan)
+
+            point = stats(np.ones(D.n))
+            boot = [stats(c) for c in counts_list]
+            budgets.append({
+                "model": name, "budget": rate, "threshold": float(t),
+                "failing_drives": int(failing.size),
+                "failing_drives_alerted": int((fmax >= t).sum()),
+                "share_failing_drives_alerted": point[0],
+                "share_failing_drives_alerted_ci": _interval([b[0] for b in boot]),
+                "share_nonfailing_drives_alerted": point[1],
+                "share_nonfailing_drives_alerted_ci": _interval([b[1] for b in boot]),
+                "nonfailing_alerted_per_failing_alerted": point[2],
+                "nonfailing_alerted_per_failing_alerted_ci": _interval([b[2] for b in boot]),
+            })
+
+    def caught(name, c, target):
+        qmax, fmax = maxima[name]
+        qw, fw = (c * dw)[quiet], c[failing].astype(float)
+        t = weighted_quantile_threshold(qmax, qw, target)
+        return (float(np.sum(fw * (fmax >= t)) / fw.sum()),
+                float(np.sum(qw * (qmax >= t)) / qw.sum()))
+
+    matched = []
+    for target in targets:
+        boot = {n: [caught(n, c, target) for c in counts_list] for n in maxima}
+        for name in maxima:
+            share, achieved = caught(name, np.ones(D.n), target)
+            row = {"model": name, "target_nonfailing_share": target,
+                   "nonfailing_share": achieved, "share_failing_drives_alerted": share,
+                   "share_failing_drives_alerted_ci": _interval([b[0] for b in boot[name]])}
+            if name == pair[0] and pair[1] in maxima:
+                base = caught(pair[1], np.ones(D.n), target)[0]
+                row["versus"] = pair[1]
+                row["difference"] = share - base
+                row["difference_ci"] = _interval([a[0] - b[0] for a, b in
+                                                  zip(boot[name], boot[pair[1]], strict=True)])
+            matched.append(row)
+    return {"stride_days": stride, "failing_drives_checked": int(failing.size),
+            "failing_drives_total": int(np.unique(D.codes[(D.e == 1) & (D.d < horizon)]).size),
+            "nonfailing_drives": int(quiet.sum()), "budgets": budgets, "matched": matched}
+
+
 def concordance_table(test, models, cap, rounds, seed, tau, binary_horizon, log):
     """Harrell's and Uno's C on whole drives (up to `cap` rows), with drive bootstrap
     intervals. Every probability model is also scored by its p<binary_horizon>, so the
@@ -747,6 +852,14 @@ def _groups(frame, cap_split_tb, firmware_model):
            f"capacity < {cap_split_tb} TB": cap < cap_split_tb}
     for v in sorted(frame["vendor"].dropna().unique()):
         out[f"vendor {v}"] = (frame["vendor"] == v).to_numpy()
+    if "first_date" in frame:
+        # time since the drive first appears in the panel (its age for drives that
+        # arrive after the panel starts)
+        age = (pd.to_datetime(frame["date"]) - pd.to_datetime(frame["first_date"])).dt.days
+        age = age.to_numpy() / 365.25
+        out["in service < 2 years"] = age < 2
+        out["in service 2-4 years"] = (age >= 2) & (age < 4)
+        out["in service >= 4 years"] = age >= 4
     vendor, model = firmware_vendor(frame, firmware_model) if firmware_model else (None, None)
     if vendor is not None:
         out[f"model {firmware_model}"] = model
@@ -878,6 +991,10 @@ def evaluate(ctx):
     rates = sorted(set(ev.get("alert_false_alarm_rates", [])) | {ev["alert_false_alarm_rate"]})
     alerts, detection = alerting(val_cal, test, D, models, H, rates, ev["alert_false_alarm_rate"],
                                  ev["min_lead_days"], edges, rounds, seed)
+    stride = load_sample(ctx.inputs["sample"])["stride_days"]
+    weekly = weekly_alerts(val_cal, test, D, models, H, rates, stride,
+                           ev.get("matched_nonfailing_shares", [0.01, 0.025, 0.05]),
+                           rounds, seed)
     log("alerting done")
     life_summary, life_table = life(test, models, edges)
     cal_rows = calibration_in_the_large(preds, models, label["horizons"], H, rounds, seed)
@@ -923,6 +1040,7 @@ def evaluate(ctx):
         "calibration_by_group": by_group,
         "composition": mix,
         "seed_spread": spread,
+        "weekly_alerts": weekly,
     })
     main = next(c for c in conc if c["model"] == reference)
     return {f"auc{H}_{reference}": _row(disc, H, reference)["auc"],
