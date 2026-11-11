@@ -44,13 +44,19 @@ LIST_ITEM = re.compile(r"^[a-z]\) ")
 BASE_RPR = '<w:rFonts w:cs="Arial"/>{b}{i}{font}<w:sz w:val="{sz}"/><w:szCs w:val="{sz}"/>'
 
 
-def rpr(bold=False, italic=False, size=24, mono=False, caps=False) -> str:
+COVER_GAP = 5200         # twips between the author line and the city, on the cover
+KEEP_WHOLE = 8           # tables up to this many rows are not split across pages
+
+
+def rpr(bold=False, italic=False, size=24, mono=False, caps=False, sup=False) -> str:
     font = '<w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/>' if mono else ""
     out = BASE_RPR.format(b="<w:b/>" if bold else '<w:b w:val="0"/>',
                           i="<w:i/>" if italic else "", font=font, sz=size)
     if mono:
         out = out.replace('<w:rFonts w:cs="Arial"/>', "", 1)
-    return f"<w:rPr>{out}{'<w:caps/>' if caps else ''}</w:rPr>"
+    out += '<w:caps/>' if caps else ""
+    out += '<w:vertAlign w:val="superscript"/>' if sup else ""
+    return f"<w:rPr>{out}</w:rPr>"
 
 
 def run(text: str, **kw) -> str:
@@ -58,10 +64,13 @@ def run(text: str, **kw) -> str:
 
 
 def inline(text: str, size=24, bold=False, italic=False) -> str:
-    """Runs for a line of Markdown with **bold**, *italic* and `code`."""
+    """Runs for a line of Markdown with **bold**, *italic*, `code` and exponents such as
+    "^0,5", which become superscript."""
     out = []
-    for tok in re.split(r"(`[^`]*`|\*\*|\*)", text):
-        if tok == "**":
+    for tok in re.split(r"(`[^`]*`|\*\*|\*|\^\d+(?:,\d+)?)", text):
+        if tok.startswith("^"):
+            out.append(run(tok[1:], bold=bold, italic=italic, size=size, sup=True))
+        elif tok == "**":
             bold = not bold
         elif tok == "*":
             italic = not italic
@@ -73,11 +82,13 @@ def inline(text: str, size=24, bold=False, italic=False) -> str:
 
 
 def para(runs: str, *, jc="both", first=709, left=0, hanging=0, before=0, after=120,
-         keep_next=False, page_break=False, style=None, tabs="", extra="") -> str:
+         keep_next=False, keep_lines=False, page_break=False, style=None, tabs="",
+         extra="") -> str:
     ind = (f'<w:ind w:left="{left}" w:hanging="{hanging}"/>' if hanging
            else f'<w:ind w:left="{left}" w:firstLine="{first}"/>')
     ppr = (f'<w:pStyle w:val="{style}"/>' if style else "") + \
           ('<w:keepNext/>' if keep_next else "") + \
+          ('<w:keepLines/>' if keep_lines else "") + \
           ('<w:pageBreakBefore/>' if page_break else "") + tabs + \
           f'<w:spacing w:before="{before}" w:after="{after}" w:line="240" w:lineRule="auto"/>' + \
           ind + f'<w:jc w:val="{jc}"/>' + extra
@@ -86,7 +97,7 @@ def para(runs: str, *, jc="both", first=709, left=0, hanging=0, before=0, after=
 
 def plain(md: str) -> str:
     """Markdown inline text without its markers."""
-    return re.sub(r"\*\*|\*|`", "", md)
+    return re.sub(r"\*\*|\*|`|\^(?=\d)", "", md)
 
 
 class Doc:
@@ -94,6 +105,7 @@ class Doc:
         self.pages = pages
         self.body: list[str] = []
         self.toc: list[tuple[int, str, str]] = []        # (level, text, bookmark)
+        self.toc_md: dict[str, str] = {}                 # heading text -> its Markdown
         self.captions: list[tuple[str, str]] = []        # (kind, "Tabela 1 – ...")
         self.images: list[tuple[str, Path]] = []         # (rId, png)
         self.links: list[tuple[str, str]] = []           # (rId, target)
@@ -106,6 +118,7 @@ class Doc:
         self.bookmark += 1
         name = f"_Toc{9000 + self.bookmark}"
         self.toc.append((level, text, name))
+        self.toc_md[text] = md
         style = "Ttulo1" if level == 1 else "Ttulo2"
         runs = inline(md, bold=level == 1)
         return (f'<w:p><w:pPr><w:pStyle w:val="{style}"/>'
@@ -144,7 +157,7 @@ class Doc:
         """A pipe table. Tabela: open sides, rules above, below and under the header
         (IBGE style, as ABNT asks); Quadro: a closed grid."""
         ncol = len(rows[0])
-        size = 18 if ncol >= 7 else 20          # 9 pt in the widest tables, 10 pt otherwise
+        size = 18 if ncol >= 6 else 20          # 9 pt in the widest tables, 10 pt otherwise
         widths = column_widths(rows, ncol, size)
         line = '<w:{0} w:val="single" w:sz="6" w:space="0" w:color="000000"/>'
         if kind == "Quadro":
@@ -157,8 +170,10 @@ class Doc:
                '<w:tblCellMar><w:left w:w="70" w:type="dxa"/><w:right w:w="70" w:type="dxa"/></w:tblCellMar>'
                '</w:tblPr><w:tblGrid>' + "".join(f'<w:gridCol w:w="{w}"/>' for w in widths)
                + "</w:tblGrid>"]
+        whole = len(rows) <= KEEP_WHOLE
         for i, r in enumerate(rows):
             head = i == 0
+            keep = whole or i < 3 or i >= len(rows) - 3   # no lone rows at either end
             trpr = "<w:trPr><w:tblHeader/><w:cantSplit/></w:trPr>" if head else "<w:trPr><w:cantSplit/></w:trPr>"
             cells = []
             for c in range(ncol):
@@ -170,7 +185,8 @@ class Doc:
                 numeric = bool(re.fullmatch(r"[\s\d.,%+−\-\[\];×/]+", plain(txt))) and c > 0
                 cells.append(f"<w:tc>{tcpr}" + para(inline(txt, size=size, bold=head),
                                                      jc="center" if head or numeric else "left",
-                                                     first=0, after=0, before=0) + "</w:tc>")
+                                                     first=0, after=0, before=0,
+                                                     keep_next=keep) + "</w:tc>")
             out.append(f"<w:tr>{trpr}{''.join(cells)}</w:tr>")
         out.append("</w:tbl>")
         return "".join(out)
@@ -203,8 +219,9 @@ class Doc:
                        f'<w:r>{rpr(bold=level == 1)}<w:fldChar w:fldCharType="separate"/></w:r>'
                        + run(str(page), bold=level == 1)
                        + f'<w:r>{rpr(bold=level == 1)}<w:fldChar w:fldCharType="end"/></w:r>')
-            label = inline(text, bold=level == 1)
-            out.append(f'<w:p><w:pPr><w:pStyle w:val="{style}"/><w:spacing w:after="60"/></w:pPr>'
+            label = inline(self.toc_md.get(text, text), bold=level == 1)
+            out.append(f'<w:p><w:pPr><w:pStyle w:val="{style}"/><w:spacing w:after="60"/>'
+                       '<w:jc w:val="left"/></w:pPr>'
                        f'<w:hyperlink w:anchor="{name}" w:history="1">{label}'
                        f'<w:r>{rpr(bold=level == 1)}<w:tab/></w:r>{pagefld}</w:hyperlink></w:p>')
         out.append(f'<w:p><w:pPr><w:pStyle w:val="Sumrio1"/></w:pPr><w:r>{rpr()}<w:fldChar w:fldCharType="end"/></w:r></w:p>')
@@ -232,7 +249,15 @@ def column_widths(rows: list[list[str]], ncol: int, size: int = 20, pad: int = 2
     body = [max((len(t) for t in cells(c)[1:]), default=0) for c in range(ncol)]
     pref = [max(minw[c], min(body[c], 45) * char + pad) for c in range(ncol)]
     if sum(minw) >= TEXT_WIDTH:
-        widths = [m * TEXT_WIDTH / sum(minw) for m in minw]
+        # Too wide: take the width back from the columns whose header is wider than their
+        # cells, so that no number in the body is broken; only then shrink every column.
+        floor = [min(minw[c], longest(cells(c)[1:]) * char + pad) for c in range(ncol)]
+        slack = [m - f for m, f in zip(minw, floor, strict=True)]
+        over = sum(minw) - TEXT_WIDTH
+        if sum(slack) >= over > 0:
+            widths = [m - over * k / sum(slack) for m, k in zip(minw, slack, strict=True)]
+        else:
+            widths = [m * TEXT_WIDTH / sum(minw) for m in minw]
     elif sum(pref) <= TEXT_WIDTH:
         widths = [p * TEXT_WIDTH / sum(pref) for p in pref]
     else:
@@ -274,18 +299,17 @@ def cover(lines: list[str], doc: Doc) -> str:
     if m:
         rid = f"rIdLink{len(doc.links) + 1}"
         doc.links.append((rid, f"mailto:{m.group(2)}"))
-        author_runs = (run(m.group(1) + " ", size=20)
+        author_runs = (run(m.group(1) + " ", size=20, bold=True)
                        + f'<w:hyperlink r:id="{rid}" w:history="1"><w:r><w:rPr><w:rStyle w:val="Hyperlink"/>'
                        f'<w:b w:val="0"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr>'
                        f'<w:t>{escape(m.group(2))}</w:t></w:r></w:hyperlink>')
     else:
-        author_runs = run(author, size=20)
+        author_runs = run(author, size=20, bold=True)
     out.append(para(author_runs, jc="center", first=0, before=1800, after=0))
-    frame = ('<w:framePr w:w="9071" w:wrap="around" w:vAnchor="margin" w:hAnchor="margin" '
-             'w:xAlign="center" w:yAlign="bottom"/>')
-    for t in (city, date):
-        out.append(f'<w:p><w:pPr>{frame}<w:spacing w:before="0" w:after="200"/><w:ind w:firstLine="0"/>'
-                   f'<w:jc w:val="center"/></w:pPr>{run(t)}</w:p>')
+    # City and date sit at the foot of the cover. They are ordinary paragraphs pushed down
+    # by spacing (a frame would be anchored to the next page's first paragraph).
+    out.append(para(run(city), jc="center", first=0, before=COVER_GAP, after=200))
+    out.append(para(run(date), jc="center", first=0, before=0, after=0))
     return "".join(out)
 
 
@@ -326,13 +350,13 @@ def build(pages: dict) -> tuple[str, Doc, str]:
                                      + inline(m.group(3), size=20), jc="center", first=0,
                                      before=240, after=120, keep_next=True))
             elif b.startswith("Fonte:"):
-                text_xml.append(para(inline(b, size=20), jc="left", first=0, before=60, after=240))
+                text_xml.append(para(inline(b, size=20), jc="left", first=0, before=60, after=240,
+                                     keep_lines=True))
             elif in_refs:
                 text_xml.append(para(inline(b), jc="left", first=0, after=240))
-            elif LIST_ITEM.match(b):
-                text_xml.append(para(inline(b), first=709, after=120))
             else:
-                text_xml.append(para(inline(b), first=709, after=120))
+                text_xml.append(para(inline(b), first=709, after=120,
+                                     jc="left" if "https://" in b else "both"))
 
     pre = [cover(md[:first].splitlines(), doc)]
     for title, rest in sections:

@@ -30,7 +30,8 @@ PAGES = Path(__file__).resolve().parent / "pages.json"
 
 
 def norm(text: str) -> str:
-    return re.sub(r"\s+", " ", text).strip().upper()
+    # Case is kept: "REFERÊNCIAS" must not match the word "referências" in the body.
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def to_pdf(docx: Path, soffice: str, workdir: Path) -> Path:
