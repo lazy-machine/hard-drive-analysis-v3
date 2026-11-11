@@ -19,12 +19,12 @@
   "4.3 ALERTA ANTECIPADO": 25,
   "4.4 VIDA ÚTIL REMANESCENTE": 31,
   "4.5 CALIBRAÇÃO, DERIVA E RETIRADA DE DISCOS": 32,
-  "4.6 COMPARAÇÕES COMPLEMENTARES E SENSIBILIDADE": 35,
+  "4.6 COMPARAÇÕES COMPLEMENTARES E SENSIBILIDADE": 36,
   "4.7 RECOMENDAÇÕES": 36,
-  "5 CONSIDERAÇÕES FINAIS E LIMITAÇÕES DO ESTUDO": 37,
+  "5 CONSIDERAÇÕES FINAIS E LIMITAÇÕES DO ESTUDO": 38,
   "REFERÊNCIAS": 22,
-  "APÊNDICE A – GUIA DE REPRODUÇÃO DOS RESULTADOS": 43,
-  "APÊNDICE B – ANÁLISES DE SENSIBILIDADE": 45
+  "APÊNDICE A – GUIA DE REPRODUÇÃO DOS RESULTADOS": 45,
+  "APÊNDICE B – ANÁLISES DE SENSIBILIDADE": 47
  },
  "captions": {
   "Quadro 1 – Principais atributos SMART utilizados": 14,
@@ -42,11 +42,11 @@
   "Tabela 8 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem": 29,
   "Tabela 9 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência": 30,
   "Tabela 10 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha": 31,
-  "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 32,
-  "Tabela 11 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 33,
-  "Tabela 12 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 34,
-  "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 44,
-  "Tabela 13 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente": 46
+  "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 33,
+  "Tabela 11 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 34,
+  "Tabela 12 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 35,
+  "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 46,
+  "Tabela 13 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente": 48
  },
- "total_pages": 47
+ "total_pages": 49
 }

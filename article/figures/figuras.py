@@ -151,10 +151,6 @@ def figura_calibracao() -> None:
         ys = [float(r["observed_km"]) for r in dados]
         ax.plot(xs, ys, color=AZUIS[h], marker=MARCAS[h], linewidth=1.6, markersize=5,
                 markeredgecolor="white", markeredgewidth=0.6, label=f"{h} dias")
-        # Rótulo direto no decil de menor risco, onde as curvas não se sobrepõem.
-        ax.annotate(f"{h} dias", (xs[0], ys[0]), xytext=(-5, 5),
-                    textcoords="offset points", ha="right", va="bottom", fontsize=8,
-                    color=TEXTO)
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlim(*limites)
