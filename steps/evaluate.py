@@ -1274,6 +1274,17 @@ def evaluate(ctx):
     weekly = weekly_alerts(val_cal, test, D, every, H, rates, stride, targets, rounds, seed)
     weekly["per_window"] = [windowed_alerts(test, D, every, H, stride, targets, rounds, seed, f)
                             for f in ("Q", "Y")]
+    # the same per-drive comparisons on the validation drives (2016-2023), for the reference
+    # model, the weight-exponent variants and their seeds: what a choice of the exponent for
+    # per-drive alerts could rest on without the test set
+    vmodels = {n: i for n, i in every.items()
+               if n == "rule_counters" or (n.startswith(reference) and "recent" not in n)}
+    Dv = Drives(val)
+    vrounds = ev.get("validation_bootstrap_rounds", 50)
+    val_weekly = weekly_alerts(val, val, Dv, vmodels, H, [], stride, targets, vrounds, seed)
+    val_weekly["per_window"] = [windowed_alerts(val, Dv, vmodels, H, stride, targets, vrounds,
+                                                seed, "Q")]
+    log("validation per-drive alerts done")
     log("alerting done")
     life_summary, life_table = life(test, models, edges, D, rounds, seed)
     cal_rows = calibration_in_the_large(preds, models, label["horizons"], H, rounds, seed)
@@ -1324,6 +1335,7 @@ def evaluate(ctx):
         "composition": mix,
         "seed_spread": spread,
         "weekly_alerts": weekly,
+        "validation_weekly_alerts": val_weekly,
         "validation_discrimination": validation_discrimination(
             val, {**models, **seeds}, label["horizons"]),
         "gain_retained_without_critical_counters": retained,

@@ -429,6 +429,10 @@ Share of the alerted non-failing year-units that belong to drives failing later,
 | last 30 days | hazard_smart_seed2 | 67.3% | -8.0% [-11.0%, -6.0%] |
 | last 30 days | hazard_smart_seed3 | 66.6% | -8.7% [-10.5%, -6.3%] |
 | last 30 days | hazard_smart_seed4 | 68.3% | -7.0% [-8.3%, -5.5%] |
+| last 30 days | hazard_smart_w075_seed1 | 75.1% | -0.1% [-1.2%, 0.7%] |
+| last 30 days | hazard_smart_w075_seed2 | 75.3% | 0.0% [-1.4%, 0.8%] |
+| last 30 days | hazard_smart_w075_seed3 | 75.5% | 0.2% [-0.9%, 1.0%] |
+| last 30 days | hazard_smart_w075_seed4 | 75.4% | 0.1% [-1.0%, 0.9%] |
 | any lead | 30-day yes/no classifier (SMART + context) | 74.7% | -1.0% [-2.4%, 0.1%] |
 | any lead | survival model, SMART without counters 5/187/188/197/198 | 44.8% | -31.0% [-34.0%, -28.5%] |
 | any lead | survival model, context only (no SMART) | 7.2% | -68.6% [-72.0%, -65.9%] |
@@ -445,6 +449,10 @@ Share of the alerted non-failing year-units that belong to drives failing later,
 | any lead | hazard_smart_seed2 | 72.6% | -3.2% [-5.4%, -1.5%] |
 | any lead | hazard_smart_seed3 | 72.5% | -3.2% [-4.6%, -1.0%] |
 | any lead | hazard_smart_seed4 | 73.4% | -2.3% [-3.4%, -1.0%] |
+| any lead | hazard_smart_w075_seed1 | 76.8% | 1.1% [0.2%, 1.8%] |
+| any lead | hazard_smart_w075_seed2 | 76.8% | 1.0% [0.1%, 1.8%] |
+| any lead | hazard_smart_w075_seed3 | 77.1% | 1.3% [0.4%, 2.1%] |
+| any lead | hazard_smart_w075_seed4 | 77.1% | 1.3% [0.4%, 2.0%] |
 
 **Seed replicates.** Per-drive difference vs the rule (percentage points) of hazard_smart and its seed replicates, at the same share of non-failing units alerted:
 
@@ -597,6 +605,11 @@ The reference survival model and the 30-day classifier retrained with other seed
 | hazard_smart | 90 d | 5 | 0.836-0.843 | 0.0030 | 0.1750-0.1821 | 0.0030 |
 | hazard_smart | 180 d | 5 | 0.808-0.813 | 0.0022 | 0.2130-0.2194 | 0.0026 |
 | hazard_smart | 365 d | 5 | 0.784-0.787 | 0.0016 | 0.3000-0.3117 | 0.0043 |
+| hazard_smart_w075 | 7 d | 5 | 0.903-0.907 | 0.0018 | 0.0641-0.0738 | 0.0035 |
+| hazard_smart_w075 | 30 d | 5 | 0.876-0.880 | 0.0018 | 0.1172-0.1281 | 0.0040 |
+| hazard_smart_w075 | 90 d | 5 | 0.843-0.848 | 0.0023 | 0.1713-0.1823 | 0.0039 |
+| hazard_smart_w075 | 180 d | 5 | 0.806-0.816 | 0.0037 | 0.1985-0.2042 | 0.0023 |
+| hazard_smart_w075 | 365 d | 5 | 0.783-0.790 | 0.0024 | 0.2847-0.2966 | 0.0048 |
 
 Survival minus classifier, per seed pair (seed 0 = the models above):
 
@@ -631,6 +644,10 @@ ROC-AUC and PR-AUC on the validation drives (2016-2023, known-status snapshots),
 | hazard_smart_seed2 | 0.8895 / 0.1107 | 0.8669 / 0.1543 | 0.8418 / 0.1871 | 0.8248 / 0.2131 | 0.8068 / 0.2498 |
 | hazard_smart_seed3 | 0.8897 / 0.1103 | 0.8667 / 0.1565 | 0.8415 / 0.1882 | 0.8248 / 0.2147 | 0.8071 / 0.2496 |
 | hazard_smart_seed4 | 0.8893 / 0.1076 | 0.8666 / 0.1563 | 0.8412 / 0.1921 | 0.8246 / 0.2163 | 0.8068 / 0.2516 |
+| hazard_smart_w075_seed1 | 0.8842 / 0.0969 | 0.8631 / 0.1502 | 0.8390 / 0.1861 | 0.8236 / 0.2115 | 0.8053 / 0.2476 |
+| hazard_smart_w075_seed2 | 0.8824 / 0.0963 | 0.8617 / 0.1536 | 0.8387 / 0.1890 | 0.8235 / 0.2141 | 0.8047 / 0.2508 |
+| hazard_smart_w075_seed3 | 0.8837 / 0.0971 | 0.8624 / 0.1538 | 0.8387 / 0.1876 | 0.8232 / 0.2103 | 0.8048 / 0.2471 |
+| hazard_smart_w075_seed4 | 0.8840 / 0.0988 | 0.8626 / 0.1524 | 0.8391 / 0.1916 | 0.8236 / 0.2164 | 0.8050 / 0.2514 |
 
 ## Which SMART attributes matter
 

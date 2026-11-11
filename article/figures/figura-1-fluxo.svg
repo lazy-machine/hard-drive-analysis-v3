@@ -56,7 +56,7 @@
   <text class="desc" x="100" y="182">análise exploratória</text>
 
   <rect class="modelo" x="400" y="140" width="320" height="58" rx="4"/>
-  <text class="nome" x="560" y="164">train_* (15 modelos)</text>
+  <text class="nome" x="560" y="164">train_* (19 modelos)</text>
   <text class="desc" x="560" y="182">sobrevivência, classificador, ablações, sementes</text>
 
 

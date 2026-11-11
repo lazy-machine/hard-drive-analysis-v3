@@ -1,0 +1,6 @@
+[    12.7s] hazard / all: 64 features, 7597961 train, 543346 early-stopping and 534083 calibration snapshots
+[    12.7s] row-wise histograms need about 11.4 GiB, over the 11.4 GiB budget: falling back to column-wise
+[    12.7s] memory estimate 9.5 GiB (col-wise histograms), budget 11.4 GiB
+[    14.5s] {'train_rows': 48083205, 'train_events': 1440968, 'val_rows': 3435318, 'val_events': 105110}
+[   531.8s] best iteration 239, val logloss 0.0207978
+[   537.9s] calibration (a, b) per bin: [[0.353, 1.222], [0.099, 1.163], [-0.004, 1.168], [-0.483, 1.09], [-0.621, 1.064], [0.036, 1.102], [-0.17, 1.061]]

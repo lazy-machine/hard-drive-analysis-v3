@@ -40,13 +40,13 @@
   "Figura 3 – Proporção de retratos de discos que falham com alerta, por dias até a falha (limiar do orçamento de 1%)": 27,
   "Tabela 7 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente": 28,
   "Tabela 8 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem": 28,
-  "Tabela 9 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência": 29,
+  "Tabela 9 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência": 30,
   "Tabela 10 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha": 31,
   "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 32,
   "Tabela 11 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 33,
   "Tabela 12 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 34,
   "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 44,
-  "Tabela 13 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes e com expoente 0,75": 46
+  "Tabela 13 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes de cada expoente": 45
  },
  "total_pages": 46
 }

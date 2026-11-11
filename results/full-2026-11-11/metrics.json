@@ -14982,6 +14982,206 @@
         "horizon": 365,
         "model": "hazard_smart_seed4",
         "seed_index": 4
+      },
+      {
+        "ap": 0.06406167627372387,
+        "auc": 0.9068710893744939,
+        "family": "hazard_smart_w075",
+        "horizon": 7,
+        "model": "hazard_smart_w075",
+        "seed_index": 0
+      },
+      {
+        "ap": 0.06824413592417172,
+        "auc": 0.9059346427793995,
+        "family": "hazard_smart_w075",
+        "horizon": 7,
+        "model": "hazard_smart_w075_seed1",
+        "seed_index": 1
+      },
+      {
+        "ap": 0.07382065693176654,
+        "auc": 0.9025075946911709,
+        "family": "hazard_smart_w075",
+        "horizon": 7,
+        "model": "hazard_smart_w075_seed2",
+        "seed_index": 2
+      },
+      {
+        "ap": 0.06977008057998638,
+        "auc": 0.9061930100017335,
+        "family": "hazard_smart_w075",
+        "horizon": 7,
+        "model": "hazard_smart_w075_seed3",
+        "seed_index": 3
+      },
+      {
+        "ap": 0.07035294632273957,
+        "auc": 0.9065798303120401,
+        "family": "hazard_smart_w075",
+        "horizon": 7,
+        "model": "hazard_smart_w075_seed4",
+        "seed_index": 4
+      },
+      {
+        "ap": 0.11721376426345424,
+        "auc": 0.8799890623312221,
+        "family": "hazard_smart_w075",
+        "horizon": 30,
+        "model": "hazard_smart_w075",
+        "seed_index": 0
+      },
+      {
+        "ap": 0.12186324296358504,
+        "auc": 0.879137706793418,
+        "family": "hazard_smart_w075",
+        "horizon": 30,
+        "model": "hazard_smart_w075_seed1",
+        "seed_index": 1
+      },
+      {
+        "ap": 0.12813447981209114,
+        "auc": 0.8760289592281161,
+        "family": "hazard_smart_w075",
+        "horizon": 30,
+        "model": "hazard_smart_w075_seed2",
+        "seed_index": 2
+      },
+      {
+        "ap": 0.12321274501327317,
+        "auc": 0.8801880520298879,
+        "family": "hazard_smart_w075",
+        "horizon": 30,
+        "model": "hazard_smart_w075_seed3",
+        "seed_index": 3
+      },
+      {
+        "ap": 0.12499746366400713,
+        "auc": 0.8802902076553952,
+        "family": "hazard_smart_w075",
+        "horizon": 30,
+        "model": "hazard_smart_w075_seed4",
+        "seed_index": 4
+      },
+      {
+        "ap": 0.17129572346605512,
+        "auc": 0.8457727306736218,
+        "family": "hazard_smart_w075",
+        "horizon": 90,
+        "model": "hazard_smart_w075",
+        "seed_index": 0
+      },
+      {
+        "ap": 0.17730749466850665,
+        "auc": 0.8456718410139787,
+        "family": "hazard_smart_w075",
+        "horizon": 90,
+        "model": "hazard_smart_w075_seed1",
+        "seed_index": 1
+      },
+      {
+        "ap": 0.18231237328926936,
+        "auc": 0.8425749410665326,
+        "family": "hazard_smart_w075",
+        "horizon": 90,
+        "model": "hazard_smart_w075_seed2",
+        "seed_index": 2
+      },
+      {
+        "ap": 0.1772753425702048,
+        "auc": 0.8480426860755115,
+        "family": "hazard_smart_w075",
+        "horizon": 90,
+        "model": "hazard_smart_w075_seed3",
+        "seed_index": 3
+      },
+      {
+        "ap": 0.17796395875811527,
+        "auc": 0.8483201578398871,
+        "family": "hazard_smart_w075",
+        "horizon": 90,
+        "model": "hazard_smart_w075_seed4",
+        "seed_index": 4
+      },
+      {
+        "ap": 0.20006504145589085,
+        "auc": 0.813135584322791,
+        "family": "hazard_smart_w075",
+        "horizon": 180,
+        "model": "hazard_smart_w075",
+        "seed_index": 0
+      },
+      {
+        "ap": 0.19953148061116732,
+        "auc": 0.812069221926441,
+        "family": "hazard_smart_w075",
+        "horizon": 180,
+        "model": "hazard_smart_w075_seed1",
+        "seed_index": 1
+      },
+      {
+        "ap": 0.2021471148356408,
+        "auc": 0.8063311384308958,
+        "family": "hazard_smart_w075",
+        "horizon": 180,
+        "model": "hazard_smart_w075_seed2",
+        "seed_index": 2
+      },
+      {
+        "ap": 0.19852471500969404,
+        "auc": 0.8156035030289099,
+        "family": "hazard_smart_w075",
+        "horizon": 180,
+        "model": "hazard_smart_w075_seed3",
+        "seed_index": 3
+      },
+      {
+        "ap": 0.20418846946441077,
+        "auc": 0.8150330774301828,
+        "family": "hazard_smart_w075",
+        "horizon": 180,
+        "model": "hazard_smart_w075_seed4",
+        "seed_index": 4
+      },
+      {
+        "ap": 0.29656424414050303,
+        "auc": 0.7871203254285729,
+        "family": "hazard_smart_w075",
+        "horizon": 365,
+        "model": "hazard_smart_w075",
+        "seed_index": 0
+      },
+      {
+        "ap": 0.29214493878695547,
+        "auc": 0.7874790081415346,
+        "family": "hazard_smart_w075",
+        "horizon": 365,
+        "model": "hazard_smart_w075_seed1",
+        "seed_index": 1
+      },
+      {
+        "ap": 0.28473427439384236,
+        "auc": 0.7834578220375059,
+        "family": "hazard_smart_w075",
+        "horizon": 365,
+        "model": "hazard_smart_w075_seed2",
+        "seed_index": 2
+      },
+      {
+        "ap": 0.29285030885033886,
+        "auc": 0.7881933352888175,
+        "family": "hazard_smart_w075",
+        "horizon": 365,
+        "model": "hazard_smart_w075_seed3",
+        "seed_index": 3
+      },
+      {
+        "ap": 0.29654313604743615,
+        "auc": 0.7901789126131641,
+        "family": "hazard_smart_w075",
+        "horizon": 365,
+        "model": "hazard_smart_w075_seed4",
+        "seed_index": 4
       }
     ],
     "summary": [
@@ -15060,6 +15260,71 @@
         "auc_min": 0.7835357203131653,
         "auc_std": 0.0015537924880218183,
         "family": "hazard_smart",
+        "horizon": 365,
+        "replicates": 5
+      },
+      {
+        "ap_max": 0.07382065693176654,
+        "ap_mean": 0.06924989920647762,
+        "ap_min": 0.06406167627372387,
+        "ap_std": 0.003546418783974694,
+        "auc_max": 0.9068710893744939,
+        "auc_mean": 0.9056172334317676,
+        "auc_min": 0.9025075946911709,
+        "auc_std": 0.0017748850616677943,
+        "family": "hazard_smart_w075",
+        "horizon": 7,
+        "replicates": 5
+      },
+      {
+        "ap_max": 0.12813447981209114,
+        "ap_mean": 0.12308433914328214,
+        "ap_min": 0.11721376426345424,
+        "ap_std": 0.004035318437674503,
+        "auc_max": 0.8802902076553952,
+        "auc_mean": 0.8791267976076078,
+        "auc_min": 0.8760289592281161,
+        "auc_std": 0.0017902517963598336,
+        "family": "hazard_smart_w075",
+        "horizon": 30,
+        "replicates": 5
+      },
+      {
+        "ap_max": 0.18231237328926936,
+        "ap_mean": 0.17723097855043024,
+        "ap_min": 0.17129572346605512,
+        "ap_std": 0.003924057475239647,
+        "auc_max": 0.8483201578398871,
+        "auc_mean": 0.8460764713339064,
+        "auc_min": 0.8425749410665326,
+        "auc_std": 0.002313915936517281,
+        "family": "hazard_smart_w075",
+        "horizon": 90,
+        "replicates": 5
+      },
+      {
+        "ap_max": 0.20418846946441077,
+        "ap_mean": 0.20089136427536075,
+        "ap_min": 0.19852471500969404,
+        "ap_std": 0.0022683107054646315,
+        "auc_max": 0.8156035030289099,
+        "auc_mean": 0.8124345050278441,
+        "auc_min": 0.8063311384308958,
+        "auc_std": 0.0036969972477564235,
+        "family": "hazard_smart_w075",
+        "horizon": 180,
+        "replicates": 5
+      },
+      {
+        "ap_max": 0.29656424414050303,
+        "ap_mean": 0.2925673804438152,
+        "ap_min": 0.28473427439384236,
+        "ap_std": 0.004832121890443526,
+        "auc_max": 0.7901789126131641,
+        "auc_mean": 0.7872858807019191,
+        "auc_min": 0.7834578220375059,
+        "auc_std": 0.002444987083883003,
+        "family": "hazard_smart_w075",
         "horizon": 365,
         "replicates": 5
       }
@@ -22282,6 +22547,38 @@
       "snapshots": 1073805
     },
     {
+      "ap": 0.09692694886109533,
+      "auc": 0.8841967592303485,
+      "horizon": 7,
+      "model": "hazard_smart_w075_seed1",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.09629085481262012,
+      "auc": 0.8823819776694576,
+      "horizon": 7,
+      "model": "hazard_smart_w075_seed2",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.09709883680428094,
+      "auc": 0.8836603675186054,
+      "horizon": 7,
+      "model": "hazard_smart_w075_seed3",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
+      "ap": 0.09876754394024805,
+      "auc": 0.8839753993348258,
+      "horizon": 7,
+      "model": "hazard_smart_w075_seed4",
+      "positives": 12062,
+      "snapshots": 1073805
+    },
+    {
       "ap": 0.16498180261672177,
       "auc": 0.8674135404071078,
       "horizon": 30,
@@ -22418,6 +22715,38 @@
       "snapshots": 1060252
     },
     {
+      "ap": 0.15020717737494593,
+      "auc": 0.863084612722784,
+      "horizon": 30,
+      "model": "hazard_smart_w075_seed1",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.15358353236366318,
+      "auc": 0.8617069394196144,
+      "horizon": 30,
+      "model": "hazard_smart_w075_seed2",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.15376889176515687,
+      "auc": 0.8623659323057342,
+      "horizon": 30,
+      "model": "hazard_smart_w075_seed3",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
+      "ap": 0.15235795445754366,
+      "auc": 0.8626057986133767,
+      "horizon": 30,
+      "model": "hazard_smart_w075_seed4",
+      "positives": 51615,
+      "snapshots": 1060252
+    },
+    {
       "ap": 0.0458806538210579,
       "auc": 0.7704453755283742,
       "horizon": 90,
@@ -22510,6 +22839,38 @@
       "auc": 0.8412154624266173,
       "horizon": 90,
       "model": "hazard_smart_seed4",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.1860743082859664,
+      "auc": 0.8390075939400844,
+      "horizon": 90,
+      "model": "hazard_smart_w075_seed1",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.18901771250734128,
+      "auc": 0.8386815673213809,
+      "horizon": 90,
+      "model": "hazard_smart_w075_seed2",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.18764710577991442,
+      "auc": 0.8386643534335082,
+      "horizon": 90,
+      "model": "hazard_smart_w075_seed3",
+      "positives": 152379,
+      "snapshots": 1025201
+    },
+    {
+      "ap": 0.19155297298350812,
+      "auc": 0.8391291710180797,
+      "horizon": 90,
+      "model": "hazard_smart_w075_seed4",
       "positives": 152379,
       "snapshots": 1025201
     },
@@ -22610,6 +22971,38 @@
       "snapshots": 974954
     },
     {
+      "ap": 0.2115205587751965,
+      "auc": 0.8235747638370251,
+      "horizon": 180,
+      "model": "hazard_smart_w075_seed1",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.21412390786076882,
+      "auc": 0.8234722421712366,
+      "horizon": 180,
+      "model": "hazard_smart_w075_seed2",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.2103018349000121,
+      "auc": 0.8231861748340535,
+      "horizon": 180,
+      "model": "hazard_smart_w075_seed3",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
+      "ap": 0.21639603940822574,
+      "auc": 0.8236098679331261,
+      "horizon": 180,
+      "model": "hazard_smart_w075_seed4",
+      "positives": 172976,
+      "snapshots": 974954
+    },
+    {
       "ap": 0.09672463421484437,
       "auc": 0.7580875756361806,
       "horizon": 365,
@@ -22704,8 +23097,2930 @@
       "model": "hazard_smart_seed4",
       "positives": 211643,
       "snapshots": 879463
+    },
+    {
+      "ap": 0.24756831147841096,
+      "auc": 0.8053017656735839,
+      "horizon": 365,
+      "model": "hazard_smart_w075_seed1",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.2508435426504144,
+      "auc": 0.8047447310574367,
+      "horizon": 365,
+      "model": "hazard_smart_w075_seed2",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.2470778132409907,
+      "auc": 0.8048121354755056,
+      "horizon": 365,
+      "model": "hazard_smart_w075_seed3",
+      "positives": 211643,
+      "snapshots": 879463
+    },
+    {
+      "ap": 0.25141357491626104,
+      "auc": 0.8049952965072233,
+      "horizon": 365,
+      "model": "hazard_smart_w075_seed4",
+      "positives": 211643,
+      "snapshots": 879463
     }
   ],
+  "validation_weekly_alerts": {
+    "any_critical_counter": {
+      "matched": [
+        {
+          "difference": -0.03927148548662496,
+          "difference_ci": [
+            -0.0494726339794755,
+            -0.02574511849813426
+          ],
+          "model": "hazard_smart",
+          "nonfailing_share": 0.05003704336923691,
+          "share_failing_drives_alerted": 0.5828116107000569,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.01707455890722831,
+          "difference_ci": [
+            -0.03330959513215635,
+            -0.0064077142681849535
+          ],
+          "difference_vs_reference": 0.022196926579396647,
+          "difference_vs_reference_ci": [
+            0.006910116363167079,
+            0.028795996017540786
+          ],
+          "model": "hazard_smart_w075",
+          "nonfailing_share": 0.049980053570410896,
+          "share_failing_drives_alerted": 0.6050085372794536,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.01707455890722831,
+          "difference_ci": [
+            -0.02661836304389501,
+            -0.004048908256365725
+          ],
+          "difference_vs_reference": 0.022196926579396647,
+          "difference_vs_reference_ci": [
+            0.013503098217519008,
+            0.028638491840216756
+          ],
+          "model": "hazard_smart_w100",
+          "nonfailing_share": 0.050065538268649915,
+          "share_failing_drives_alerted": 0.6050085372794536,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.037564029595902104,
+          "difference_ci": [
+            -0.049462027665734584,
+            -0.024756600150208728
+          ],
+          "difference_vs_reference": 0.0017074558907228532,
+          "difference_vs_reference_ci": [
+            -0.006480823139282099,
+            0.0064741619440975545
+          ],
+          "model": "hazard_smart_seed1",
+          "nonfailing_share": 0.04995155867099789,
+          "share_failing_drives_alerted": 0.5845190665907798,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.04097894137734781,
+          "difference_ci": [
+            -0.05133518031241165,
+            -0.02850324193647574
+          ],
+          "difference_vs_reference": -0.0017074558907228532,
+          "difference_vs_reference_ci": [
+            -0.006625033649710182,
+            0.0028763028834296015
+          ],
+          "model": "hazard_smart_seed2",
+          "nonfailing_share": 0.049894568872171884,
+          "share_failing_drives_alerted": 0.5811041548093341,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.03528742174160504,
+          "difference_ci": [
+            -0.048271298257045195,
+            -0.02182964748024481
+          ],
+          "difference_vs_reference": 0.003984063745019917,
+          "difference_vs_reference_ci": [
+            -0.0029275211391736637,
+            0.00907392668351336
+          ],
+          "model": "hazard_smart_seed3",
+          "nonfailing_share": 0.04992306377158488,
+          "share_failing_drives_alerted": 0.5867956744450769,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.03870233352305075,
+          "difference_ci": [
+            -0.051114074661642944,
+            -0.024515218682280418
+          ],
+          "difference_vs_reference": 0.0005691519635742104,
+          "difference_vs_reference_ci": [
+            -0.007998135940866074,
+            0.007736661654017527
+          ],
+          "model": "hazard_smart_seed4",
+          "nonfailing_share": 0.04986607397275888,
+          "share_failing_drives_alerted": 0.5833807626636311,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.02390438247011961,
+          "difference_ci": [
+            -0.035876924102641025,
+            -0.012652288169931622
+          ],
+          "difference_vs_reference": 0.015367103016505346,
+          "difference_vs_reference_ci": [
+            0.005266318497396444,
+            0.02116446720413514
+          ],
+          "model": "hazard_smart_w075_seed1",
+          "nonfailing_share": 0.0500085484698239,
+          "share_failing_drives_alerted": 0.5981787137165623,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.01764371087080252,
+          "difference_ci": [
+            -0.02922245697126789,
+            -0.0064017037573831075
+          ],
+          "difference_vs_reference": 0.021627774615822437,
+          "difference_vs_reference_ci": [
+            0.009626785417056824,
+            0.026914950803046057
+          ],
+          "model": "hazard_smart_w075_seed2",
+          "nonfailing_share": 0.05003704336923691,
+          "share_failing_drives_alerted": 0.6044393853158794,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.021058622652248227,
+          "difference_ci": [
+            -0.031344851900428905,
+            -0.005533832687231928
+          ],
+          "difference_vs_reference": 0.01821286283437673,
+          "difference_vs_reference_ci": [
+            0.007418460245756337,
+            0.030010638655179948
+          ],
+          "model": "hazard_smart_w075_seed3",
+          "nonfailing_share": 0.04983757907334587,
+          "share_failing_drives_alerted": 0.6010244735344337,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.01650540694365399,
+          "difference_ci": [
+            -0.02887767917637536,
+            -0.0032111403803819103
+          ],
+          "difference_vs_reference": 0.02276607854297097,
+          "difference_vs_reference_ci": [
+            0.010595753027803492,
+            0.02969887220829648
+          ],
+          "model": "hazard_smart_w075_seed4",
+          "nonfailing_share": 0.050065538268649915,
+          "share_failing_drives_alerted": 0.6055776892430279,
+          "versus": "rule_counters > 0"
+        }
+      ],
+      "matched_first_alert": [
+        {
+          "difference": 0.01306076093128905,
+          "difference_ci": [
+            0.004842366559660738,
+            0.02286975880026584
+          ],
+          "model": "hazard_smart",
+          "nonfailing_share": 0.05003704336923691,
+          "share_failing_drives_alerted": 0.6428165814877911,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.017035775127768216,
+          "difference_ci": [
+            0.006894220004654408,
+            0.025084484712102884
+          ],
+          "difference_vs_reference": 0.003975014196479165,
+          "difference_vs_reference_ci": [
+            -0.0021606103364609024,
+            0.009763711615166088
+          ],
+          "model": "hazard_smart_w075",
+          "nonfailing_share": 0.049980053570410896,
+          "share_failing_drives_alerted": 0.6467915956842702,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.02044293015332188,
+          "difference_ci": [
+            0.014366270965537503,
+            0.029386484414979222
+          ],
+          "difference_vs_reference": 0.0073821692220328305,
+          "difference_vs_reference_ci": [
+            0.0006991582149803139,
+            0.014031192854513843
+          ],
+          "model": "hazard_smart_w100",
+          "nonfailing_share": 0.050065538268649915,
+          "share_failing_drives_alerted": 0.6501987507098239,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.015332197614991383,
+          "difference_ci": [
+            0.004395165174779042,
+            0.026471905355639345
+          ],
+          "difference_vs_reference": 0.0022714366837023325,
+          "difference_vs_reference_ci": [
+            -0.0036817410719481827,
+            0.007858245108949715
+          ],
+          "model": "hazard_smart_seed1",
+          "nonfailing_share": 0.04995155867099789,
+          "share_failing_drives_alerted": 0.6450880181714934,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.01249290176036344,
+          "difference_ci": [
+            0.0041883861271135,
+            0.023899755985485893
+          ],
+          "difference_vs_reference": -0.0005678591709256109,
+          "difference_vs_reference_ci": [
+            -0.0045801028191678975,
+            0.00488340803177741
+          ],
+          "model": "hazard_smart_seed2",
+          "nonfailing_share": 0.049894568872171884,
+          "share_failing_drives_alerted": 0.6422487223168655,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.015332197614991383,
+          "difference_ci": [
+            0.006999173209791602,
+            0.028009787821750398
+          ],
+          "difference_vs_reference": 0.0022714366837023325,
+          "difference_vs_reference_ci": [
+            -0.00044438073394494065,
+            0.007431798686356855
+          ],
+          "model": "hazard_smart_seed3",
+          "nonfailing_share": 0.04992306377158488,
+          "share_failing_drives_alerted": 0.6450880181714934,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.01306076093128905,
+          "difference_ci": [
+            0.005657156747501227,
+            0.026053890613447313
+          ],
+          "difference_vs_reference": 0.0,
+          "difference_vs_reference_ci": [
+            -0.003884747706422012,
+            0.005574456234778737
+          ],
+          "model": "hazard_smart_seed4",
+          "nonfailing_share": 0.04986607397275888,
+          "share_failing_drives_alerted": 0.6428165814877911,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.015900056785916994,
+          "difference_ci": [
+            0.008237497959031179,
+            0.024799837246381982
+          ],
+          "difference_vs_reference": 0.0028392958546279434,
+          "difference_vs_reference_ci": [
+            -0.0035490678781352506,
+            0.007458724865104512
+          ],
+          "model": "hazard_smart_w075_seed1",
+          "nonfailing_share": 0.0500085484698239,
+          "share_failing_drives_alerted": 0.645655877342419,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.018171493469619437,
+          "difference_ci": [
+            0.011374141381045472,
+            0.025713628910050773
+          ],
+          "difference_vs_reference": 0.005110732538330387,
+          "difference_vs_reference_ci": [
+            -0.0004400908574673484,
+            0.010713798780794707
+          ],
+          "model": "hazard_smart_w075_seed2",
+          "nonfailing_share": 0.05003704336923691,
+          "share_failing_drives_alerted": 0.6479273140261215,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.017035775127768216,
+          "difference_ci": [
+            0.011454302108377265,
+            0.02671935536016199
+          ],
+          "difference_vs_reference": 0.003975014196479165,
+          "difference_vs_reference_ci": [
+            -0.0010291274106194374,
+            0.010057464732568888
+          ],
+          "model": "hazard_smart_w075_seed3",
+          "nonfailing_share": 0.04983757907334587,
+          "share_failing_drives_alerted": 0.6467915956842702,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.02044293015332188,
+          "difference_ci": [
+            0.013372716297060775,
+            0.03147321961130748
+          ],
+          "difference_vs_reference": 0.0073821692220328305,
+          "difference_vs_reference_ci": [
+            0.0016902189370020832,
+            0.015911873563003456
+          ],
+          "model": "hazard_smart_w075_seed4",
+          "nonfailing_share": 0.050065538268649915,
+          "share_failing_drives_alerted": 0.6501987507098239,
+          "versus": "rule_counters > 0"
+        }
+      ],
+      "share_failing_drives_alerted": 0.6220830961866819,
+      "share_failing_drives_alerted_any_lead": 0.629755820556502,
+      "share_failing_drives_alerted_any_lead_ci": [
+        0.6051374427147735,
+        0.6474186661889519
+      ],
+      "share_failing_drives_alerted_ci": [
+        0.5983245877522217,
+        0.6383967899333792
+      ],
+      "share_nonfailing_drives_alerted": 0.050065538268649915,
+      "share_nonfailing_drives_alerted_ci": [
+        0.04477871042498716,
+        0.05576881945302526
+      ]
+    },
+    "budgets": [],
+    "failing_drives_any_lead": 1761,
+    "failing_drives_checked": 1757,
+    "failing_drives_total": 1772,
+    "matched": [
+      {
+        "difference": -0.011383039271485484,
+        "difference_ci": [
+          -0.04128156938575407,
+          0.045036339355944886
+        ],
+        "model": "hazard_smart",
+        "nonfailing_share": 0.009973214794551774,
+        "share_failing_drives_alerted": 0.38076266363118955,
+        "share_failing_drives_alerted_ci": [
+          0.34090886449080604,
+          0.4466461307901113
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.012521343198634072,
+        "difference_ci": [
+          -0.04514820396518618,
+          0.04071315290167973
+        ],
+        "difference_vs_reference": -0.0011383039271485873,
+        "difference_vs_reference_ci": [
+          -0.026691308583864738,
+          0.023000140828069025
+        ],
+        "model": "hazard_smart_w075",
+        "nonfailing_share": 0.009859235196899754,
+        "share_failing_drives_alerted": 0.37962435970404096,
+        "share_failing_drives_alerted_ci": [
+          0.33603067215255994,
+          0.44580088328908735
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.01422879908935687,
+        "difference_ci": [
+          -0.036576628305880626,
+          0.03830308987505863
+        ],
+        "difference_vs_reference": -0.002845759817871385,
+        "difference_vs_reference_ci": [
+          -0.019561609343875484,
+          0.02004318633861166
+        ],
+        "model": "hazard_smart_w100",
+        "nonfailing_share": 0.009973214794551774,
+        "share_failing_drives_alerted": 0.37791690381331816,
+        "share_failing_drives_alerted_ci": [
+          0.33752751152241456,
+          0.43638823970183044
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "model": "rule_counters",
+        "nonfailing_share": 0.009802245398073745,
+        "share_failing_drives_alerted": 0.39214570290267503,
+        "share_failing_drives_alerted_ci": [
+          0.3321006027143968,
+          0.4161618355122072
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "difference": -0.003984063745019917,
+        "difference_ci": [
+          -0.03655452353942143,
+          0.05001150173000414
+        ],
+        "difference_vs_reference": 0.007398975526465568,
+        "difference_vs_reference_ci": [
+          -0.02707151256655851,
+          0.028820855810798053
+        ],
+        "model": "hazard_smart_seed1",
+        "nonfailing_share": 0.009802245398073745,
+        "share_failing_drives_alerted": 0.3881616391576551,
+        "share_failing_drives_alerted_ci": [
+          0.3500753593116067,
+          0.44063032435265087
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.026750142287990886,
+        "difference_ci": [
+          -0.052948348275117754,
+          0.03254927442452042
+        ],
+        "difference_vs_reference": -0.015367103016505401,
+        "difference_vs_reference_ci": [
+          -0.04084528969499374,
+          0.006212620881059021
+        ],
+        "model": "hazard_smart_seed2",
+        "nonfailing_share": 0.009973214794551774,
+        "share_failing_drives_alerted": 0.36539556061468415,
+        "share_failing_drives_alerted_ci": [
+          0.3301177077654023,
+          0.43618717773889604
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.010244735344336953,
+        "difference_ci": [
+          -0.043899614054385125,
+          0.035872494108836236
+        ],
+        "difference_vs_reference": 0.0011383039271485318,
+        "difference_vs_reference_ci": [
+          -0.023530748387981887,
+          0.014581159748387003
+        ],
+        "model": "hazard_smart_seed3",
+        "nonfailing_share": 0.009916224995725765,
+        "share_failing_drives_alerted": 0.3819009675583381,
+        "share_failing_drives_alerted_ci": [
+          0.3508998185234554,
+          0.4274314587857314
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.013659647125782604,
+        "difference_ci": [
+          -0.04848920499833578,
+          0.05307193961189553
+        ],
+        "difference_vs_reference": -0.002276607854297119,
+        "difference_vs_reference_ci": [
+          -0.02876373968412066,
+          0.020723532618284538
+        ],
+        "model": "hazard_smart_seed4",
+        "nonfailing_share": 0.00988773009631276,
+        "share_failing_drives_alerted": 0.3784860557768924,
+        "share_failing_drives_alerted_ci": [
+          0.3472515167654723,
+          0.45495957103042634
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.012521343198634072,
+        "difference_ci": [
+          -0.04968305762467065,
+          0.041290694222089155
+        ],
+        "difference_vs_reference": -0.0011383039271485873,
+        "difference_vs_reference_ci": [
+          -0.02586502808068282,
+          0.022991890003842795
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.00988773009631276,
+        "share_failing_drives_alerted": 0.37962435970404096,
+        "share_failing_drives_alerted_ci": [
+          0.3311243673741614,
+          0.44181198739274063
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.009675583380762687,
+        "difference_ci": [
+          -0.03239705567106333,
+          0.03554859337268742
+        ],
+        "difference_vs_reference": 0.0017074558907227977,
+        "difference_vs_reference_ci": [
+          -0.03246835418656971,
+          0.02351256391829145
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.00983074029748675,
+        "share_failing_drives_alerted": 0.38247011952191234,
+        "share_failing_drives_alerted_ci": [
+          0.3316746154770808,
+          0.428209690445715
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.023904382470119556,
+        "difference_ci": [
+          -0.05525846799241395,
+          0.028393410494299394
+        ],
+        "difference_vs_reference": -0.012521343198634072,
+        "difference_vs_reference_ci": [
+          -0.03793256104608959,
+          0.007758139765733576
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.009973214794551774,
+        "share_failing_drives_alerted": 0.3682413204325555,
+        "share_failing_drives_alerted_ci": [
+          0.3102994660445713,
+          0.4387090885092982
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.0017074558907228532,
+        "difference_ci": [
+          -0.037835177203182815,
+          0.03727593893176953
+        ],
+        "difference_vs_reference": 0.009675583380762631,
+        "difference_vs_reference_ci": [
+          -0.028117011911114397,
+          0.026921063042517037
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.009973214794551774,
+        "share_failing_drives_alerted": 0.3904382470119522,
+        "share_failing_drives_alerted_ci": [
+          0.3296269684387127,
+          0.44176158519369696
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.002845759817871274,
+        "difference_ci": [
+          -0.023914322611889142,
+          0.029455173304999565
+        ],
+        "model": "hazard_smart",
+        "nonfailing_share": 0.024990026785205448,
+        "share_failing_drives_alerted": 0.5122367672168469,
+        "share_failing_drives_alerted_ci": [
+          0.4731377374867704,
+          0.5427082736533327
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.010813887307911108,
+        "difference_ci": [
+          -0.012567574429974202,
+          0.03583600804740064
+        ],
+        "difference_vs_reference": 0.007968127490039834,
+        "difference_vs_reference_ci": [
+          -0.005587596793892402,
+          0.019892816361703217
+        ],
+        "model": "hazard_smart_w075",
+        "nonfailing_share": 0.024990026785205448,
+        "share_failing_drives_alerted": 0.5202048947068867,
+        "share_failing_drives_alerted_ci": [
+          0.4878594101513144,
+          0.5453309470881889
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.005691519635742659,
+        "difference_ci": [
+          -0.0197516211497901,
+          0.03344322919392261
+        ],
+        "difference_vs_reference": 0.002845759817871385,
+        "difference_vs_reference_ci": [
+          -0.009491663266435534,
+          0.014473466715187809
+        ],
+        "model": "hazard_smart_w100",
+        "nonfailing_share": 0.02496153188579244,
+        "share_failing_drives_alerted": 0.5150825270347182,
+        "share_failing_drives_alerted_ci": [
+          0.482398326537418,
+          0.5426273985325168
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "model": "rule_counters",
+        "nonfailing_share": 0.02496153188579244,
+        "share_failing_drives_alerted": 0.5093910073989756,
+        "share_failing_drives_alerted_ci": [
+          0.4760774392511778,
+          0.5422753191512086
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "difference": 0.0022766078542970636,
+        "difference_ci": [
+          -0.030474965753559045,
+          0.03362227752404924
+        ],
+        "difference_vs_reference": -0.0005691519635742104,
+        "difference_vs_reference_ci": [
+          -0.011112749009811695,
+          0.015250855188141395
+        ],
+        "model": "hazard_smart_seed1",
+        "nonfailing_share": 0.0247335726904884,
+        "share_failing_drives_alerted": 0.5116676152532726,
+        "share_failing_drives_alerted_ci": [
+          0.46852437137113173,
+          0.544513283335816
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.010244735344337008,
+        "difference_ci": [
+          -0.032348980424343976,
+          0.015911779348865552
+        ],
+        "difference_vs_reference": -0.013090495162208282,
+        "difference_vs_reference_ci": [
+          -0.020986954055587037,
+          -0.0012626092394138096
+        ],
+        "model": "hazard_smart_seed2",
+        "nonfailing_share": 0.02493303698637944,
+        "share_failing_drives_alerted": 0.4991462720546386,
+        "share_failing_drives_alerted_ci": [
+          0.46417210369395184,
+          0.5347402614970737
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.0017074558907228532,
+        "difference_ci": [
+          -0.02625241155720963,
+          0.0254095041615435
+        ],
+        "difference_vs_reference": -0.004553215708594127,
+        "difference_vs_reference_ci": [
+          -0.01267419345002128,
+          0.008098128510682945
+        ],
+        "model": "hazard_smart_seed3",
+        "nonfailing_share": 0.02487604718755343,
+        "share_failing_drives_alerted": 0.5076835515082527,
+        "share_failing_drives_alerted_ci": [
+          0.4736471240223031,
+          0.5402393836440513
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.0034149117814457064,
+        "difference_ci": [
+          -0.022753067245958,
+          0.024631759065586976
+        ],
+        "difference_vs_reference": -0.00626067159931698,
+        "difference_vs_reference_ci": [
+          -0.009685938282586829,
+          0.007406447465443994
+        ],
+        "model": "hazard_smart_seed4",
+        "nonfailing_share": 0.0247335726904884,
+        "share_failing_drives_alerted": 0.5059760956175299,
+        "share_failing_drives_alerted_ci": [
+          0.47012383856205125,
+          0.5480551958840852
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.002845759817871274,
+        "difference_ci": [
+          -0.017746915079123037,
+          0.03381285689542957
+        ],
+        "difference_vs_reference": 0.0,
+        "difference_vs_reference_ci": [
+          -0.009908413060337226,
+          0.011068095235015278
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.0247335726904884,
+        "share_failing_drives_alerted": 0.5122367672168469,
+        "share_failing_drives_alerted_ci": [
+          0.48113151475257493,
+          0.5473621855805555
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.003984063745020028,
+        "difference_ci": [
+          -0.021283024772454202,
+          0.022528377444644084
+        ],
+        "difference_vs_reference": -0.006829823562891302,
+        "difference_vs_reference_ci": [
+          -0.01674320257368202,
+          0.007044955092303656
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.0247335726904884,
+        "share_failing_drives_alerted": 0.5054069436539556,
+        "share_failing_drives_alerted_ci": [
+          0.47330673390037703,
+          0.5394507243719754
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.007398975526465623,
+        "difference_ci": [
+          -0.02529104157237237,
+          0.017162864734524542
+        ],
+        "difference_vs_reference": -0.010244735344336897,
+        "difference_vs_reference_ci": [
+          -0.023202576343407246,
+          0.011479248090581762
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.024819057388727417,
+        "share_failing_drives_alerted": 0.50199203187251,
+        "share_failing_drives_alerted_ci": [
+          0.4638107267044696,
+          0.543464511932641
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.004553215708594127,
+        "difference_ci": [
+          -0.016191031778728975,
+          0.028959131356600103
+        ],
+        "difference_vs_reference": 0.0017074558907228532,
+        "difference_vs_reference_ci": [
+          -0.008834447857442662,
+          0.014824348115721383
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.024790562489314414,
+        "share_failing_drives_alerted": 0.5139442231075697,
+        "share_failing_drives_alerted_ci": [
+          0.4866085048845881,
+          0.543241807768308
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.014228799089356814,
+        "difference_ci": [
+          -0.04421226112117413,
+          -0.008851155230465571
+        ],
+        "model": "hazard_smart",
+        "nonfailing_share": 0.04975209437510686,
+        "share_failing_drives_alerted": 0.5828116107000569,
+        "share_failing_drives_alerted_ci": [
+          0.5602652226756362,
+          0.6125415317848871
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.007968127490039834,
+        "difference_ci": [
+          -0.02211923684543848,
+          0.008008131942736977
+        ],
+        "difference_vs_reference": 0.022196926579396647,
+        "difference_vs_reference_ci": [
+          0.0042317028871552975,
+          0.03133727964831447
+        ],
+        "model": "hazard_smart_w075",
+        "nonfailing_share": 0.049980053570410896,
+        "share_failing_drives_alerted": 0.6050085372794536,
+        "share_failing_drives_alerted_ci": [
+          0.5747250828053941,
+          0.6317924205974969
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.006829823562891302,
+        "difference_ci": [
+          -0.01781432277767544,
+          0.021022779260070606
+        ],
+        "difference_vs_reference": 0.021058622652248116,
+        "difference_vs_reference_ci": [
+          0.009467935066796,
+          0.049621114434547635
+        ],
+        "model": "hazard_smart_w100",
+        "nonfailing_share": 0.04978058927451986,
+        "share_failing_drives_alerted": 0.603870233352305,
+        "share_failing_drives_alerted_ci": [
+          0.5771926337243442,
+          0.6537387576851922
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "model": "rule_counters",
+        "nonfailing_share": 0.04468000227959195,
+        "share_failing_drives_alerted": 0.5970404097894138,
+        "share_failing_drives_alerted_ci": [
+          0.5784047438299522,
+          0.6383967899333792
+        ],
+        "target_nonfailing_share": 0.05
+      },
+      {
+        "difference": -0.01252134319863396,
+        "difference_ci": [
+          -0.04538092856964271,
+          -0.00838209683037268
+        ],
+        "difference_vs_reference": 0.0017074558907228532,
+        "difference_vs_reference_ci": [
+          -0.01001330760783351,
+          0.005741208343196869
+        ],
+        "model": "hazard_smart_seed1",
+        "nonfailing_share": 0.04995155867099789,
+        "share_failing_drives_alerted": 0.5845190665907798,
+        "share_failing_drives_alerted_ci": [
+          0.5584217437943249,
+          0.6104692684092339
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.015936254980079667,
+        "difference_ci": [
+          -0.04784733294609753,
+          -0.01027234592456822
+        ],
+        "difference_vs_reference": -0.0017074558907228532,
+        "difference_vs_reference_ci": [
+          -0.011949856534616807,
+          0.0045156629431763505
+        ],
+        "model": "hazard_smart_seed2",
+        "nonfailing_share": 0.049894568872171884,
+        "share_failing_drives_alerted": 0.5811041548093341,
+        "share_failing_drives_alerted_ci": [
+          0.5596994514468859,
+          0.6058823079745597
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.010244735344336897,
+        "difference_ci": [
+          -0.03988433502188982,
+          -0.00586763025853733
+        ],
+        "difference_vs_reference": 0.003984063745019917,
+        "difference_vs_reference_ci": [
+          -0.005661635871296591,
+          0.0077255290992501655
+        ],
+        "model": "hazard_smart_seed3",
+        "nonfailing_share": 0.04992306377158488,
+        "share_failing_drives_alerted": 0.5867956744450769,
+        "share_failing_drives_alerted_ci": [
+          0.5635507705678058,
+          0.6142393706752473
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": -0.013659647125782604,
+        "difference_ci": [
+          -0.043661150015953824,
+          -0.006160381958357245
+        ],
+        "difference_vs_reference": 0.0005691519635742104,
+        "difference_vs_reference_ci": [
+          -0.0051168275601713555,
+          0.006606815532380038
+        ],
+        "model": "hazard_smart_seed4",
+        "nonfailing_share": 0.04986607397275888,
+        "share_failing_drives_alerted": 0.5833807626636311,
+        "share_failing_drives_alerted_ci": [
+          0.5581917628920616,
+          0.6116372143986561
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.0011383039271485318,
+        "difference_ci": [
+          -0.0288578767636222,
+          0.00318634272281003
+        ],
+        "difference_vs_reference": 0.015367103016505346,
+        "difference_vs_reference_ci": [
+          0.0035915546785452836,
+          0.025729508437869163
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.049980053570410896,
+        "share_failing_drives_alerted": 0.5981787137165623,
+        "share_failing_drives_alerted_ci": [
+          0.571356538011619,
+          0.6315325244841536
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.005122367672168449,
+        "difference_ci": [
+          -0.021167634303301576,
+          0.0085535775315528
+        ],
+        "difference_vs_reference": 0.019351166761525262,
+        "difference_vs_reference_ci": [
+          0.0024084819935476566,
+          0.04025072002305649
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.04975209437510686,
+        "share_failing_drives_alerted": 0.6021627774615822,
+        "share_failing_drives_alerted_ci": [
+          0.5703315020268829,
+          0.6420728172290633
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.003984063745019917,
+        "difference_ci": [
+          -0.02010601118359742,
+          0.007086730767890712
+        ],
+        "difference_vs_reference": 0.01821286283437673,
+        "difference_vs_reference_ci": [
+          0.0050524578372521285,
+          0.02979324836572436
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.04983757907334587,
+        "share_failing_drives_alerted": 0.6010244735344337,
+        "share_failing_drives_alerted_ci": [
+          0.5777759326227636,
+          0.6331867668421299
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.006260671599317091,
+        "difference_ci": [
+          -0.020149035010864322,
+          0.010899799956426114
+        ],
+        "difference_vs_reference": 0.020489470688673905,
+        "difference_vs_reference_ci": [
+          0.004787710634083392,
+          0.039777969018932914
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.04978058927451986,
+        "share_failing_drives_alerted": 0.6033010813887308,
+        "share_failing_drives_alerted_ci": [
+          0.5770303207272159,
+          0.6381336451956858
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      }
+    ],
+    "matched_first_alert": [
+      {
+        "difference": 0.0709823963657013,
+        "difference_ci": [
+          0.027923106882491982,
+          0.1298084772248439
+        ],
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          45.0,
+          143.5
+        ],
+        "model": "hazard_smart",
+        "nonfailing_share": 0.009973214794551774,
+        "share_caught_first_alerted_within_horizon": 0.4007177033492823,
+        "share_failing_drives_alerted": 0.4747302668938103,
+        "share_failing_drives_alerted_ci": [
+          0.4203645175996353,
+          0.5412494648142617
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06757524134014764,
+        "difference_ci": [
+          0.03450374041458149,
+          0.12684015422468453
+        ],
+        "difference_vs_reference": -0.0034071550255536653,
+        "difference_vs_reference_ci": [
+          -0.027324420242989426,
+          0.026580496218342353
+        ],
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          45.0,
+          155.0
+        ],
+        "model": "hazard_smart_w075",
+        "nonfailing_share": 0.009859235196899754,
+        "share_caught_first_alerted_within_horizon": 0.4,
+        "share_failing_drives_alerted": 0.47132311186825665,
+        "share_failing_drives_alerted_ci": [
+          0.4227681788400909,
+          0.5431613974909847
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.053946621237933035,
+        "difference_ci": [
+          0.02670555233314001,
+          0.10941675655904277
+        ],
+        "difference_vs_reference": -0.01703577512776827,
+        "difference_vs_reference_ci": [
+          -0.04075041176860605,
+          0.015073749208730922
+        ],
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          46.0,
+          154.75
+        ],
+        "model": "hazard_smart_w100",
+        "nonfailing_share": 0.009973214794551774,
+        "share_caught_first_alerted_within_horizon": 0.3945409429280397,
+        "share_failing_drives_alerted": 0.45769449176604204,
+        "share_failing_drives_alerted_ci": [
+          0.41719446011686584,
+          0.519968909634342
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          52.0,
+          255.5
+        ],
+        "model": "rule_counters",
+        "nonfailing_share": 0.009802245398073745,
+        "share_caught_first_alerted_within_horizon": 0.379746835443038,
+        "share_failing_drives_alerted": 0.403747870528109,
+        "share_failing_drives_alerted_ci": [
+          0.3441294855640992,
+          0.42945895853796157
+        ],
+        "target_nonfailing_share": 0.01
+      },
+      {
+        "difference": 0.07438955139125497,
+        "difference_ci": [
+          0.04475291732177394,
+          0.132838382836332
+        ],
+        "difference_vs_reference": 0.0034071550255536653,
+        "difference_vs_reference_ci": [
+          -0.019880254562128153,
+          0.0325097724077857
+        ],
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          44.0,
+          135.0
+        ],
+        "model": "hazard_smart_seed1",
+        "nonfailing_share": 0.009802245398073745,
+        "share_caught_first_alerted_within_horizon": 0.40736342042755347,
+        "share_failing_drives_alerted": 0.478137421919364,
+        "share_failing_drives_alerted_ci": [
+          0.4381884057254961,
+          0.5297664447220292
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.04997160704145376,
+        "difference_ci": [
+          0.022249144811858614,
+          0.10931932665679354
+        ],
+        "difference_vs_reference": -0.021010789324247547,
+        "difference_vs_reference_ci": [
+          -0.04055775839280995,
+          0.008362767277238548
+        ],
+        "first_alert_lead_days_quartiles": [
+          11.0,
+          41.0,
+          132.5
+        ],
+        "model": "hazard_smart_seed2",
+        "nonfailing_share": 0.009973214794551774,
+        "share_caught_first_alerted_within_horizon": 0.4167709637046308,
+        "share_failing_drives_alerted": 0.45371947756956277,
+        "share_failing_drives_alerted_ci": [
+          0.415664306961718,
+          0.5337421654684571
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06587166382737081,
+        "difference_ci": [
+          0.03391112783043135,
+          0.11786091118616893
+        ],
+        "difference_vs_reference": -0.005110732538330498,
+        "difference_vs_reference_ci": [
+          -0.022676654935959273,
+          0.015898118044326365
+        ],
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          45.0,
+          142.0
+        ],
+        "model": "hazard_smart_seed3",
+        "nonfailing_share": 0.009916224995725765,
+        "share_caught_first_alerted_within_horizon": 0.39903264812575573,
+        "share_failing_drives_alerted": 0.4696195343554798,
+        "share_failing_drives_alerted_ci": [
+          0.43797596640274944,
+          0.5202475196443125
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06416808631459398,
+        "difference_ci": [
+          0.028683958314188986,
+          0.12384481873945596
+        ],
+        "difference_vs_reference": -0.006814310051107331,
+        "difference_vs_reference_ci": [
+          -0.029475384711472413,
+          0.022525546889761328
+        ],
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          43.0,
+          141.0
+        ],
+        "model": "hazard_smart_seed4",
+        "nonfailing_share": 0.00988773009631276,
+        "share_caught_first_alerted_within_horizon": 0.41383495145631066,
+        "share_failing_drives_alerted": 0.467915956842703,
+        "share_failing_drives_alerted_ci": [
+          0.4362182410899629,
+          0.5484869699692796
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06360022714366836,
+        "difference_ci": [
+          0.023865309567423408,
+          0.12047149694158593
+        ],
+        "difference_vs_reference": -0.007382169222032942,
+        "difference_vs_reference_ci": [
+          -0.030522064138952674,
+          0.02339057421730362
+        ],
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          44.0,
+          147.0
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.00988773009631276,
+        "share_caught_first_alerted_within_horizon": 0.4082624544349939,
+        "share_failing_drives_alerted": 0.4673480976717774,
+        "share_failing_drives_alerted_ci": [
+          0.4152618230678792,
+          0.5368008130556171
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.07268597387847814,
+        "difference_ci": [
+          0.03952183279299299,
+          0.11591376489240918
+        ],
+        "difference_vs_reference": 0.0017035775127768327,
+        "difference_vs_reference_ci": [
+          -0.03111020913462303,
+          0.024458701971626102
+        ],
+        "first_alert_lead_days_quartiles": [
+          13.0,
+          50.0,
+          170.0
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.00983074029748675,
+        "share_caught_first_alerted_within_horizon": 0.3814064362336114,
+        "share_failing_drives_alerted": 0.47643384440658715,
+        "share_failing_drives_alerted_ci": [
+          0.4203491538922076,
+          0.5240093271300496
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.060193072118114754,
+        "difference_ci": [
+          0.016821949533560608,
+          0.11291653107712331
+        ],
+        "difference_vs_reference": -0.010789324247586551,
+        "difference_vs_reference_ci": [
+          -0.04106086200907101,
+          0.015420815027781433
+        ],
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          47.0,
+          148.0
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.009973214794551774,
+        "share_caught_first_alerted_within_horizon": 0.390452876376989,
+        "share_failing_drives_alerted": 0.46394094264622376,
+        "share_failing_drives_alerted_ci": [
+          0.3976226634558677,
+          0.5333114446406554
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.08063600227143669,
+        "difference_ci": [
+          0.03864025085518815,
+          0.11917922484046126
+        ],
+        "difference_vs_reference": 0.009653605905735385,
+        "difference_vs_reference_ci": [
+          -0.031026237944571166,
+          0.03140150514068391
+        ],
+        "first_alert_lead_days_quartiles": [
+          14.0,
+          50.0,
+          165.0
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.009973214794551774,
+        "share_caught_first_alerted_within_horizon": 0.3786635404454865,
+        "share_failing_drives_alerted": 0.4843838727995457,
+        "share_failing_drives_alerted_ci": [
+          0.4186931635887836,
+          0.5359576300750639
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06530380465644525,
+        "difference_ci": [
+          0.04311164741256533,
+          0.08810622458759153
+        ],
+        "first_alert_lead_days_quartiles": [
+          21.0,
+          83.5,
+          250.0
+        ],
+        "model": "hazard_smart",
+        "nonfailing_share": 0.024990026785205448,
+        "share_caught_first_alerted_within_horizon": 0.3001930501930502,
+        "share_failing_drives_alerted": 0.5883021010789324,
+        "share_failing_drives_alerted_ci": [
+          0.5538165314581687,
+          0.6195834108130723
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06927881885292453,
+        "difference_ci": [
+          0.04666623663661327,
+          0.09274218641491222
+        ],
+        "difference_vs_reference": 0.003975014196479276,
+        "difference_vs_reference_ci": [
+          -0.008682737256017028,
+          0.01084122091130769
+        ],
+        "first_alert_lead_days_quartiles": [
+          22.5,
+          90.0,
+          275.0
+        ],
+        "model": "hazard_smart_w075",
+        "nonfailing_share": 0.024990026785205448,
+        "share_caught_first_alerted_within_horizon": 0.28763183125599234,
+        "share_failing_drives_alerted": 0.5922771152754117,
+        "share_failing_drives_alerted_ci": [
+          0.5606701813688109,
+          0.6166769289197109
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06473594548551964,
+        "difference_ci": [
+          0.042360020346539094,
+          0.08579321412345997
+        ],
+        "difference_vs_reference": -0.0005678591709256109,
+        "difference_vs_reference_ci": [
+          -0.012666185367038873,
+          0.01198079458947828
+        ],
+        "first_alert_lead_days_quartiles": [
+          22.0,
+          90.0,
+          269.5
+        ],
+        "model": "hazard_smart_w100",
+        "nonfailing_share": 0.02496153188579244,
+        "share_caught_first_alerted_within_horizon": 0.2898550724637681,
+        "share_failing_drives_alerted": 0.5877342419080068,
+        "share_failing_drives_alerted_ci": [
+          0.5577845675518496,
+          0.6131218810208395
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "first_alert_lead_days_quartiles": [
+          23.0,
+          102.0,
+          338.0
+        ],
+        "model": "rule_counters",
+        "nonfailing_share": 0.02496153188579244,
+        "share_caught_first_alerted_within_horizon": 0.28338762214983715,
+        "share_failing_drives_alerted": 0.5229982964224872,
+        "share_failing_drives_alerted_ci": [
+          0.4905864177967779,
+          0.5571997407205062
+        ],
+        "target_nonfailing_share": 0.025
+      },
+      {
+        "difference": 0.061328790459965976,
+        "difference_ci": [
+          0.04191040789560944,
+          0.08554776180127233
+        ],
+        "difference_vs_reference": -0.003975014196479276,
+        "difference_vs_reference_ci": [
+          -0.012331057222514938,
+          0.0077907984669384105
+        ],
+        "first_alert_lead_days_quartiles": [
+          19.0,
+          77.0,
+          228.0
+        ],
+        "model": "hazard_smart_seed1",
+        "nonfailing_share": 0.0247335726904884,
+        "share_caught_first_alerted_within_horizon": 0.3109815354713314,
+        "share_failing_drives_alerted": 0.5843270868824532,
+        "share_failing_drives_alerted_ci": [
+          0.5519711389625448,
+          0.6131288978710671
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.05565019875070987,
+        "difference_ci": [
+          0.03791509906800573,
+          0.07927806437115799
+        ],
+        "difference_vs_reference": -0.009653605905735385,
+        "difference_vs_reference_ci": [
+          -0.015355814824312464,
+          0.002825399090918311
+        ],
+        "first_alert_lead_days_quartiles": [
+          19.0,
+          76.0,
+          241.0
+        ],
+        "model": "hazard_smart_seed2",
+        "nonfailing_share": 0.02493303698637944,
+        "share_caught_first_alerted_within_horizon": 0.30912659470068693,
+        "share_failing_drives_alerted": 0.578648495173197,
+        "share_failing_drives_alerted_ci": [
+          0.5501281706815895,
+          0.6079744470704502
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06360022714366842,
+        "difference_ci": [
+          0.04394402469183891,
+          0.08452147567709126
+        ],
+        "difference_vs_reference": -0.0017035775127768327,
+        "difference_vs_reference_ci": [
+          -0.010818659951797122,
+          0.0029015365338339316
+        ],
+        "first_alert_lead_days_quartiles": [
+          21.0,
+          79.0,
+          240.0
+        ],
+        "model": "hazard_smart_seed3",
+        "nonfailing_share": 0.02487604718755343,
+        "share_caught_first_alerted_within_horizon": 0.3010648596321394,
+        "share_failing_drives_alerted": 0.5865985235661556,
+        "share_failing_drives_alerted_ci": [
+          0.5552402163493034,
+          0.6143959868175011
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.05905735377626353,
+        "difference_ci": [
+          0.04232502891363937,
+          0.0815406521709904
+        ],
+        "difference_vs_reference": -0.00624645088018172,
+        "difference_vs_reference_ci": [
+          -0.011795333882186657,
+          0.003962470072953558
+        ],
+        "first_alert_lead_days_quartiles": [
+          20.0,
+          78.0,
+          235.0
+        ],
+        "model": "hazard_smart_seed4",
+        "nonfailing_share": 0.0247335726904884,
+        "share_caught_first_alerted_within_horizon": 0.3092682926829268,
+        "share_failing_drives_alerted": 0.5820556501987507,
+        "share_failing_drives_alerted_ci": [
+          0.5553336259513947,
+          0.6148737754242155
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.05792163543441231,
+        "difference_ci": [
+          0.03961346564620763,
+          0.0830377836082398
+        ],
+        "difference_vs_reference": -0.007382169222032942,
+        "difference_vs_reference_ci": [
+          -0.012034355749685774,
+          0.0077927449822426855
+        ],
+        "first_alert_lead_days_quartiles": [
+          22.0,
+          88.0,
+          269.5
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.0247335726904884,
+        "share_caught_first_alerted_within_horizon": 0.2913000977517107,
+        "share_failing_drives_alerted": 0.5809199318568995,
+        "share_failing_drives_alerted_ci": [
+          0.5519284914474568,
+          0.6171260722905391
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.055082339579784256,
+        "difference_ci": [
+          0.03553846424865159,
+          0.07703855072860154
+        ],
+        "difference_vs_reference": -0.010221465076660996,
+        "difference_vs_reference_ci": [
+          -0.01695380621335624,
+          0.0027622291405969717
+        ],
+        "first_alert_lead_days_quartiles": [
+          21.0,
+          86.0,
+          270.75
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.0247335726904884,
+        "share_caught_first_alerted_within_horizon": 0.29764243614931235,
+        "share_failing_drives_alerted": 0.5780806360022714,
+        "share_failing_drives_alerted_ci": [
+          0.5522485058137252,
+          0.6124032021050079
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.053378762067007424,
+        "difference_ci": [
+          0.035994864064023295,
+          0.07472655154743836
+        ],
+        "difference_vs_reference": -0.011925042589437829,
+        "difference_vs_reference_ci": [
+          -0.018956802775526214,
+          0.007666489927493593
+        ],
+        "first_alert_lead_days_quartiles": [
+          21.0,
+          83.0,
+          257.5
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.024819057388727417,
+        "share_caught_first_alerted_within_horizon": 0.2975369458128079,
+        "share_failing_drives_alerted": 0.5763770584894946,
+        "share_failing_drives_alerted_ci": [
+          0.5475182136140541,
+          0.6140592300761605
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06303236797274281,
+        "difference_ci": [
+          0.043273981072186635,
+          0.08667899125634264
+        ],
+        "difference_vs_reference": -0.0022714366837024436,
+        "difference_vs_reference_ci": [
+          -0.009612598632741904,
+          0.009687005676555116
+        ],
+        "first_alert_lead_days_quartiles": [
+          22.0,
+          87.5,
+          267.5
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.024790562489314414,
+        "share_caught_first_alerted_within_horizon": 0.28875968992248063,
+        "share_failing_drives_alerted": 0.58603066439523,
+        "share_failing_drives_alerted_ci": [
+          0.5623401391816307,
+          0.6142056049779363
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.03804656445201593,
+        "difference_ci": [
+          0.010868116392932541,
+          0.04394915042379607
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.0,
+          111.0,
+          351.75
+        ],
+        "model": "hazard_smart",
+        "nonfailing_share": 0.04975209437510686,
+        "share_caught_first_alerted_within_horizon": 0.25618374558303886,
+        "share_failing_drives_alerted": 0.6428165814877911,
+        "share_failing_drives_alerted_ci": [
+          0.6207612521673039,
+          0.6670106407353049
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.042021578648495095,
+        "difference_ci": [
+          0.015615752737505864,
+          0.04246763976428312
+        ],
+        "difference_vs_reference": 0.003975014196479165,
+        "difference_vs_reference_ci": [
+          -0.006193292481747189,
+          0.011339424189359978
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.0,
+          120.0,
+          374.0
+        ],
+        "model": "hazard_smart_w075",
+        "nonfailing_share": 0.049980053570410896,
+        "share_caught_first_alerted_within_horizon": 0.2537313432835821,
+        "share_failing_drives_alerted": 0.6467915956842702,
+        "share_failing_drives_alerted_ci": [
+          0.6203587656063424,
+          0.672393024065528
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.04429301533219754,
+        "difference_ci": [
+          0.017827620363646702,
+          0.049542018978420456
+        ],
+        "difference_vs_reference": 0.006246450880181609,
+        "difference_vs_reference_ci": [
+          -0.00547182767595642,
+          0.02334465182855567
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.0,
+          120.0,
+          382.5
+        ],
+        "model": "hazard_smart_w100",
+        "nonfailing_share": 0.04978058927451986,
+        "share_caught_first_alerted_within_horizon": 0.2510936132983377,
+        "share_failing_drives_alerted": 0.6490630323679727,
+        "share_failing_drives_alerted_ci": [
+          0.625415172315512,
+          0.6818311803399939
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "first_alert_lead_days_quartiles": [
+          28.0,
+          121.0,
+          389.0
+        ],
+        "model": "rule_counters",
+        "nonfailing_share": 0.04468000227959195,
+        "share_caught_first_alerted_within_horizon": 0.25727699530516435,
+        "share_failing_drives_alerted": 0.6047700170357752,
+        "share_failing_drives_alerted_ci": [
+          0.5854023235002459,
+          0.6474186661889519
+        ],
+        "target_nonfailing_share": 0.05
+      },
+      {
+        "difference": 0.04031800113571826,
+        "difference_ci": [
+          0.009655957266373558,
+          0.044126083114223516
+        ],
+        "difference_vs_reference": 0.0022714366837023325,
+        "difference_vs_reference_ci": [
+          -0.004539855263638528,
+          0.0073956229433151995
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.0,
+          114.5,
+          343.25
+        ],
+        "model": "hazard_smart_seed1",
+        "nonfailing_share": 0.04995155867099789,
+        "share_caught_first_alerted_within_horizon": 0.25528169014084506,
+        "share_failing_drives_alerted": 0.6450880181714934,
+        "share_failing_drives_alerted_ci": [
+          0.6202611546492146,
+          0.6679151281404199
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.03747870528109032,
+        "difference_ci": [
+          0.011316543396613435,
+          0.04425841197279191
+        ],
+        "difference_vs_reference": -0.0005678591709256109,
+        "difference_vs_reference_ci": [
+          -0.006189424865785937,
+          0.0039893447873273645
+        ],
+        "first_alert_lead_days_quartiles": [
+          27.5,
+          111.0,
+          345.5
+        ],
+        "model": "hazard_smart_seed2",
+        "nonfailing_share": 0.049894568872171884,
+        "share_caught_first_alerted_within_horizon": 0.25906277630415564,
+        "share_failing_drives_alerted": 0.6422487223168655,
+        "share_failing_drives_alerted_ci": [
+          0.6187396803326911,
+          0.6684338245548789
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.04031800113571826,
+        "difference_ci": [
+          0.013623559013994849,
+          0.04607128432107418
+        ],
+        "difference_vs_reference": 0.0022714366837023325,
+        "difference_vs_reference_ci": [
+          -0.0033415456741693467,
+          0.006014073317264773
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.0,
+          112.5,
+          351.75
+        ],
+        "model": "hazard_smart_seed3",
+        "nonfailing_share": 0.04992306377158488,
+        "share_caught_first_alerted_within_horizon": 0.25528169014084506,
+        "share_failing_drives_alerted": 0.6450880181714934,
+        "share_failing_drives_alerted_ci": [
+          0.6220524401172494,
+          0.6696306689629447
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.03804656445201593,
+        "difference_ci": [
+          0.011091835922999388,
+          0.04309785762951372
+        ],
+        "difference_vs_reference": 0.0,
+        "difference_vs_reference_ci": [
+          -0.003955762857689099,
+          0.004236354231958899
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.0,
+          111.0,
+          351.0
+        ],
+        "model": "hazard_smart_seed4",
+        "nonfailing_share": 0.04986607397275888,
+        "share_caught_first_alerted_within_horizon": 0.25530035335689044,
+        "share_failing_drives_alerted": 0.6428165814877911,
+        "share_failing_drives_alerted_ci": [
+          0.6181672469394225,
+          0.669504555808656
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.04031800113571826,
+        "difference_ci": [
+          0.013081586535620896,
+          0.04435283058954693
+        ],
+        "difference_vs_reference": 0.0022714366837023325,
+        "difference_vs_reference_ci": [
+          -0.005270776056110923,
+          0.01083651435434685
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.0,
+          120.0,
+          376.0
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.049980053570410896,
+        "share_caught_first_alerted_within_horizon": 0.2517605633802817,
+        "share_failing_drives_alerted": 0.6450880181714934,
+        "share_failing_drives_alerted_ci": [
+          0.6200246140997563,
+          0.6720680178035862
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.042021578648495095,
+        "difference_ci": [
+          0.015560269969479248,
+          0.043870849928341234
+        ],
+        "difference_vs_reference": 0.003975014196479165,
+        "difference_vs_reference_ci": [
+          -0.004967954813434214,
+          0.013630252291377161
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.0,
+          120.0,
+          380.5
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.04975209437510686,
+        "share_caught_first_alerted_within_horizon": 0.25197541703248466,
+        "share_failing_drives_alerted": 0.6467915956842702,
+        "share_failing_drives_alerted_ci": [
+          0.6196232809605674,
+          0.6802085710225013
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.042021578648495095,
+        "difference_ci": [
+          0.014902070377126495,
+          0.045771995451434774
+        ],
+        "difference_vs_reference": 0.003975014196479165,
+        "difference_vs_reference_ci": [
+          -0.0033411768533926274,
+          0.00906166087149693
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.5,
+          121.0,
+          377.0
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.04983757907334587,
+        "share_caught_first_alerted_within_horizon": 0.25021949078138717,
+        "share_failing_drives_alerted": 0.6467915956842702,
+        "share_failing_drives_alerted_ci": [
+          0.6202702578596934,
+          0.6699812205375263
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.04486087450312315,
+        "difference_ci": [
+          0.021047629492132645,
+          0.045771995451434774
+        ],
+        "difference_vs_reference": 0.00681431005110722,
+        "difference_vs_reference_ci": [
+          -0.0035240574975455626,
+          0.01907266507047618
+        ],
+        "first_alert_lead_days_quartiles": [
+          29.0,
+          120.0,
+          379.25
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.04978058927451986,
+        "share_caught_first_alerted_within_horizon": 0.2517482517482518,
+        "share_failing_drives_alerted": 0.6496308915388983,
+        "share_failing_drives_alerted_ci": [
+          0.6266334800305466,
+          0.6787033977100307
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      }
+    ],
+    "nonfailing_drives": 4224,
+    "per_window": [
+      {
+        "matched": [
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.35938170888793475,
+            "difference": 0.10870802504268634,
+            "difference_ci": [
+              0.09180125857754962,
+              0.13911442704774354
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.009994035333141664,
+            "share_failing_drives_alerted": 0.5617529880478087,
+            "share_failing_drives_alerted_ci": [
+              0.5365291975692994,
+              0.5918211210524816
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.36587982832618027,
+            "difference": 0.1070005691519636,
+            "difference_ci": [
+              0.08472082651536715,
+              0.13405337958076682
+            ],
+            "difference_vs_reference": -0.0017074558907227422,
+            "difference_vs_reference_ci": [
+              -0.012216052667851002,
+              0.007740222472479195
+            ],
+            "model": "hazard_smart_w075",
+            "nonfailing_share": 0.009998326460377877,
+            "share_failing_drives_alerted": 0.560045532157086,
+            "share_failing_drives_alerted_ci": [
+              0.5264764378098473,
+              0.5931115165383386
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.36476906552094523,
+            "difference": 0.10244735344336936,
+            "difference_ci": [
+              0.08619206210870801,
+              0.1302375380030095
+            ],
+            "difference_vs_reference": -0.00626067159931698,
+            "difference_vs_reference_ci": [
+              -0.01406322658953157,
+              0.0034383899573895175
+            ],
+            "model": "hazard_smart_w100",
+            "nonfailing_share": 0.009987598642287342,
+            "share_failing_drives_alerted": 0.5554923164484917,
+            "share_failing_drives_alerted_ci": [
+              0.5236677549279369,
+              0.5884427471474071
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.3405719200172006,
+            "model": "rule_counters",
+            "nonfailing_share": 0.009979016387814916,
+            "share_failing_drives_alerted": 0.45304496300512237,
+            "share_failing_drives_alerted_ci": [
+              0.41538188461053505,
+              0.4886531329131567
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.3512875536480687,
+            "difference": 0.10927717700626066,
+            "difference_ci": [
+              0.0882537809243456,
+              0.13510945457255394
+            ],
+            "difference_vs_reference": 0.0005691519635743214,
+            "difference_vs_reference_ci": [
+              -0.01001327617208216,
+              0.002858210328011307
+            ],
+            "model": "hazard_smart_seed1",
+            "nonfailing_share": 0.009998326460377877,
+            "share_failing_drives_alerted": 0.562322140011383,
+            "share_failing_drives_alerted_ci": [
+              0.5296069152139792,
+              0.5857422539348773
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.35703544575725027,
+            "difference": 0.11269208878770637,
+            "difference_ci": [
+              0.09224235134931963,
+              0.14074479348357496
+            ],
+            "difference_vs_reference": 0.003984063745020028,
+            "difference_vs_reference_ci": [
+              -0.006097425772937773,
+              0.007248256261800558
+            ],
+            "model": "hazard_smart_seed2",
+            "nonfailing_share": 0.009987598642287342,
+            "share_failing_drives_alerted": 0.5657370517928287,
+            "share_failing_drives_alerted_ci": [
+              0.5298237663248658,
+              0.5926691649401651
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.36035261234143195,
+            "difference": 0.1104154809334092,
+            "difference_ci": [
+              0.09262651042942911,
+              0.1378792502355742
+            ],
+            "difference_vs_reference": 0.0017074558907228532,
+            "difference_vs_reference_ci": [
+              -0.006684029629143551,
+              0.006200203263531128
+            ],
+            "model": "hazard_smart_seed3",
+            "nonfailing_share": 0.009979016387814916,
+            "share_failing_drives_alerted": 0.5634604439385316,
+            "share_failing_drives_alerted_ci": [
+              0.5329749678822796,
+              0.5883070750487028
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.3590128755364807,
+            "difference": 0.1104154809334092,
+            "difference_ci": [
+              0.09439265725629703,
+              0.14016073192058845
+            ],
+            "difference_vs_reference": 0.0017074558907228532,
+            "difference_vs_reference_ci": [
+              -0.003394700500631681,
+              0.006822436746895075
+            ],
+            "model": "hazard_smart_seed4",
+            "nonfailing_share": 0.009998326460377877,
+            "share_failing_drives_alerted": 0.5634604439385316,
+            "share_failing_drives_alerted_ci": [
+              0.5354133503607132,
+              0.5911321831042459
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.36351931330472104,
+            "difference": 0.10472396129766642,
+            "difference_ci": [
+              0.08672877712380075,
+              0.13200675335788747
+            ],
+            "difference_vs_reference": -0.003984063745019917,
+            "difference_vs_reference_ci": [
+              -0.012794146357469166,
+              0.0024984536970342423
+            ],
+            "model": "hazard_smart_w075_seed1",
+            "nonfailing_share": 0.009998326460377877,
+            "share_failing_drives_alerted": 0.5577689243027888,
+            "share_failing_drives_alerted_ci": [
+              0.5266856066291186,
+              0.587712333299663
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.37293233082706767,
+            "difference": 0.10358565737051789,
+            "difference_ci": [
+              0.08650271901042408,
+              0.1267902427828628
+            ],
+            "difference_vs_reference": -0.005122367672168449,
+            "difference_vs_reference_ci": [
+              -0.016123433122005187,
+              0.0022730068030697216
+            ],
+            "model": "hazard_smart_w075_seed2",
+            "nonfailing_share": 0.009987598642287342,
+            "share_failing_drives_alerted": 0.5566306203756403,
+            "share_failing_drives_alerted_ci": [
+              0.5201627087651821,
+              0.5867453964253688
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.370457966028811,
+            "difference": 0.10643141718838928,
+            "difference_ci": [
+              0.08793058657534675,
+              0.1302375380030095
+            ],
+            "difference_vs_reference": -0.0022766078542970636,
+            "difference_vs_reference_ci": [
+              -0.010412128480441287,
+              0.004731758896314915
+            ],
+            "model": "hazard_smart_w075_seed3",
+            "nonfailing_share": 0.009979016387814916,
+            "share_failing_drives_alerted": 0.5594763801935116,
+            "share_failing_drives_alerted_ci": [
+              0.5272412051769164,
+              0.590711357287898
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.3714531384350817,
+            "difference": 0.1104154809334092,
+            "difference_ci": [
+              0.08995480676457976,
+              0.13329622871144545
+            ],
+            "difference_vs_reference": 0.0017074558907228532,
+            "difference_vs_reference_ci": [
+              -0.010449951618105571,
+              0.006534008907849965
+            ],
+            "model": "hazard_smart_w075_seed4",
+            "nonfailing_share": 0.009981161951433021,
+            "share_failing_drives_alerted": 0.5634604439385316,
+            "share_failing_drives_alerted_ci": [
+              0.5274755865917384,
+              0.5908383324571982
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.2329838432451014,
+            "difference": 0.06943653955606155,
+            "difference_ci": [
+              0.04379705998334582,
+              0.09995492991745086
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.024965778260291196,
+            "share_failing_drives_alerted": 0.6340352874217416,
+            "share_failing_drives_alerted_ci": [
+              0.6041016701034173,
+              0.6571048567259176
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.25021473973544067,
+            "difference": 0.06886738759248723,
+            "difference_ci": [
+              0.045329366018804516,
+              0.10412728524317233
+            ],
+            "difference_vs_reference": -0.0005691519635743214,
+            "difference_vs_reference_ci": [
+              -0.005139600807704256,
+              0.012887309277939678
+            ],
+            "model": "hazard_smart_w075",
+            "nonfailing_share": 0.024978651641999836,
+            "share_failing_drives_alerted": 0.6334661354581673,
+            "share_failing_drives_alerted_ci": [
+              0.6055429902091958,
+              0.6638363927189184
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.2616942751695133,
+            "difference": 0.07228229937393293,
+            "difference_ci": [
+              0.05129260327242806,
+              0.10588064527399367
+            ],
+            "difference_vs_reference": 0.002845759817871385,
+            "difference_vs_reference_ci": [
+              -0.005768446376470273,
+              0.015158915314979815
+            ],
+            "model": "hazard_smart_w100",
+            "nonfailing_share": 0.024997961714562797,
+            "share_failing_drives_alerted": 0.636881047239613,
+            "share_failing_drives_alerted_ci": [
+              0.6122895351223981,
+              0.6648557228318072
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.23538622129436326,
+            "model": "rule_counters",
+            "nonfailing_share": 0.024665399353756237,
+            "share_failing_drives_alerted": 0.5645987478656801,
+            "share_failing_drives_alerted_ci": [
+              0.5200518881638454,
+              0.6070072081745393
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.2281470032629229,
+            "difference": 0.06886738759248723,
+            "difference_ci": [
+              0.04193824835843953,
+              0.1042890483692164
+            ],
+            "difference_vs_reference": -0.0005691519635743214,
+            "difference_vs_reference_ci": [
+              -0.005532451502546392,
+              0.01167643575361114
+            ],
+            "model": "hazard_smart_seed1",
+            "nonfailing_share": 0.024987233896472266,
+            "share_failing_drives_alerted": 0.6334661354581673,
+            "share_failing_drives_alerted_ci": [
+              0.6114675943440839,
+              0.6583384704865618
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.22987124463519312,
+            "difference": 0.06602162777461584,
+            "difference_ci": [
+              0.04145657824684478,
+              0.1019698230546653
+            ],
+            "difference_vs_reference": -0.0034149117814457064,
+            "difference_vs_reference_ci": [
+              -0.005121367086264314,
+              0.0056961551984366695
+            ],
+            "model": "hazard_smart_seed2",
+            "nonfailing_share": 0.02499581615094469,
+            "share_failing_drives_alerted": 0.6306203756402959,
+            "share_failing_drives_alerted_ci": [
+              0.6056834868923456,
+              0.655113003028775
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.23107980414053775,
+            "difference": 0.06659077973819016,
+            "difference_ci": [
+              0.04030963192749821,
+              0.10367140924206665
+            ],
+            "difference_vs_reference": -0.002845759817871385,
+            "difference_vs_reference_ci": [
+              -0.0070570920588552246,
+              0.007384507233206583
+            ],
+            "model": "hazard_smart_seed3",
+            "nonfailing_share": 0.02497650607838173,
+            "share_failing_drives_alerted": 0.6311895276038703,
+            "share_failing_drives_alerted_ci": [
+              0.6071559567646166,
+              0.6616099810570978
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.23155544103753328,
+            "difference": 0.06715993170176437,
+            "difference_ci": [
+              0.04107624180824779,
+              0.10392836270776222
+            ],
+            "difference_vs_reference": -0.0022766078542971746,
+            "difference_vs_reference_ci": [
+              -0.005541064320134098,
+              0.00860137033134081
+            ],
+            "model": "hazard_smart_seed4",
+            "nonfailing_share": 0.024980797205617945,
+            "share_failing_drives_alerted": 0.6317586795674445,
+            "share_failing_drives_alerted_ci": [
+              0.6081507504472085,
+              0.6609365482770057
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.2533688095442451,
+            "difference": 0.07228229937393293,
+            "difference_ci": [
+              0.04605105959687632,
+              0.11104564883296517
+            ],
+            "difference_vs_reference": 0.002845759817871385,
+            "difference_vs_reference_ci": [
+              -0.0031843869319798266,
+              0.014929857214823742
+            ],
+            "model": "hazard_smart_w075_seed1",
+            "nonfailing_share": 0.024997961714562797,
+            "share_failing_drives_alerted": 0.636881047239613,
+            "share_failing_drives_alerted_ci": [
+              0.6056626630350569,
+              0.6651834379101118
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.2528765241284561,
+            "difference": 0.07455890722823,
+            "difference_ci": [
+              0.04836722222653435,
+              0.10983479012582845
+            ],
+            "difference_vs_reference": 0.005122367672168449,
+            "difference_vs_reference_ci": [
+              -0.0019316359262229936,
+              0.017491998348045965
+            ],
+            "model": "hazard_smart_w075_seed2",
+            "nonfailing_share": 0.024987233896472266,
+            "share_failing_drives_alerted": 0.6391576550939101,
+            "share_failing_drives_alerted_ci": [
+              0.610731035256881,
+              0.6678079950310725
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.253025491374131,
+            "difference": 0.07171314741035861,
+            "difference_ci": [
+              0.047284667996543364,
+              0.11015484423526405
+            ],
+            "difference_vs_reference": 0.0022766078542970636,
+            "difference_vs_reference_ci": [
+              -0.0017376790059436486,
+              0.0128701579750885
+            ],
+            "model": "hazard_smart_w075_seed3",
+            "nonfailing_share": 0.024997961714562797,
+            "share_failing_drives_alerted": 0.6363118952760387,
+            "share_failing_drives_alerted_ci": [
+              0.6087277659574111,
+              0.666207218970083
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.2528538322890739,
+            "difference": 0.07342060330108147,
+            "difference_ci": [
+              0.05114675182793357,
+              0.1099763612340118
+            ],
+            "difference_vs_reference": 0.003984063745019917,
+            "difference_vs_reference_ci": [
+              -0.003321951899339029,
+              0.015890364108094773
+            ],
+            "model": "hazard_smart_w075_seed4",
+            "nonfailing_share": 0.024997961714562797,
+            "share_failing_drives_alerted": 0.6380193511667616,
+            "share_failing_drives_alerted_ci": [
+              0.610151540044704,
+              0.6649240719158754
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.16564311788705174,
+            "difference": 0.062037564029595815,
+            "difference_ci": [
+              0.05307571756579378,
+              0.08340567580288315
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.04995944884761778,
+            "share_failing_drives_alerted": 0.6841206602162777,
+            "share_failing_drives_alerted_ci": [
+              0.667918759064893,
+              0.7154361459521095
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.18255569386616302,
+            "difference": 0.06602162777461573,
+            "difference_ci": [
+              0.0536013298652458,
+              0.08180813264776468
+            ],
+            "difference_vs_reference": 0.003984063745019917,
+            "difference_vs_reference_ci": [
+              -0.006565236877299438,
+              0.011044411115921414
+            ],
+            "model": "hazard_smart_w075",
+            "nonfailing_share": 0.049985195611035066,
+            "share_failing_drives_alerted": 0.6881047239612976,
+            "share_failing_drives_alerted_ci": [
+              0.6694519153676297,
+              0.7142388825541619
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.19032701055703374,
+            "difference": 0.06602162777461573,
+            "difference_ci": [
+              0.05556570675989228,
+              0.08340679864268566
+            ],
+            "difference_vs_reference": 0.003984063745019917,
+            "difference_vs_reference_ci": [
+              -0.007830889920931856,
+              0.010072121034077527
+            ],
+            "model": "hazard_smart_w100",
+            "nonfailing_share": 0.049995923429125594,
+            "share_failing_drives_alerted": 0.6881047239612976,
+            "share_failing_drives_alerted_ci": [
+              0.671122807365664,
+              0.7149508907128763
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.21286360261861376,
+            "model": "rule_counters",
+            "nonfailing_share": 0.03179081612948906,
+            "share_failing_drives_alerted": 0.6220830961866819,
+            "share_failing_drives_alerted_ci": [
+              0.5983245877522217,
+              0.6383967899333792
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.16238252585504012,
+            "difference": 0.061468412066021605,
+            "difference_ci": [
+              0.051376227200486534,
+              0.0772422488323561
+            ],
+            "difference_vs_reference": -0.0005691519635742104,
+            "difference_vs_reference_ci": [
+              -0.00910236224416539,
+              0.004838406085677376
+            ],
+            "model": "hazard_smart_seed1",
+            "nonfailing_share": 0.049998068992743706,
+            "share_failing_drives_alerted": 0.6835515082527035,
+            "share_failing_drives_alerted_ci": [
+              0.6649668951524635,
+              0.7094783352337514
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.16581918469361373,
+            "difference": 0.0648833238474672,
+            "difference_ci": [
+              0.05260508903219137,
+              0.08213214090228876
+            ],
+            "difference_vs_reference": 0.002845759817871385,
+            "difference_vs_reference_ci": [
+              -0.0034304966625330834,
+              0.0108442592770467
+            ],
+            "model": "hazard_smart_seed2",
+            "nonfailing_share": 0.04978994932178734,
+            "share_failing_drives_alerted": 0.6869664200341491,
+            "share_failing_drives_alerted_ci": [
+              0.6669464626338475,
+              0.7156596058484092
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.16440648871341515,
+            "difference": 0.061468412066021605,
+            "difference_ci": [
+              0.047782328743200535,
+              0.07812280138011277
+            ],
+            "difference_vs_reference": -0.0005691519635742104,
+            "difference_vs_reference_ci": [
+              -0.00832872661669216,
+              0.0056534607566351
+            ],
+            "model": "hazard_smart_seed3",
+            "nonfailing_share": 0.049995923429125594,
+            "share_failing_drives_alerted": 0.6835515082527035,
+            "share_failing_drives_alerted_ci": [
+              0.662409743753941,
+              0.7137257696693272
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.1653006050723083,
+            "difference": 0.06317586795674435,
+            "difference_ci": [
+              0.051855666669759465,
+              0.07888037504684657
+            ],
+            "difference_vs_reference": 0.0011383039271485318,
+            "difference_vs_reference_ci": [
+              -0.006931575510492244,
+              0.00445918198217334
+            ],
+            "model": "hazard_smart_seed4",
+            "nonfailing_share": 0.049998068992743706,
+            "share_failing_drives_alerted": 0.6852589641434262,
+            "share_failing_drives_alerted_ci": [
+              0.6664268180036241,
+              0.7105615735461801
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.18053469510363473,
+            "difference": 0.06602162777461573,
+            "difference_ci": [
+              0.0562963789579944,
+              0.08286320921034476
+            ],
+            "difference_vs_reference": 0.003984063745019917,
+            "difference_vs_reference_ci": [
+              -0.0060265861047173325,
+              0.009608462305926695
+            ],
+            "model": "hazard_smart_w075_seed1",
+            "nonfailing_share": 0.049998068992743706,
+            "share_failing_drives_alerted": 0.6881047239612976,
+            "share_failing_drives_alerted_ci": [
+              0.6726103451034777,
+              0.7136069381004778
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.18059310759194885,
+            "difference": 0.06659077973819005,
+            "difference_ci": [
+              0.05592909231428481,
+              0.08091827819198506
+            ],
+            "difference_vs_reference": 0.004553215708594238,
+            "difference_vs_reference_ci": [
+              -0.005557028980877907,
+              0.009216574811186012
+            ],
+            "model": "hazard_smart_w075_seed2",
+            "nonfailing_share": 0.04999377786550749,
+            "share_failing_drives_alerted": 0.688673875924872,
+            "share_failing_drives_alerted_ci": [
+              0.6707274119813706,
+              0.712885699497997
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.18160751834527744,
+            "difference": 0.06886738759248712,
+            "difference_ci": [
+              0.05683595197983479,
+              0.08308872187559085
+            ],
+            "difference_vs_reference": 0.006829823562891302,
+            "difference_vs_reference_ci": [
+              -0.004429831256327579,
+              0.01019794050343252
+            ],
+            "model": "hazard_smart_w075_seed3",
+            "nonfailing_share": 0.049998068992743706,
+            "share_failing_drives_alerted": 0.690950483779169,
+            "share_failing_drives_alerted_ci": [
+              0.6714297567098656,
+              0.7136069381004778
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.17971934943998627,
+            "difference": 0.06602162777461573,
+            "difference_ci": [
+              0.0590170615394289,
+              0.0824831416427772
+            ],
+            "difference_vs_reference": 0.003984063745019917,
+            "difference_vs_reference_ci": [
+              -0.003443619873542991,
+              0.01020332557525735
+            ],
+            "model": "hazard_smart_w075_seed4",
+            "nonfailing_share": 0.049998068992743706,
+            "share_failing_drives_alerted": 0.6881047239612976,
+            "share_failing_drives_alerted_ci": [
+              0.6734737823103093,
+              0.7130986316989738
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          }
+        ],
+        "matched_without_later_failures": [
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.0,
+            "difference": 0.10358565737051789,
+            "difference_ci": [
+              0.06956194741612139,
+              0.13006799231962965
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.009998702338922225,
+            "share_failing_drives_alerted": 0.5890722822993739,
+            "share_failing_drives_alerted_ci": [
+              0.5592290328428321,
+              0.6166936074967491
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.0,
+            "model": "rule_counters",
+            "nonfailing_share": 0.009763780936911298,
+            "share_failing_drives_alerted": 0.485486624928856,
+            "share_failing_drives_alerted_ci": [
+              0.451806338028169,
+              0.533543612627482
+            ],
+            "target_nonfailing_share": 0.01,
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.0,
+            "difference": 0.050654524758110386,
+            "difference_ci": [
+              0.012506797119290522,
+              0.07094180014086529
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.024979975747161924,
+            "share_failing_drives_alerted": 0.6476949345475241,
+            "share_failing_drives_alerted_ci": [
+              0.6176167612952831,
+              0.6762777039414147
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.0,
+            "model": "rule_counters",
+            "nonfailing_share": 0.02318114901176397,
+            "share_failing_drives_alerted": 0.5970404097894138,
+            "share_failing_drives_alerted_ci": [
+              0.5638294266578243,
+              0.636341533180778
+            ],
+            "target_nonfailing_share": 0.025,
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.0,
+            "difference": 0.07683551508252695,
+            "difference_ci": [
+              0.06346895657871915,
+              0.09476102595621491
+            ],
+            "model": "hazard_smart",
+            "nonfailing_share": 0.049986799654553674,
+            "share_failing_drives_alerted": 0.6989186112692088,
+            "share_failing_drives_alerted_ci": [
+              0.6809481979527873,
+              0.7282893854803677
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.0,
+            "model": "rule_counters",
+            "nonfailing_share": 0.026094174396699466,
+            "share_failing_drives_alerted": 0.6220830961866819,
+            "share_failing_drives_alerted_ci": [
+              0.5983245877522217,
+              0.6383967899333792
+            ],
+            "target_nonfailing_share": 0.05,
+            "window": "Q"
+          }
+        ],
+        "negative_units": 74398,
+        "negative_units_of_drives_failing_later": 19120,
+        "negative_weight_share_of_drives_failing_later": 0.04102317637820279,
+        "positive_units": 1757,
+        "window": "Q"
+      }
+    ],
+    "stride_days": 7
+  },
   "weekly_alerts": {
     "any_critical_counter": {
       "matched": [
@@ -22959,6 +26274,70 @@
           "nonfailing_share": 0.06863971099069056,
           "share_failing_drives_alerted": 0.6828992072480181,
           "versus": "rule_counters > 0"
+        },
+        {
+          "difference": -0.0011325028312569874,
+          "difference_ci": [
+            -0.01245770759611035,
+            0.0073910470094777
+          ],
+          "difference_vs_reference": 0.0634201585503964,
+          "difference_vs_reference_ci": [
+            0.046245369215117925,
+            0.07453837960961313
+          ],
+          "model": "hazard_smart_w075_seed1",
+          "nonfailing_share": 0.06863971099069056,
+          "share_failing_drives_alerted": 0.7514156285390714,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.0,
+          "difference_ci": [
+            -0.013619012970213567,
+            0.00791441185075543
+          ],
+          "difference_vs_reference": 0.06455266138165339,
+          "difference_vs_reference_ci": [
+            0.045282170238439064,
+            0.07224154646239599
+          ],
+          "model": "hazard_smart_w075_seed2",
+          "nonfailing_share": 0.06863971099069056,
+          "share_failing_drives_alerted": 0.7525481313703284,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.0022650056625141968,
+          "difference_ci": [
+            -0.00906945262541913,
+            0.009640430351075887
+          ],
+          "difference_vs_reference": 0.06681766704416758,
+          "difference_vs_reference_ci": [
+            0.04908707936978645,
+            0.07752775517321549
+          ],
+          "model": "hazard_smart_w075_seed3",
+          "nonfailing_share": 0.06863971099069056,
+          "share_failing_drives_alerted": 0.7548131370328426,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.0011325028312570984,
+          "difference_ci": [
+            -0.010229241840130734,
+            0.009131997945557226
+          ],
+          "difference_vs_reference": 0.06568516421291049,
+          "difference_vs_reference_ci": [
+            0.04570078725563624,
+            0.07645700783394571
+          ],
+          "model": "hazard_smart_w075_seed4",
+          "nonfailing_share": 0.06863971099069056,
+          "share_failing_drives_alerted": 0.7536806342015855,
+          "versus": "rule_counters > 0"
         }
       ],
       "matched_first_alert": [
@@ -23211,6 +26590,70 @@
           "model": "hazard_smart_seed4",
           "nonfailing_share": 0.06863971099069056,
           "share_failing_drives_alerted": 0.7344632768361582,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.010734463276836137,
+          "difference_ci": [
+            0.0016780427407146446,
+            0.018069142844382397
+          ],
+          "difference_vs_reference": 0.027683615819209084,
+          "difference_vs_reference_ci": [
+            0.01690660414112364,
+            0.03627478753541079
+          ],
+          "model": "hazard_smart_w075_seed1",
+          "nonfailing_share": 0.06863971099069056,
+          "share_failing_drives_alerted": 0.768361581920904,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.01016949152542368,
+          "difference_ci": [
+            0.0005655948820207091,
+            0.01751511603355278
+          ],
+          "difference_vs_reference": 0.027118644067796627,
+          "difference_vs_reference_ci": [
+            0.01638394950664667,
+            0.0368512420330772
+          ],
+          "model": "hazard_smart_w075_seed2",
+          "nonfailing_share": 0.06863971099069056,
+          "share_failing_drives_alerted": 0.7677966101694915,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.012994350282485856,
+          "difference_ci": [
+            0.003965893441453383,
+            0.020963939920437137
+          ],
+          "difference_vs_reference": 0.029943502824858803,
+          "difference_vs_reference_ci": [
+            0.01969198107195205,
+            0.04023791232534691
+          ],
+          "model": "hazard_smart_w075_seed3",
+          "nonfailing_share": 0.06863971099069056,
+          "share_failing_drives_alerted": 0.7706214689265537,
+          "versus": "rule_counters > 0"
+        },
+        {
+          "difference": 0.012994350282485856,
+          "difference_ci": [
+            0.00395028289911756,
+            0.020351344759085416
+          ],
+          "difference_vs_reference": 0.029943502824858803,
+          "difference_vs_reference_ci": [
+            0.018622762238697084,
+            0.0394763380809787
+          ],
+          "model": "hazard_smart_w075_seed4",
+          "nonfailing_share": 0.06863971099069056,
+          "share_failing_drives_alerted": 0.7706214689265537,
           "versus": "rule_counters > 0"
         }
       ],
@@ -24352,6 +27795,270 @@
           0.08631026816729194
         ],
         "threshold": 0.01240234815291641
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 818,
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_alerted_per_failing_alerted": 1.234718826405868,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.015994763351455,
+          1.4841265057178423
+        ],
+        "share_failing_drives_alerted": 0.46319365798414497,
+        "share_failing_drives_alerted_ci": [
+          0.4436819945509117,
+          0.4850568777325388
+        ],
+        "share_nonfailing_drives_alerted": 0.014033625121578436,
+        "share_nonfailing_drives_alerted_ci": [
+          0.011668056134500485,
+          0.016687508684173964
+        ],
+        "threshold": 0.10976884846043644
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1076,
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_alerted_per_failing_alerted": 2.146840148698885,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.8886260178133811,
+          2.4492305118768822
+        ],
+        "share_failing_drives_alerted": 0.609286523216308,
+        "share_failing_drives_alerted_ci": [
+          0.5883044421270556,
+          0.6348769662116164
+        ],
+        "share_nonfailing_drives_alerted": 0.032096706961233845,
+        "share_nonfailing_drives_alerted_ci": [
+          0.028202723356954288,
+          0.03627205780186189
+        ],
+        "threshold": 0.046419588498189834
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1269,
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_alerted_per_failing_alerted": 3.207249802994484,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.904815505090055,
+          3.5347973072335424
+        ],
+        "share_failing_drives_alerted": 0.7185730464326161,
+        "share_failing_drives_alerted_ci": [
+          0.6952196954982289,
+          0.7393810518397592
+        ],
+        "share_nonfailing_drives_alerted": 0.056551340836459636,
+        "share_nonfailing_drives_alerted_ci": [
+          0.051125468945393916,
+          0.0614144782548284
+        ],
+        "threshold": 0.012591526377283224
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 819,
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_alerted_per_failing_alerted": 1.1233211233211233,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          0.9024122289069534,
+          1.3577978543195937
+        ],
+        "share_failing_drives_alerted": 0.4637599093997735,
+        "share_failing_drives_alerted_ci": [
+          0.4414057638531448,
+          0.48672290834299436
+        ],
+        "share_nonfailing_drives_alerted": 0.012783104071140753,
+        "share_nonfailing_drives_alerted_ci": [
+          0.010417535084062804,
+          0.015562039738780047
+        ],
+        "threshold": 0.1153211456360177
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1061,
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_alerted_per_failing_alerted": 2.054665409990575,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.7390290395846852,
+          2.3280853313716925
+        ],
+        "share_failing_drives_alerted": 0.60079275198188,
+        "share_failing_drives_alerted_ci": [
+          0.5803898510916158,
+          0.6236987561642154
+        ],
+        "share_nonfailing_drives_alerted": 0.030290398777268305,
+        "share_nonfailing_drives_alerted_ci": [
+          0.026118521606224816,
+          0.034326802834514385
+        ],
+        "threshold": 0.04832680958317159
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1260,
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_alerted_per_failing_alerted": 3.1984126984126986,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.8964237165079436,
+          3.4994510459465418
+        ],
+        "share_failing_drives_alerted": 0.7134767836919592,
+        "share_failing_drives_alerted_ci": [
+          0.6908246819149779,
+          0.7351501452427575
+        ],
+        "share_nonfailing_drives_alerted": 0.05599555370293178,
+        "share_nonfailing_drives_alerted_ci": [
+          0.05056620814228151,
+          0.0604453244407392
+        ],
+        "threshold": 0.012829027997884102
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 802,
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_alerted_per_failing_alerted": 1.084788029925187,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          0.875026074259491,
+          1.2903429971416904
+        ],
+        "share_failing_drives_alerted": 0.45413363533408835,
+        "share_failing_drives_alerted_ci": [
+          0.43355614319259034,
+          0.47765123557309663
+        ],
+        "share_nonfailing_drives_alerted": 0.01208837015423093,
+        "share_nonfailing_drives_alerted_ci": [
+          0.00972280116715298,
+          0.014321939697096013
+        ],
+        "threshold": 0.11451288096244305
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1056,
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_alerted_per_failing_alerted": 2.0928030303030303,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.814568950950522,
+          2.3649658091348744
+        ],
+        "share_failing_drives_alerted": 0.5979614949037373,
+        "share_failing_drives_alerted_ci": [
+          0.5756129747606168,
+          0.6218893326561394
+        ],
+        "share_nonfailing_drives_alerted": 0.0307072391274142,
+        "share_nonfailing_drives_alerted_ci": [
+          0.026952202306516605,
+          0.034458802278727246
+        ],
+        "threshold": 0.047770134949907006
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1277,
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_alerted_per_failing_alerted": 3.2576350822239624,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.9935440561819595,
+          3.580452473884818
+        ],
+        "share_failing_drives_alerted": 0.7231030577576444,
+        "share_failing_drives_alerted_ci": [
+          0.6997459715850831,
+          0.7444057268086173
+        ],
+        "share_nonfailing_drives_alerted": 0.057801861886897316,
+        "share_nonfailing_drives_alerted_ci": [
+          0.05252188411838266,
+          0.06240100041684035
+        ],
+        "threshold": 0.011745077033338602
+      },
+      {
+        "budget": 0.001,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 806,
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_alerted_per_failing_alerted": 1.0918114143920596,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          0.8595381802424821,
+          1.3596944669053945
+        ],
+        "share_failing_drives_alerted": 0.4563986409966025,
+        "share_failing_drives_alerted_ci": [
+          0.43741854109226924,
+          0.47685765965795446
+        ],
+        "share_nonfailing_drives_alerted": 0.012227316937612894,
+        "share_nonfailing_drives_alerted_ci": [
+          0.009861747950534945,
+          0.015287619841600668
+        ],
+        "threshold": 0.11067090232372889
+      },
+      {
+        "budget": 0.003,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1066,
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_alerted_per_failing_alerted": 2.1294559099437147,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          1.8598702676798795,
+          2.3810768604019557
+        ],
+        "share_failing_drives_alerted": 0.6036240090600227,
+        "share_failing_drives_alerted_ci": [
+          0.5824256934741646,
+          0.6226266172677283
+        ],
+        "share_nonfailing_drives_alerted": 0.03154091982770599,
+        "share_nonfailing_drives_alerted_ci": [
+          0.027230095873280534,
+          0.03515700986522162
+        ],
+        "threshold": 0.046090601828244315
+      },
+      {
+        "budget": 0.01,
+        "failing_drives": 1766,
+        "failing_drives_alerted": 1268,
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_alerted_per_failing_alerted": 3.225552050473186,
+        "nonfailing_alerted_per_failing_alerted_ci": [
+          2.9493517493651473,
+          3.5308476718375097
+        ],
+        "share_failing_drives_alerted": 0.7180067950169875,
+        "share_failing_drives_alerted_ci": [
+          0.6940912420709855,
+          0.738670154502479
+        ],
+        "share_nonfailing_drives_alerted": 0.056829234403223565,
+        "share_nonfailing_drives_alerted_ci": [
+          0.051667361400583575,
+          0.0614283729331666
+        ],
+        "threshold": 0.012507831542046377
       }
     ],
     "failing_drives_any_lead": 1770,
@@ -24700,6 +28407,90 @@
         "versus": "rule_counters"
       },
       {
+        "difference": 0.05266138165345413,
+        "difference_ci": [
+          0.004968856172140414,
+          0.09568581036145381
+        ],
+        "difference_vs_reference": 0.026047565118912763,
+        "difference_vs_reference_ci": [
+          -0.004026289954667487,
+          0.05835091635553305
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.3969422423556059,
+        "share_failing_drives_alerted_ci": [
+          0.33734476824977955,
+          0.4516887937970887
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.05096262740656854,
+        "difference_ci": [
+          0.006778841003000837,
+          0.0915319056993326
+        ],
+        "difference_vs_reference": 0.02434881087202717,
+        "difference_vs_reference_ci": [
+          -0.007442497746587687,
+          0.054062721144414475
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.3952434881087203,
+        "share_failing_drives_alerted_ci": [
+          0.3477957331737537,
+          0.45201824033300897
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.06285390713476785,
+        "difference_ci": [
+          0.0169827702366706,
+          0.0950264268777602
+        ],
+        "difference_vs_reference": 0.03624009060022648,
+        "difference_vs_reference_ci": [
+          0.0016657255787690553,
+          0.068336678128435
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.4071347678369196,
+        "share_failing_drives_alerted_ci": [
+          0.3638768550940531,
+          0.4591390600924499
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.0622876557191393,
+        "difference_ci": [
+          0.0010501678228078352,
+          0.09707718501702615
+        ],
+        "difference_vs_reference": 0.03567383918459793,
+        "difference_vs_reference_ci": [
+          -0.006824005141216531,
+          0.06017309875141887
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.009865221620119494,
+        "share_failing_drives_alerted": 0.40656851642129105,
+        "share_failing_drives_alerted_ci": [
+          0.3365289548022599,
+          0.4667045454545455
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
         "difference": 0.031143827859569706,
         "difference_ci": [
           0.00046607660063478155,
@@ -25041,6 +28832,90 @@
         "versus": "rule_counters"
       },
       {
+        "difference": 0.04303510758776907,
+        "difference_ci": [
+          0.01356801062464951,
+          0.07637815483741744
+        ],
+        "difference_vs_reference": 0.021517553793884536,
+        "difference_vs_reference_ci": [
+          -0.0016950593796841607,
+          0.039683665747797386
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.5741789354473387,
+        "share_failing_drives_alerted_ci": [
+          0.543544354570545,
+          0.6045587652901536
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.05549263873159693,
+        "difference_ci": [
+          0.0209291732432466,
+          0.08608437146092869
+        ],
+        "difference_vs_reference": 0.033975084937712396,
+        "difference_vs_reference_ci": [
+          0.008512346973161914,
+          0.04587308365272451
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.5866364665911665,
+        "share_failing_drives_alerted_ci": [
+          0.5461524681783806,
+          0.6114600006669335
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.04020385050962638,
+        "difference_ci": [
+          0.014202938605512097,
+          0.07424503208387441
+        ],
+        "difference_vs_reference": 0.018686296715741846,
+        "difference_vs_reference_ci": [
+          0.0,
+          0.03981210118703092
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.571347678369196,
+        "share_failing_drives_alerted_ci": [
+          0.5405767014576764,
+          0.6060374149659864
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.047565118912797355,
+        "difference_ci": [
+          0.02095045712078296,
+          0.08254663651780668
+        ],
+        "difference_vs_reference": 0.02604756511891282,
+        "difference_vs_reference_ci": [
+          0.007368782727537956,
+          0.04703495993707598
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.024871474225371684,
+        "share_failing_drives_alerted": 0.578708946772367,
+        "share_failing_drives_alerted_ci": [
+          0.5528784455208229,
+          0.609806964546541
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
         "difference": -0.021517553793884536,
         "difference_ci": [
           -0.03804592698047781,
@@ -25377,6 +29252,90 @@
         "share_failing_drives_alerted_ci": [
           0.6420968052915043,
           0.6875803384081786
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.001698754246885592,
+        "difference_ci": [
+          -0.015871292557683107,
+          0.03860716859278859
+        ],
+        "difference_vs_reference": 0.01642129105322765,
+        "difference_vs_reference_ci": [
+          0.005662434041484074,
+          0.03970685111989468
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.6857304643261608,
+        "share_failing_drives_alerted_ci": [
+          0.6577521650600381,
+          0.7202029095096906
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.005662514156285381,
+        "difference_ci": [
+          -0.02218640065562216,
+          0.039893985151629556
+        ],
+        "difference_vs_reference": 0.020385050962627438,
+        "difference_vs_reference_ci": [
+          -0.0040041003936120804,
+          0.039695003638127654
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.6896942242355606,
+        "share_failing_drives_alerted_ci": [
+          0.6509940626873626,
+          0.7216585279710078
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.007361268403170973,
+        "difference_ci": [
+          -0.020444624155527672,
+          0.03968378366718918
+        ],
+        "difference_vs_reference": 0.02208380520951303,
+        "difference_vs_reference_ci": [
+          -0.0022663210704489288,
+          0.039072455142872525
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.6913929784824462,
+        "share_failing_drives_alerted_ci": [
+          0.6521141433814062,
+          0.718441881245478
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.001698754246885592,
+        "difference_ci": [
+          -0.018090084230298245,
+          0.0386676055426056
+        ],
+        "difference_vs_reference": 0.01642129105322765,
+        "difference_vs_reference_ci": [
+          0.003420364284909966,
+          0.04301197112309235
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.04988189523412533,
+        "share_failing_drives_alerted": 0.6857304643261608,
+        "share_failing_drives_alerted_ci": [
+          0.6561801033408834,
+          0.7215957193008007
         ],
         "target_nonfailing_share": 0.05,
         "versus": "rule_counters"
@@ -25827,6 +29786,114 @@
         "versus": "rule_counters"
       },
       {
+        "difference": 0.09096045197740116,
+        "difference_ci": [
+          0.04344516394383441,
+          0.13267644612693227
+        ],
+        "difference_vs_reference": 0.01807909604519775,
+        "difference_vs_reference_ci": [
+          -0.01634010974111942,
+          0.052643463405712757
+        ],
+        "first_alert_lead_days_quartiles": [
+          12.0,
+          45.0,
+          121.0
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.009865221620119494,
+        "share_caught_first_alerted_within_horizon": 0.41101152368758004,
+        "share_failing_drives_alerted": 0.44124293785310736,
+        "share_failing_drives_alerted_ci": [
+          0.3803406390725304,
+          0.4961652662137951
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.09435028248587574,
+        "difference_ci": [
+          0.05135367768852834,
+          0.13773752521288748
+        ],
+        "difference_vs_reference": 0.02146892655367233,
+        "difference_vs_reference_ci": [
+          -0.014764309451757222,
+          0.05628337964112131
+        ],
+        "first_alert_lead_days_quartiles": [
+          13.0,
+          45.0,
+          115.0
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.009865221620119494,
+        "share_caught_first_alerted_within_horizon": 0.4078780177890724,
+        "share_failing_drives_alerted": 0.44463276836158194,
+        "share_failing_drives_alerted_ci": [
+          0.39682023742227246,
+          0.5006079039968132
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.10395480225988701,
+        "difference_ci": [
+          0.052569849502403454,
+          0.14053674385735096
+        ],
+        "difference_vs_reference": 0.031073446327683607,
+        "difference_vs_reference_ci": [
+          -0.003971362210768426,
+          0.06640097748210778
+        ],
+        "first_alert_lead_days_quartiles": [
+          13.0,
+          46.0,
+          124.0
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.009865221620119494,
+        "share_caught_first_alerted_within_horizon": 0.40298507462686567,
+        "share_failing_drives_alerted": 0.4542372881355932,
+        "share_failing_drives_alerted_ci": [
+          0.40349067474672073,
+          0.5091900648016678
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.10564971751412428,
+        "difference_ci": [
+          0.04057135260345132,
+          0.14649698500381544
+        ],
+        "difference_vs_reference": 0.03276836158192087,
+        "difference_vs_reference_ci": [
+          -0.006797107965506425,
+          0.0618785626236989
+        ],
+        "first_alert_lead_days_quartiles": [
+          14.0,
+          50.0,
+          122.5
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.009865221620119494,
+        "share_caught_first_alerted_within_horizon": 0.3903345724907063,
+        "share_failing_drives_alerted": 0.4559322033898305,
+        "share_failing_drives_alerted_ci": [
+          0.37598297199834074,
+          0.5149549777427743
+        ],
+        "target_nonfailing_share": 0.01,
+        "versus": "rule_counters"
+      },
+      {
         "difference": 0.08079096045197731,
         "difference_ci": [
           0.04864184650683342,
@@ -26265,6 +30332,114 @@
         "share_failing_drives_alerted_ci": [
           0.5828841855869854,
           0.6424431649288883
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.09830508474576272,
+        "difference_ci": [
+          0.06722354856800886,
+          0.1305171670656399
+        ],
+        "difference_vs_reference": 0.019774011299435124,
+        "difference_vs_reference_ci": [
+          -0.0022613247296280558,
+          0.036172316384180815
+        ],
+        "first_alert_lead_days_quartiles": [
+          23.0,
+          83.5,
+          185.0
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.024871474225371684,
+        "share_caught_first_alerted_within_horizon": 0.29910714285714285,
+        "share_failing_drives_alerted": 0.632768361581921,
+        "share_failing_drives_alerted_ci": [
+          0.5966017475523739,
+          0.6563382651781555
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.1022598870056497,
+        "difference_ci": [
+          0.07105587486692702,
+          0.13001822395459334
+        ],
+        "difference_vs_reference": 0.023728813559322104,
+        "difference_vs_reference_ci": [
+          0.0028310971201156777,
+          0.03681786048409225
+        ],
+        "first_alert_lead_days_quartiles": [
+          24.0,
+          84.0,
+          185.0
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.024871474225371684,
+        "share_caught_first_alerted_within_horizon": 0.29281277728482696,
+        "share_failing_drives_alerted": 0.6367231638418079,
+        "share_failing_drives_alerted_ci": [
+          0.6021362775795529,
+          0.6585868474408343
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.09774011299435026,
+        "difference_ci": [
+          0.07264523406655393,
+          0.13123399727330162
+        ],
+        "difference_vs_reference": 0.019209039548022666,
+        "difference_vs_reference_ci": [
+          0.0022328680241527157,
+          0.04006941883478571
+        ],
+        "first_alert_lead_days_quartiles": [
+          23.0,
+          84.0,
+          183.5
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.024871474225371684,
+        "share_caught_first_alerted_within_horizon": 0.29848078641644327,
+        "share_failing_drives_alerted": 0.6322033898305085,
+        "share_failing_drives_alerted_ci": [
+          0.5976213700236429,
+          0.662758886801135
+        ],
+        "target_nonfailing_share": 0.025,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.09999999999999998,
+        "difference_ci": [
+          0.07799494910783002,
+          0.1341600901916572
+        ],
+        "difference_vs_reference": 0.021468926553672385,
+        "difference_vs_reference_ci": [
+          0.0067866611433305465,
+          0.04012425399856768
+        ],
+        "first_alert_lead_days_quartiles": [
+          23.0,
+          85.0,
+          183.0
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.024871474225371684,
+        "share_caught_first_alerted_within_horizon": 0.3018699910952805,
+        "share_failing_drives_alerted": 0.6344632768361582,
+        "share_failing_drives_alerted_ci": [
+          0.60707183789692,
+          0.6633022457736926
         ],
         "target_nonfailing_share": 0.025,
         "versus": "rule_counters"
@@ -26711,6 +30886,114 @@
         ],
         "target_nonfailing_share": 0.05,
         "versus": "rule_counters"
+      },
+      {
+        "difference": 0.04011299435028248,
+        "difference_ci": [
+          0.025369422355157357,
+          0.0825023487230617
+        ],
+        "difference_vs_reference": 0.005649717514124242,
+        "difference_vs_reference_ci": [
+          0.0005502257336343578,
+          0.018112371852294265
+        ],
+        "first_alert_lead_days_quartiles": [
+          32.0,
+          118.0,
+          244.5
+        ],
+        "model": "hazard_smart_w075_seed1",
+        "nonfailing_share": 0.04988189523412533,
+        "share_caught_first_alerted_within_horizon": 0.23392718822618125,
+        "share_failing_drives_alerted": 0.7293785310734463,
+        "share_failing_drives_alerted_ci": [
+          0.7031434813029223,
+          0.7540101311404923
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.0423728813559322,
+        "difference_ci": [
+          0.02434676141547027,
+          0.08419371895606244
+        ],
+        "difference_vs_reference": 0.00790960451977396,
+        "difference_vs_reference_ci": [
+          -0.0017259695164646587,
+          0.01753393665158365
+        ],
+        "first_alert_lead_days_quartiles": [
+          33.0,
+          118.0,
+          243.0
+        ],
+        "model": "hazard_smart_w075_seed2",
+        "nonfailing_share": 0.04988189523412533,
+        "share_caught_first_alerted_within_horizon": 0.22934362934362934,
+        "share_failing_drives_alerted": 0.731638418079096,
+        "share_failing_drives_alerted_ci": [
+          0.7008931235107406,
+          0.7556433408577878
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.04406779661016946,
+        "difference_ci": [
+          0.024858406148015596,
+          0.08362519824967043
+        ],
+        "difference_vs_reference": 0.009604519774011222,
+        "difference_vs_reference_ci": [
+          -0.0017401417162776175,
+          0.018602291608246193
+        ],
+        "first_alert_lead_days_quartiles": [
+          33.0,
+          118.5,
+          247.75
+        ],
+        "model": "hazard_smart_w075_seed3",
+        "nonfailing_share": 0.04988189523412533,
+        "share_caught_first_alerted_within_horizon": 0.23035439137134053,
+        "share_failing_drives_alerted": 0.7333333333333333,
+        "share_failing_drives_alerted_ci": [
+          0.7027480266914886,
+          0.7548200710504605
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
+      },
+      {
+        "difference": 0.0412429378531074,
+        "difference_ci": [
+          0.023766104895888457,
+          0.08418317163892944
+        ],
+        "difference_vs_reference": 0.006779661016949157,
+        "difference_vs_reference_ci": [
+          0.0005496054114994823,
+          0.019176807492370447
+        ],
+        "first_alert_lead_days_quartiles": [
+          33.0,
+          118.0,
+          245.0
+        ],
+        "model": "hazard_smart_w075_seed4",
+        "nonfailing_share": 0.04988189523412533,
+        "share_caught_first_alerted_within_horizon": 0.22815158546017014,
+        "share_failing_drives_alerted": 0.7305084745762712,
+        "share_failing_drives_alerted_ci": [
+          0.7040560290192931,
+          0.7545669565794715
+        ],
+        "target_nonfailing_share": 0.05,
+        "versus": "rule_counters"
       }
     ],
     "nonfailing_drives": 7197,
@@ -27093,6 +31376,98 @@
             "window": "Q"
           },
           {
+            "alerted_negative_share_of_drives_failing_later": 0.20832483166700674,
+            "difference": 0.13250283125707812,
+            "difference_ci": [
+              0.1053727334698851,
+              0.16845675522894288
+            ],
+            "difference_vs_reference": -0.009060022650056565,
+            "difference_vs_reference_ci": [
+              -0.01981225378914339,
+              0.00910279088995075
+            ],
+            "model": "hazard_smart_w075_seed1",
+            "nonfailing_share": 0.009993087825397247,
+            "share_failing_drives_alerted": 0.5594563986409966,
+            "share_failing_drives_alerted_ci": [
+              0.5308215905860842,
+              0.590691603900889
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.21492659053833604,
+            "difference": 0.1421291053227633,
+            "difference_ci": [
+              0.11047366372119885,
+              0.18151523964672076
+            ],
+            "difference_vs_reference": 0.0005662514156286047,
+            "difference_vs_reference_ci": [
+              -0.014132878304920476,
+              0.021571580646764527
+            ],
+            "model": "hazard_smart_w075_seed2",
+            "nonfailing_share": 0.00999920479407225,
+            "share_failing_drives_alerted": 0.5690826727066818,
+            "share_failing_drives_alerted_ci": [
+              0.5392616305045824,
+              0.6007989995757129
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.20955882352941177,
+            "difference": 0.1381653454133635,
+            "difference_ci": [
+              0.10521602544213471,
+              0.16689524241013537
+            ],
+            "difference_vs_reference": -0.003397508493771184,
+            "difference_vs_reference_ci": [
+              -0.01643124355005154,
+              0.01243710936061248
+            ],
+            "model": "hazard_smart_w075_seed3",
+            "nonfailing_share": 0.009982892877605573,
+            "share_failing_drives_alerted": 0.565118912797282,
+            "share_failing_drives_alerted_ci": [
+              0.5364773031157144,
+              0.5932282658826242
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.20972023687972227,
+            "difference": 0.1409966024915062,
+            "difference_ci": [
+              0.11311441243163926,
+              0.17366346046124043
+            ],
+            "difference_vs_reference": -0.0005662514156284937,
+            "difference_vs_reference_ci": [
+              -0.011952104677121267,
+              0.017004947744004975
+            ],
+            "model": "hazard_smart_w075_seed4",
+            "nonfailing_share": 0.009984931867163909,
+            "share_failing_drives_alerted": 0.5679501698754247,
+            "share_failing_drives_alerted_ci": [
+              0.5394948024894756,
+              0.5964710884353741
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
             "alerted_negative_share_of_drives_failing_later": 0.13288196427114773,
             "difference": 0.10419026047565116,
             "difference_ci": [
@@ -27468,6 +31843,98 @@
             "window": "Q"
           },
           {
+            "alerted_negative_share_of_drives_failing_later": 0.14292710799118438,
+            "difference": 0.11494903737259343,
+            "difference_ci": [
+              0.087903461609133,
+              0.14561263021249662
+            ],
+            "difference_vs_reference": 0.018686296715741846,
+            "difference_vs_reference_ci": [
+              0.004506211479198771,
+              0.029472533389575124
+            ],
+            "model": "hazard_smart_w075_seed1",
+            "nonfailing_share": 0.024979661079155613,
+            "share_failing_drives_alerted": 0.7044167610419027,
+            "share_failing_drives_alerted_ci": [
+              0.6758823529411765,
+              0.7294119978314498
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.14355628058727568,
+            "difference": 0.11325028312570773,
+            "difference_ci": [
+              0.08584057569341773,
+              0.1456105609084565
+            ],
+            "difference_vs_reference": 0.016987542468856143,
+            "difference_vs_reference_ci": [
+              0.005639429377151922,
+              0.02777896081771722
+            ],
+            "model": "hazard_smart_w075_seed2",
+            "nonfailing_share": 0.024998011985180625,
+            "share_failing_drives_alerted": 0.702718006795017,
+            "share_failing_drives_alerted_ci": [
+              0.67478254893354,
+              0.7280403417555612
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.14274061990212072,
+            "difference": 0.11381653454133633,
+            "difference_ci": [
+              0.08683191282787892,
+              0.1447412869477532
+            ],
+            "difference_vs_reference": 0.017553793884484747,
+            "difference_vs_reference_ci": [
+              0.005090353938185427,
+              0.029573053514418312
+            ],
+            "model": "hazard_smart_w075_seed3",
+            "nonfailing_share": 0.024998011985180625,
+            "share_failing_drives_alerted": 0.7032842582106456,
+            "share_failing_drives_alerted_ci": [
+              0.6758858840146228,
+              0.7315054033668726
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.14409268929503916,
+            "difference": 0.11947904869762171,
+            "difference_ci": [
+              0.08916324820707026,
+              0.14881742441884624
+            ],
+            "difference_vs_reference": 0.02321630804077013,
+            "difference_vs_reference_ci": [
+              0.0045083647721837405,
+              0.032715692949419464
+            ],
+            "model": "hazard_smart_w075_seed4",
+            "nonfailing_share": 0.024989856026947286,
+            "share_failing_drives_alerted": 0.7089467723669309,
+            "share_failing_drives_alerted_ci": [
+              0.6800594371055775,
+              0.733415589167579
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
             "alerted_negative_share_of_drives_failing_later": 0.07963446475195822,
             "difference": 0.04133635334088337,
             "difference_ci": [
@@ -27837,6 +32304,98 @@
             "share_failing_drives_alerted_ci": [
               0.7314316023817425,
               0.7731217647246399
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.08538326602211072,
+            "difference": 0.04869762174405445,
+            "difference_ci": [
+              0.028262962080858014,
+              0.07706360085642415
+            ],
+            "difference_vs_reference": 0.0022650056625141968,
+            "difference_vs_reference_ci": [
+              -0.005096407192548521,
+              0.011985109513208528
+            ],
+            "model": "hazard_smart_w075_seed1",
+            "nonfailing_share": 0.049981751043452906,
+            "share_failing_drives_alerted": 0.7570781426953568,
+            "share_failing_drives_alerted_ci": [
+              0.7359961905552008,
+              0.783815516408804
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.08549518681677272,
+            "difference": 0.05096262740656854,
+            "difference_ci": [
+              0.02939931339682387,
+              0.07536291032473881
+            ],
+            "difference_vs_reference": 0.0045300113250282825,
+            "difference_vs_reference_ci": [
+              -0.0028470254957507542,
+              0.011885393199963774
+            ],
+            "model": "hazard_smart_w075_seed2",
+            "nonfailing_share": 0.04998786801212791,
+            "share_failing_drives_alerted": 0.7593431483578709,
+            "share_failing_drives_alerted_ci": [
+              0.7364552158769394,
+              0.7827393637372307
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.08575391644908616,
+            "difference": 0.051528878822197144,
+            "difference_ci": [
+              0.029998003353851957,
+              0.0791418765619045
+            ],
+            "difference_vs_reference": 0.005096262740656887,
+            "difference_vs_reference_ci": [
+              -0.001146852376516627,
+              0.01468947312950911
+            ],
+            "model": "hazard_smart_w075_seed3",
+            "nonfailing_share": 0.04997971205389457,
+            "share_failing_drives_alerted": 0.7599093997734995,
+            "share_failing_drives_alerted_ci": [
+              0.7387936679477424,
+              0.7850467792123723
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Q"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.08549518681677272,
+            "difference": 0.050396375990940045,
+            "difference_ci": [
+              0.029428066907730695,
+              0.0769372171945702
+            ],
+            "difference_vs_reference": 0.003963759909399789,
+            "difference_vs_reference_ci": [
+              -0.0039955670073190536,
+              0.012466854342915475
+            ],
+            "model": "hazard_smart_w075_seed4",
+            "nonfailing_share": 0.04998786801212791,
+            "share_failing_drives_alerted": 0.7587768969422424,
+            "share_failing_drives_alerted_ci": [
+              0.7353181377359506,
+              0.7831398640996602
             ],
             "target_nonfailing_share": 0.05,
             "versus": "rule_counters",
@@ -28319,6 +32878,98 @@
             "window": "Y"
           },
           {
+            "alerted_negative_share_of_drives_failing_later": 0.10266159695817491,
+            "difference": 0.08380520951302378,
+            "difference_ci": [
+              0.04867006225240522,
+              0.11084426506567087
+            ],
+            "difference_vs_reference": 0.003963759909399789,
+            "difference_vs_reference_ci": [
+              -0.009070423404756108,
+              0.0306027164685908
+            ],
+            "model": "hazard_smart_w075_seed1",
+            "nonfailing_share": 0.009961291104529167,
+            "share_failing_drives_alerted": 0.45696489241223104,
+            "share_failing_drives_alerted_ci": [
+              0.4294596757414254,
+              0.4997164325025378
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.1171993911719939,
+            "difference": 0.09852774631936578,
+            "difference_ci": [
+              0.04864184650683342,
+              0.1206974896318566
+            ],
+            "difference_vs_reference": 0.01868629671574179,
+            "difference_vs_reference_ci": [
+              -0.003446567484868542,
+              0.0417808359574975
+            ],
+            "model": "hazard_smart_w075_seed2",
+            "nonfailing_share": 0.009953715978213937,
+            "share_failing_drives_alerted": 0.47168742921857304,
+            "share_failing_drives_alerted_ci": [
+              0.42849857685009485,
+              0.5125053236184491
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.1095890410958904,
+            "difference": 0.0928652321630804,
+            "difference_ci": [
+              0.04808998302207132,
+              0.11560671108805813
+            ],
+            "difference_vs_reference": 0.01302378255945641,
+            "difference_vs_reference_ci": [
+              -0.006257286795427872,
+              0.03454329670160158
+            ],
+            "model": "hazard_smart_w075_seed3",
+            "nonfailing_share": 0.009953715978213937,
+            "share_failing_drives_alerted": 0.46602491506228766,
+            "share_failing_drives_alerted_ci": [
+              0.43171777240066167,
+              0.5031303720768158
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.11363636363636363,
+            "difference": 0.094563986409966,
+            "difference_ci": [
+              0.053111309855719505,
+              0.11786862826423598
+            ],
+            "difference_vs_reference": 0.014722536806342001,
+            "difference_vs_reference_ci": [
+              -1.4124293785311136e-05,
+              0.040637239775726024
+            ],
+            "model": "hazard_smart_w075_seed4",
+            "nonfailing_share": 0.009999166736105325,
+            "share_failing_drives_alerted": 0.46772366930917325,
+            "share_failing_drives_alerted_ci": [
+              0.42757013314938314,
+              0.5068303931742189
+            ],
+            "target_nonfailing_share": 0.01,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
             "alerted_negative_share_of_drives_failing_later": 0.06828528072837632,
             "difference": 0.04926387315968295,
             "difference_ci": [
@@ -28694,6 +33345,98 @@
             "window": "Y"
           },
           {
+            "alerted_negative_share_of_drives_failing_later": 0.07575757575757576,
+            "difference": 0.0628539071347679,
+            "difference_ci": [
+              0.023214913093500673,
+              0.08806862295313388
+            ],
+            "difference_vs_reference": 0.010192525481313774,
+            "difference_vs_reference_ci": [
+              -0.0039922892809216345,
+              0.025026927437641754
+            ],
+            "model": "hazard_smart_w075_seed1",
+            "nonfailing_share": 0.024997916840263312,
+            "share_failing_drives_alerted": 0.6143827859569649,
+            "share_failing_drives_alerted_ci": [
+              0.5897939817946389,
+              0.6457057823129251
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.07794965119805884,
+            "difference": 0.0645526613816535,
+            "difference_ci": [
+              0.022093321027579844,
+              0.08551812004530003
+            ],
+            "difference_vs_reference": 0.011891279728199367,
+            "difference_vs_reference_ci": [
+              -0.002275497065228962,
+              0.024830699774266333
+            ],
+            "model": "hazard_smart_w075_seed2",
+            "nonfailing_share": 0.024975191461317617,
+            "share_failing_drives_alerted": 0.6160815402038505,
+            "share_failing_drives_alerted_ci": [
+              0.5896810443458852,
+              0.6409727823935898
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.07463592233009708,
+            "difference": 0.057191392978482414,
+            "difference_ci": [
+              0.016950531631494844,
+              0.08185783019120438
+            ],
+            "difference_vs_reference": 0.0045300113250282825,
+            "difference_vs_reference_ci": [
+              -0.007379155009872573,
+              0.023181058379974504
+            ],
+            "model": "hazard_smart_w075_seed3",
+            "nonfailing_share": 0.024967616335002385,
+            "share_failing_drives_alerted": 0.6087202718006794,
+            "share_failing_drives_alerted_ci": [
+              0.5824220963172805,
+              0.6408084389781191
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.07682963862739144,
+            "difference": 0.06511891279728199,
+            "difference_ci": [
+              0.02492943613938424,
+              0.08726504576530567
+            ],
+            "difference_vs_reference": 0.01245753114382786,
+            "difference_vs_reference_ci": [
+              0.0005652671989505503,
+              0.02771259941670632
+            ],
+            "model": "hazard_smart_w075_seed4",
+            "nonfailing_share": 0.024944890956056693,
+            "share_failing_drives_alerted": 0.616647791619479,
+            "share_failing_drives_alerted_ci": [
+              0.5907528197399816,
+              0.6454237411160128
+            ],
+            "target_nonfailing_share": 0.025,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
             "alerted_negative_share_of_drives_failing_later": 0.04696969696969697,
             "difference": 0.015855039637599155,
             "difference_ci": [
@@ -29063,6 +33806,98 @@
             "share_failing_drives_alerted_ci": [
               0.6636418949050206,
               0.7077250298221845
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.05036407766990291,
+            "difference": 0.04813137032842585,
+            "difference_ci": [
+              0.029464695691095458,
+              0.06921045890484166
+            ],
+            "difference_vs_reference": 0.04246885617214047,
+            "difference_vs_reference_ci": [
+              0.027823916335415505,
+              0.056001017073849885
+            ],
+            "model": "hazard_smart_w075_seed1",
+            "nonfailing_share": 0.04993523267000477,
+            "share_failing_drives_alerted": 0.7355605889014722,
+            "share_failing_drives_alerted_ci": [
+              0.7101672361172429,
+              0.7624642738451313
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.05,
+            "difference": 0.04586636466591165,
+            "difference_ci": [
+              0.026033890339827847,
+              0.06512075857145425
+            ],
+            "difference_vs_reference": 0.04020385050962627,
+            "difference_vs_reference_ci": [
+              0.023240007063773632,
+              0.05172623368364258
+            ],
+            "model": "hazard_smart_w075_seed2",
+            "nonfailing_share": 0.049995833680526625,
+            "share_failing_drives_alerted": 0.733295583238958,
+            "share_failing_drives_alerted_ci": [
+              0.7104578679547715,
+              0.7596221751412429
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.05036407766990291,
+            "difference": 0.050396375990940045,
+            "difference_ci": [
+              0.02710753381173157,
+              0.06908302398971732
+            ],
+            "difference_vs_reference": 0.044733861834654665,
+            "difference_vs_reference_ci": [
+              0.02768322502847194,
+              0.0562727256649689
+            ],
+            "model": "hazard_smart_w075_seed3",
+            "nonfailing_share": 0.04993523267000477,
+            "share_failing_drives_alerted": 0.7378255945639864,
+            "share_failing_drives_alerted_ci": [
+              0.7122627487856472,
+              0.7610560588901472
+            ],
+            "target_nonfailing_share": 0.05,
+            "versus": "rule_counters",
+            "window": "Y"
+          },
+          {
+            "alerted_negative_share_of_drives_failing_later": 0.05,
+            "difference": 0.04869762174405434,
+            "difference_ci": [
+              0.027163152046890175,
+              0.06747256377069523
+            ],
+            "difference_vs_reference": 0.04303510758776896,
+            "difference_vs_reference_ci": [
+              0.025341892625594914,
+              0.05496618791525716
+            ],
+            "model": "hazard_smart_w075_seed4",
+            "nonfailing_share": 0.049995833680526625,
+            "share_failing_drives_alerted": 0.7361268403171007,
+            "share_failing_drives_alerted_ci": [
+              0.7117012696271838,
+              0.7595423086181027
             ],
             "target_nonfailing_share": 0.05,
             "versus": "rule_counters",
