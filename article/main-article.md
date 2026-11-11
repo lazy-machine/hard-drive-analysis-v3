@@ -729,7 +729,7 @@ XU, Y. *et al.* **Pitfalls of administrative censoring in survival models with t
 
 # APÊNDICE A – GUIA DE REPRODUÇÃO DOS RESULTADOS
 
-Este apêndice descreve como reproduzir os resultados do capítulo 4 e registra as versões do *pipeline* avaliadas no conjunto de teste. O código do projeto está em repositório público (https://github.com/lazy-machine/hard-drive-analysis-v3), e os resultados vêm do *commit* `f397236` (treino e previsões) e do *commit* `b8ab7c6` (avaliação), registrados na entrada `full-2026-11-11` de `results/README.md`.
+Este apêndice descreve como reproduzir os resultados do capítulo 4 e registra as versões do *pipeline* avaliadas no conjunto de teste. O código do projeto está em repositório público (https://github.com/lazy-machine/hard-drive-analysis-v3), e os resultados vêm do *commit* `f397236` (treino e previsões) e do *commit* `627b1dc` (avaliação), registrados na entrada `full-2026-11-11` de `results/README.md`.
 
 a) **requisitos**: computador com Linux, Python 3.13 e o gerenciador *uv*; a escala completa exige ao menos 15 GiB de memória;
 
