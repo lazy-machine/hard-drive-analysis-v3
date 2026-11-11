@@ -748,6 +748,32 @@ def weekly_alerts(val, test, D, models, horizon, rates, stride, targets, rounds,
 
         point = zero_point(np.ones(D.n))
         boot = [zero_point(c) for c in counts_list]
+
+        def at_zero(table, pos, k):
+            """Each model at the share of non-failing drives the rule alerts at score > 0,
+            that share recomputed in every resample, against the rule at score > 0 (k
+            picks the rule's caught share: 1 = last `horizon` days, 2 = any lead)."""
+            out = []
+            for name in table:
+                if name == pair[1]:
+                    continue
+                share = caught(name, np.ones(D.n), point[0], table, pos)
+                diffs = [caught(name, c, b[0], table, pos)[0] - b[k]
+                         for c, b in zip(counts_list, boot, strict=True)]
+                row = {"model": name, "nonfailing_share": share[1],
+                       "share_failing_drives_alerted": share[0],
+                       "versus": pair[1] + " > 0", "difference": share[0] - point[k],
+                       "difference_ci": _interval(diffs)}
+                if name != pair[0] and pair[0] in table:
+                    ref = caught(pair[0], np.ones(D.n), point[0], table, pos)[0]
+                    row["difference_vs_reference"] = share[0] - ref
+                    row["difference_vs_reference_ci"] = _interval(
+                        [caught(name, c, b[0], table, pos)[0]
+                         - caught(pair[0], c, b[0], table, pos)[0]
+                         for c, b in zip(counts_list, boot, strict=True)])
+                out.append(row)
+            return out
+
         any_counter = {
             "share_nonfailing_drives_alerted": point[0],
             "share_nonfailing_drives_alerted_ci": _interval([b[0] for b in boot]),
@@ -755,8 +781,8 @@ def weekly_alerts(val, test, D, models, horizon, rates, stride, targets, rounds,
             "share_failing_drives_alerted_ci": _interval([b[1] for b in boot]),
             "share_failing_drives_alerted_any_lead": point[2],
             "share_failing_drives_alerted_any_lead_ci": _interval([b[2] for b in boot]),
-            "matched": compare(maxima, failing, [point[0]]),
-            "matched_first_alert": compare(first, failing_any, [point[0]]),
+            "matched": at_zero(maxima, failing, 1),
+            "matched_first_alert": at_zero(first, failing_any, 2),
         }
     return {"stride_days": stride, "failing_drives_checked": int(failing.size),
             "any_critical_counter": any_counter,

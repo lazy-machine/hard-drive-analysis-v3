@@ -818,7 +818,7 @@ def _alerting(metrics, ref, labels) -> list[str]:
                  est(m["difference"], m.get("difference_ci"), 1, pct=True)
                  if "difference" in m else "-"]
                 for kind, key in (("last 30 days", "matched"), ("any lead", "matched_first_alert"))
-                for m in zero[key] if m["model"] in shown]
+                for m in zero[key]]
         lines += table(["failing drives counted", "model", "failing drives caught",
                         "difference vs the rule (paired)"], rows)
     lines += _alert_seed_range(weekly or {}, ref)
