@@ -31,7 +31,8 @@ MODELOS = {
 HORIZONTES = [7, 30, 90, 180, 365]
 # Horizonte é uma grandeza ordenada: um só matiz, do claro ao escuro, e um marcador por
 # horizonte, para que as curvas se distingam também sem cor.
-AZUIS = {7: "#86b6ef", 30: "#5598e7", 90: "#2a78d6", 180: "#184f95", 365: "#0d366b"}
+# Uma cor por horizonte, distinguíveis também em impressão (com os marcadores).
+AZUIS = {7: "#2a78d6", 30: "#1baf7a", 90: "#eda100", 180: "#eb6834", 365: "#7b3fb5"}
 MARCAS = {7: "o", 30: "s", 90: "^", 180: "D", 365: "v"}
 
 plt.rcParams.update({

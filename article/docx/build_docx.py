@@ -124,7 +124,7 @@ class Doc:
         return (f'<w:p><w:pPr><w:pStyle w:val="{style}"/>'
                 + ('<w:pageBreakBefore/>' if level == 1 else "")
                 + f'<w:spacing w:before="{0 if level == 1 else 240}" w:after="240"/>'
-                + ('<w:jc w:val="center"/>' if center else "")
+                + f'<w:jc w:val="{"center" if center else "left"}"/>'
                 + f'</w:pPr><w:bookmarkStart w:id="{self.bookmark}" w:name="{name}"/>{runs}'
                 f'<w:bookmarkEnd w:id="{self.bookmark}"/></w:p>')
 
@@ -353,7 +353,7 @@ def build(pages: dict) -> tuple[str, Doc, str]:
                 text_xml.append(para(inline(b, size=20), jc="left", first=0, before=60, after=240,
                                      keep_lines=True))
             elif in_refs:
-                text_xml.append(para(inline(b), jc="left", first=0, after=240))
+                text_xml.append(para(inline(b), jc="left", first=0, after=240, keep_lines=True))
             else:
                 text_xml.append(para(inline(b), first=709, after=120,
                                      jc="left" if "https://" in b else "both"))
