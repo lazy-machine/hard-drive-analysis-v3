@@ -82,32 +82,32 @@ Each variant against the reference (survival model, SMART + context). Gain = ref
 | 7 d | survival model, SMART + context (reference) | 0.905 [0.895, 0.914] |  |  |  |
 | 7 d | survival model, SMART without counters 5/187/188/197/198 | 0.799 [0.787, 0.813] | +0.106 [0.096, 0.115] | +0.0424 [0.0329, 0.0562] | 0% |
 | 7 d | survival model, context + usage counters | 0.655 [0.640, 0.668] | +0.250 [0.235, 0.262] | +0.0642 [0.0527, 0.0808] | 0% |
-| 7 d | survival model, SMART + context, weight power 0.75 | 0.907 [0.898, 0.915] | -0.002 [-0.005, 0.001] | +0.0003 [-0.0037, 0.0068] | 90% |
-| 7 d | survival model, SMART + context, weight power 1.0 | 0.902 [0.893, 0.911] | +0.003 [-0.001, 0.006] | +0.0121 [0.0056, 0.0209] | 8% |
+| 7 d | survival model, SMART + context, weight power 0.75 | 0.907 [0.897, 0.915] | -0.002 [-0.004, 0.000] | +0.0009 [-0.0029, 0.0068] | 96% |
+| 7 d | survival model, SMART + context, weight power 1.0 | 0.904 [0.894, 0.913] | +0.001 [-0.002, 0.005] | +0.0100 [0.0038, 0.0178] | 18% |
 | 7 d | survival model, SMART + context, recalibrated on the last year | 0.905 [0.895, 0.914] | 0.000 [0.000, 0.000] | 0.0000 [0.0000, 0.0000] | 100% |
 | 30 d | survival model, SMART + context (reference) | 0.877 [0.865, 0.886] |  |  |  |
 | 30 d | survival model, SMART without counters 5/187/188/197/198 | 0.770 [0.758, 0.784] | +0.106 [0.098, 0.114] | +0.0821 [0.0624, 0.1007] | 0% |
 | 30 d | survival model, context + usage counters | 0.654 [0.642, 0.666] | +0.222 [0.211, 0.236] | +0.1208 [0.1025, 0.1438] | 0% |
-| 30 d | survival model, SMART + context, weight power 0.75 | 0.880 [0.869, 0.888] | -0.003 [-0.006, -0.000] | +0.0065 [-0.0006, 0.0136] | 98% |
-| 30 d | survival model, SMART + context, weight power 1.0 | 0.876 [0.866, 0.884] | +0.001 [-0.002, 0.004] | +0.0215 [0.0110, 0.0314] | 32% |
+| 30 d | survival model, SMART + context, weight power 0.75 | 0.880 [0.868, 0.888] | -0.003 [-0.006, -0.000] | +0.0063 [-0.0008, 0.0142] | 100% |
+| 30 d | survival model, SMART + context, weight power 1.0 | 0.877 [0.866, 0.886] | -0.000 [-0.003, 0.003] | +0.0190 [0.0074, 0.0297] | 56% |
 | 30 d | survival model, SMART + context, recalibrated on the last year | 0.877 [0.865, 0.886] | -0.000 [-0.000, -0.000] | +0.0000 [0.0000, 0.0001] | 98% |
 | 90 d | survival model, SMART + context (reference) | 0.843 [0.832, 0.855] |  |  |  |
 | 90 d | survival model, SMART without counters 5/187/188/197/198 | 0.745 [0.730, 0.758] | +0.098 [0.090, 0.110] | +0.1236 [0.1020, 0.1505] | 0% |
 | 90 d | survival model, context + usage counters | 0.656 [0.644, 0.669] | +0.187 [0.175, 0.203] | +0.1748 [0.1512, 0.2029] | 0% |
-| 90 d | survival model, SMART + context, weight power 0.75 | 0.848 [0.837, 0.860] | -0.005 [-0.008, -0.002] | +0.0098 [0.0020, 0.0176] | 100% |
-| 90 d | survival model, SMART + context, weight power 1.0 | 0.844 [0.832, 0.856] | -0.001 [-0.004, 0.003] | +0.0210 [0.0090, 0.0308] | 57% |
+| 90 d | survival model, SMART + context, weight power 0.75 | 0.846 [0.835, 0.858] | -0.003 [-0.006, 0.000] | +0.0108 [0.0035, 0.0183] | 94% |
+| 90 d | survival model, SMART + context, weight power 1.0 | 0.845 [0.833, 0.857] | -0.002 [-0.005, 0.002] | +0.0187 [0.0069, 0.0282] | 82% |
 | 90 d | survival model, SMART + context, recalibrated on the last year | 0.843 [0.832, 0.855] | +0.000 [0.000, 0.000] | +0.0003 [0.0001, 0.0004] | 0% |
 | 180 d | survival model, SMART + context (reference) | 0.813 [0.801, 0.825] |  |  |  |
 | 180 d | survival model, SMART without counters 5/187/188/197/198 | 0.720 [0.707, 0.733] | +0.093 [0.084, 0.102] | +0.1401 [0.1137, 0.1671] | 0% |
 | 180 d | survival model, context + usage counters | 0.658 [0.644, 0.671] | +0.155 [0.143, 0.167] | +0.2030 [0.1799, 0.2308] | 0% |
-| 180 d | survival model, SMART + context, weight power 0.75 | 0.815 [0.804, 0.827] | -0.002 [-0.005, 0.002] | +0.0186 [0.0063, 0.0313] | 80% |
-| 180 d | survival model, SMART + context, weight power 1.0 | 0.811 [0.799, 0.823] | +0.002 [-0.002, 0.006] | +0.0321 [0.0198, 0.0435] | 14% |
+| 180 d | survival model, SMART + context, weight power 0.75 | 0.813 [0.802, 0.825] | -0.000 [-0.004, 0.003] | +0.0193 [0.0071, 0.0321] | 52% |
+| 180 d | survival model, SMART + context, weight power 1.0 | 0.812 [0.800, 0.824] | +0.001 [-0.003, 0.005] | +0.0303 [0.0179, 0.0421] | 32% |
 | 180 d | survival model, SMART + context, recalibrated on the last year | 0.813 [0.801, 0.825] | -0.000 [-0.000, -0.000] | +0.0001 [0.0001, 0.0002] | 100% |
 | 365 d | survival model, SMART + context (reference) | 0.787 [0.777, 0.801] |  |  |  |
 | 365 d | survival model, SMART without counters 5/187/188/197/198 | 0.712 [0.699, 0.728] | +0.075 [0.067, 0.084] | +0.1702 [0.1407, 0.1928] | 0% |
 | 365 d | survival model, context + usage counters | 0.664 [0.652, 0.679] | +0.123 [0.110, 0.135] | +0.2652 [0.2424, 0.2916] | 0% |
-| 365 d | survival model, SMART + context, weight power 0.75 | 0.789 [0.778, 0.802] | -0.002 [-0.006, 0.002] | +0.0149 [-0.0007, 0.0313] | 84% |
-| 365 d | survival model, SMART + context, weight power 1.0 | 0.786 [0.774, 0.800] | +0.001 [-0.003, 0.006] | +0.0321 [0.0173, 0.0463] | 32% |
+| 365 d | survival model, SMART + context, weight power 0.75 | 0.787 [0.776, 0.800] | +0.000 [-0.003, 0.004] | +0.0152 [0.0006, 0.0308] | 47% |
+| 365 d | survival model, SMART + context, weight power 1.0 | 0.787 [0.775, 0.801] | -0.000 [-0.004, 0.004] | +0.0304 [0.0154, 0.0453] | 55% |
 | 365 d | survival model, SMART + context, recalibrated on the last year | 0.787 [0.777, 0.801] | -0.000 [-0.000, -0.000] | -0.0004 [-0.0008, -0.0001] | 100% |
 
 ## Where the signal comes from
@@ -194,10 +194,10 @@ Concordance between each model's risk score and the actual time to failure; 0.5 
 | survival model, SMART without counters 5/187/188/197/198 | p30 | 0.689 | 0.685 |
 | survival model, context + usage counters | -rmst_days | 0.630 [0.609, 0.656] | 0.632 [0.610, 0.657] |
 | survival model, context + usage counters | p30 | 0.633 | 0.634 |
-| survival model, SMART + context, weight power 0.75 | -rmst_days | 0.767 [0.747, 0.783] | 0.760 [0.741, 0.776] |
-| survival model, SMART + context, weight power 0.75 | p30 | 0.786 | 0.782 |
-| survival model, SMART + context, weight power 1.0 | -rmst_days | 0.764 [0.742, 0.780] | 0.757 [0.736, 0.775] |
-| survival model, SMART + context, weight power 1.0 | p30 | 0.782 | 0.777 |
+| survival model, SMART + context, weight power 0.75 | -rmst_days | 0.764 [0.744, 0.780] | 0.757 [0.738, 0.773] |
+| survival model, SMART + context, weight power 0.75 | p30 | 0.782 | 0.777 |
+| survival model, SMART + context, weight power 1.0 | -rmst_days | 0.766 [0.744, 0.782] | 0.759 [0.738, 0.777] |
+| survival model, SMART + context, weight power 1.0 | p30 | 0.783 | 0.778 |
 | survival model, SMART + context, recalibrated on the last year | -rmst_days | 0.762 [0.739, 0.780] | 0.756 [0.733, 0.774] |
 | survival model, SMART + context, recalibrated on the last year | p30 | 0.771 | 0.766 |
 
@@ -213,8 +213,8 @@ From each snapshot the survival model gives a curve: the day by which the failur
 | survival model, context only (no SMART) | 3.7% [2.0%, 5.8%] [4.6%] (target 10%, 3112 snapshots) | n/a [n/a] [n/a] (target 50%, 0 snapshots) | n/a [n/a] [n/a] (target 90%, 0 snapshots) |
 | survival model, SMART without counters 5/187/188/197/198 | 6.1% [5.2%, 7.3%] [7.5%] (target 10%, 52025 snapshots) | 24.3% [15.5%, 48.5%] [26.7%] (target 50%, 8644 snapshots) | 14.2% [5.1%, 64.6%] [22.0%] (target 90%, 1790 snapshots) |
 | survival model, context + usage counters | 3.6% [2.6%, 4.7%] [4.5%] (target 10%, 13345 snapshots) | 100.0% [100.0%, 100.0%] [100.0%] (target 50%, 24 snapshots) | n/a [n/a] [n/a] (target 90%, 0 snapshots) |
-| survival model, SMART + context, weight power 0.75 | 6.1% [5.4%, 7.0%] [7.1%] (target 10%, 113164 snapshots) | 28.9% [23.7%, 36.6%] [32.6%] (target 50%, 48153 snapshots) | 71.9% [64.1%, 81.0%] [77.9%] (target 90%, 10899 snapshots) |
-| survival model, SMART + context, weight power 1.0 | 6.8% [5.9%, 7.9%] [7.7%] (target 10%, 106277 snapshots) | 24.0% [19.6%, 31.5%] [27.2%] (target 50%, 46744 snapshots) | 35.5% [26.0%, 52.3%] [44.5%] (target 90%, 17215 snapshots) |
+| survival model, SMART + context, weight power 0.75 | 6.1% [5.4%, 7.1%] [7.2%] (target 10%, 112877 snapshots) | 29.2% [24.1%, 37.2%] [32.9%] (target 50%, 47278 snapshots) | 70.2% [62.3%, 80.3%] [75.9%] (target 90%, 10616 snapshots) |
+| survival model, SMART + context, weight power 1.0 | 6.6% [5.8%, 7.7%] [7.6%] (target 10%, 106979 snapshots) | 24.3% [19.8%, 31.7%] [27.6%] (target 50%, 47603 snapshots) | 36.7% [26.5%, 54.8%] [45.5%] (target 90%, 17337 snapshots) |
 | survival model, SMART + context, recalibrated on the last year | 5.0% [4.5%, 5.6%] [5.8%] (target 10%, 118969 snapshots) | 28.2% [23.8%, 34.4%] [32.3%] (target 50%, 53022 snapshots) | 70.6% [64.0%, 78.2%] [75.1%] (target 90%, 12689 snapshots) |
 
 **How early is a failure visible?** Snapshots of drives that do fail within a year, by how far away the failure actually was. A median within a year means the model already expects the drive to die within a year. The absolute error is over the failing snapshots whose median is within a year (count in brackets):
@@ -225,8 +225,8 @@ From each snapshot the survival model gives a curve: the day by which the failur
 | survival model, context only (no SMART) | 0.0% [0.0%, 0.0%] | n/a [n/a] (0 snapshots) | 0.0% | 100.0% |
 | survival model, SMART without counters 5/187/188/197/198 | 2.8% [2.2%, 3.3%] | 100 [91, 112] (8316 snapshots) | 0.1% | 100.0% |
 | survival model, context + usage counters | 0.0% [0.0%, 0.0%] | 112 [112, 112] (24 snapshots) | 0.0% | 100.0% |
-| survival model, SMART + context, weight power 0.75 | 16.4% [15.2%, 17.6%] | 107 [102, 110] (46338 snapshots) | 0.5% | 99.8% |
-| survival model, SMART + context, weight power 1.0 | 16.0% [14.8%, 17.6%] | 97 [93, 100] (44634 snapshots) | 0.6% | 99.7% |
+| survival model, SMART + context, weight power 0.75 | 16.0% [14.9%, 17.2%] | 107 [102, 110] (45547 snapshots) | 0.5% | 99.8% |
+| survival model, SMART + context, weight power 1.0 | 16.4% [15.1%, 17.9%] | 98 [94, 101] (45476 snapshots) | 0.6% | 99.7% |
 | survival model, SMART + context, recalibrated on the last year | 18.1% [16.9%, 19.4%] | 102 [98, 105] (51101 snapshots) | 0.6% | 99.8% |
 
 By actual time to failure (survival model, SMART + context). Shares are of the failing drives' snapshots in each bucket:
@@ -367,6 +367,17 @@ At the same share of non-failing drives alerted (each model's threshold set on t
 | 4.87% | rule: critical SMART counters (5, 187, 197, 198) | 70.8% [67.4%, 74.0%] | - |
 | 5.00% | survival model, SMART + context, recalibrated on the last year | 75.5% [73.2%, 77.6%] | 4.6% [2.3%, 7.4%] |
 
+Share of the alerted non-failing quarter-units that belong to drives failing later, and the comparison with those units left out (5139 units, 1.05% of the negative weight):
+
+| non-failing units alerted | model | alerts on later failures | failing drives caught without them | difference vs the rule |
+|---|---|---|---|---|
+| 1.0% | survival model, SMART + context | 20.0% | 59.5% [57.3%, 62.1%] | 14.1% [10.3%, 17.6%] |
+| 1.0% | rule: critical SMART counters (5, 187, 197, 198) | 14.9% | 45.4% [41.0%, 49.3%] | - |
+| 2.5% | survival model, SMART + context | 13.4% | 70.4% [67.9%, 73.4%] | 9.2% [6.9%, 11.7%] |
+| 2.5% | rule: critical SMART counters (5, 187, 197, 198) | 11.4% | 61.2% [57.4%, 64.4%] | - |
+| 5.0% | survival model, SMART + context | 8.1% | 75.7% [73.6%, 77.8%] | 3.5% [0.5%, 6.4%] |
+| 5.0% | rule: critical SMART counters (5, 187, 197, 198) | 8.2% | 72.1% [68.8%, 75.6%] | - |
+
 **Per drive and year.** The unit is a drive in one year: a non-failing unit (13850) is alerted if a weekly check in that year fires; a failing drive (1766) is caught on its weekly checks in its last 30 days. Thresholds set on test for each share:
 
 | non-failing units alerted | model | failing drives caught | difference vs the rule (paired) |
@@ -387,7 +398,18 @@ At the same share of non-failing drives alerted (each model's threshold set on t
 | 4.81% | rule: critical SMART counters (5, 187, 197, 198) | 68.7% [65.9%, 72.1%] | - |
 | 5.00% | survival model, SMART + context, recalibrated on the last year | 69.3% [67.0%, 72.6%] | 0.6% [-1.3%, 3.1%] |
 
-**Any critical counter above zero** (the operator's criterion, the rule's score > 0): 6.9% [6.3%, 7.4%] of non-failing drives alerted; failing drives caught 75.3% [73.1%, 77.3%] (last 30 days) and 75.8% [73.7%, 77.7%] (any lead). Models at the same share of non-failing drives alerted:
+Share of the alerted non-failing year-units that belong to drives failing later, and the comparison with those units left out (721 units, 0.55% of the negative weight):
+
+| non-failing units alerted | model | alerts on later failures | failing drives caught without them | difference vs the rule |
+|---|---|---|---|---|
+| 1.0% | survival model, SMART + context | 10.5% | 47.3% [43.1%, 51.0%] | 8.8% [3.3%, 10.8%] |
+| 1.0% | rule: critical SMART counters (5, 187, 197, 198) | 8.3% | 38.6% [35.8%, 44.5%] | - |
+| 2.5% | survival model, SMART + context | 7.3% | 61.2% [58.8%, 64.9%] | 3.9% [0.8%, 7.3%] |
+| 2.5% | rule: critical SMART counters (5, 187, 197, 198) | 6.2% | 57.3% [53.2%, 61.9%] | - |
+| 5.0% | survival model, SMART + context | 4.6% | 70.4% [67.7%, 73.3%] | 1.6% [-1.9%, 3.4%] |
+| 5.0% | rule: critical SMART counters (5, 187, 197, 198) | 4.8% | 68.7% [66.8%, 72.9%] | - |
+
+**Any critical counter above zero** (a simplified proxy of the operator's use, the rule's score > 0): 6.9% [6.3%, 7.4%] of non-failing drives alerted; failing drives caught 75.3% [73.1%, 77.3%] (last 30 days) and 75.8% [73.7%, 77.7%] (any lead). Models at the same share of non-failing drives alerted:
 
 | failing drives counted | model | failing drives caught | difference vs the rule (paired) |
 |---|---|---|---|
@@ -396,8 +418,8 @@ At the same share of non-failing drives alerted (each model's threshold set on t
 | last 30 days | survival model, context only (no SMART) | 5.4% | -69.9% [-72.3%, -67.3%] |
 | last 30 days | survival model, SMART + context | 68.8% | -6.5% [-7.9%, -4.6%] |
 | last 30 days | survival model, SMART + context, recalibrated on the last year | 68.8% | -6.5% [-7.9%, -4.6%] |
-| last 30 days | survival model, SMART + context, weight power 0.75 | 75.5% | 0.3% [-0.8%, 1.1%] |
-| last 30 days | survival model, SMART + context, weight power 1.0 | 75.1% | -0.1% [-1.4%, 0.8%] |
+| last 30 days | survival model, SMART + context, weight power 0.75 | 74.7% | -0.5% [-1.5%, 0.4%] |
+| last 30 days | survival model, SMART + context, weight power 1.0 | 75.1% | -0.2% [-1.4%, 0.7%] |
 | last 30 days | survival model, context + usage counters | 8.1% | -67.2% [-69.9%, -64.5%] |
 | last 30 days | binary_30d_seed1 | 70.8% | -4.4% [-5.9%, -3.1%] |
 | last 30 days | binary_30d_seed2 | 70.7% | -4.6% [-5.9%, -3.2%] |
@@ -412,8 +434,8 @@ At the same share of non-failing drives alerted (each model's threshold set on t
 | any lead | survival model, context only (no SMART) | 7.2% | -68.6% [-72.0%, -65.9%] |
 | any lead | survival model, SMART + context | 74.1% | -1.7% [-2.8%, -0.5%] |
 | any lead | survival model, SMART + context, recalibrated on the last year | 74.1% | -1.7% [-2.8%, -0.5%] |
-| any lead | survival model, SMART + context, weight power 0.75 | 77.2% | 1.4% [0.6%, 2.1%] |
-| any lead | survival model, SMART + context, weight power 1.0 | 76.9% | 1.2% [0.1%, 2.0%] |
+| any lead | survival model, SMART + context, weight power 0.75 | 76.7% | 1.0% [0.0%, 1.7%] |
+| any lead | survival model, SMART + context, weight power 1.0 | 76.9% | 1.1% [0.1%, 1.9%] |
 | any lead | survival model, context + usage counters | 9.0% | -66.7% [-69.1%, -63.9%] |
 | any lead | binary_30d_seed1 | 75.4% | -0.4% [-1.7%, 0.6%] |
 | any lead | binary_30d_seed2 | 74.9% | -0.9% [-1.9%, 0.3%] |
@@ -598,8 +620,8 @@ ROC-AUC and PR-AUC on the validation drives (2016-2023, known-status snapshots),
 | rule: critical SMART counters (5, 187, 197, 198) | 0.8002 / 0.0307 | 0.7614 / 0.0620 | 0.7190 / 0.0977 | 0.6866 / 0.1245 | 0.6524 / 0.1532 |
 | survival model, SMART without counters 5/187/188/197/198 | 0.8039 / 0.0281 | 0.7831 / 0.0353 | 0.7704 / 0.0459 | 0.7633 / 0.0619 | 0.7581 / 0.0967 |
 | survival model, context + usage counters | 0.7292 / 0.0018 | 0.7307 / 0.0062 | 0.7354 / 0.0167 | 0.7372 / 0.0302 | 0.7404 / 0.0636 |
-| survival model, SMART + context, weight power 0.75 | 0.8832 / 0.0972 | 0.8614 / 0.1512 | 0.8381 / 0.1901 | 0.8227 / 0.2142 | 0.8036 / 0.2489 |
-| survival model, SMART + context, weight power 1.0 | 0.8807 / 0.0856 | 0.8591 / 0.1429 | 0.8362 / 0.1832 | 0.8210 / 0.2036 | 0.8029 / 0.2395 |
+| survival model, SMART + context, weight power 0.75 | 0.8847 / 0.0972 | 0.8627 / 0.1509 | 0.8389 / 0.1896 | 0.8232 / 0.2141 | 0.8045 / 0.2484 |
+| survival model, SMART + context, weight power 1.0 | 0.8816 / 0.0893 | 0.8602 / 0.1448 | 0.8371 / 0.1837 | 0.8217 / 0.2040 | 0.8035 / 0.2395 |
 | survival model, SMART + context, recalibrated on the last year | 0.8886 / 0.1054 | 0.8659 / 0.1545 | 0.8409 / 0.1883 | 0.8243 / 0.2144 | 0.8060 / 0.2511 |
 | binary_30d_seed1 | - | 0.8654 / 0.1613 | - | - | - |
 | binary_30d_seed2 | - | 0.8675 / 0.1649 | - | - | - |

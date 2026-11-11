@@ -168,6 +168,8 @@ def test_windowed_alerts_count_drive_quarters():
     (r,) = out["matched"]
     assert r["nonfailing_share"] == 0.25       # only N1 in Q1 alerts
     assert r["share_failing_drives_alerted"] == 1.0
+    assert out["negative_units_of_drives_failing_later"] == 0
+    assert len(out["matched_without_later_failures"]) == 1
 
 
 def test_validation_discrimination_ranks_known_status_snapshots():

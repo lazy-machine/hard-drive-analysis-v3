@@ -803,12 +803,33 @@ def _alerting(metrics, ref, labels) -> list[str]:
                          if "difference" in m else "-"]
                         for m in sorted(matched, key=lambda m: (m["target_nonfailing_share"],
                                                                 _rank(m["model"])))])
+        later = win.get("matched_without_later_failures") or []
+        if later:
+            lines += ["", f"Share of the alerted non-failing {name}-units that belong to drives "
+                      "failing later, and the comparison with those units left out "
+                      f"({win.get('negative_units_of_drives_failing_later', '?')} units, "
+                      f"{_pct(win.get('negative_weight_share_of_drives_failing_later', 0), 2)} "
+                      "of the negative weight):", ""]
+            full = {(m["model"], m["target_nonfailing_share"]): m for m in matched}
+            lines += table(["non-failing units alerted", "model", "alerts on later failures",
+                            "failing drives caught without them", "difference vs the rule"],
+                           [[_pct(m["target_nonfailing_share"], 1), _label(m["model"], labels),
+                             _pct(full[m["model"], m["target_nonfailing_share"]]
+                                  ["alerted_negative_share_of_drives_failing_later"], 1)
+                             if (m["model"], m["target_nonfailing_share"]) in full else "-",
+                             est(m["share_failing_drives_alerted"],
+                                 m.get("share_failing_drives_alerted_ci"), 1, pct=True),
+                             est(m["difference"], m.get("difference_ci"), 1, pct=True)
+                             if "difference" in m else "-"]
+                            for m in sorted(later, key=lambda m: (m["target_nonfailing_share"],
+                                                                  _rank(m["model"])))])
     zero = (weekly or {}).get("any_critical_counter")
     if zero:
         def pt(key):
             return est(zero[key], zero.get(f"{key}_ci"), 1, pct=True)
 
-        lines += ["", "**Any critical counter above zero** (the operator's criterion, the rule's "
+        lines += ["", "**Any critical counter above zero** (a simplified proxy of the operator's "
+                  "use, the rule's "
                   f"score > 0): {pt('share_nonfailing_drives_alerted')} of non-failing drives "
                   f"alerted; failing drives caught {pt('share_failing_drives_alerted')} (last "
                   f"30 days) and {pt('share_failing_drives_alerted_any_lead')} (any lead). "

@@ -860,35 +860,51 @@ def windowed_alerts(test, D, models, horizon, stride, targets, rounds, seed, fre
         np.maximum.at(fmax, D.codes[pos_rows], s[pos_rows])
         maxima[name] = (qmax, fmax[pos_drive])
 
-    def caught(name, c, target):
+    # negative units of drives that fail after the window: an early alert on them counts as
+    # a false alarm. `keep` drops them, to measure how much they move the comparison.
+    later = D.fails[neg_drive]
+
+    def caught(name, c, target, keep=None):
         qmax, fmax = maxima[name]
         qw, fw = (c * dw)[neg_drive], c[pos_drive].astype(float)
+        if keep is not None:
+            qw = qw * keep
         t = weighted_quantile_threshold(qmax, qw, target)
         return (float(np.sum(fw * (fmax >= t)) / fw.sum()),
-                float(np.sum(qw * (qmax >= t)) / qw.sum()))
+                float(np.sum(qw * (qmax >= t)) / qw.sum()),
+                float(np.sum((qw * later) * (qmax >= t)) / max(np.sum(qw * (qmax >= t)), 1e-12)))
 
-    rows = []
-    for target in targets:
-        boot = {n: [caught(n, c, target) for c in counts_list] for n in maxima}
-        for name in maxima:
-            share, achieved = caught(name, np.ones(D.n), target)
-            row = {"window": freq, "model": name, "target_nonfailing_share": target,
-                   "nonfailing_share": achieved, "share_failing_drives_alerted": share,
-                   "share_failing_drives_alerted_ci": _interval([b[0] for b in boot[name]])}
-            if name != pair[1] and pair[1] in maxima:
-                row["versus"] = pair[1]
-                row["difference"] = share - caught(pair[1], np.ones(D.n), target)[0]
-                row["difference_ci"] = _interval([a[0] - b[0] for a, b in
-                                                  zip(boot[name], boot[pair[1]], strict=True)])
-            if name not in pair and pair[0] in maxima:
-                row["difference_vs_reference"] = (share
-                                                  - caught(pair[0], np.ones(D.n), target)[0])
-                row["difference_vs_reference_ci"] = _interval(
-                    [a[0] - b[0] for a, b in zip(boot[name], boot[pair[0]], strict=True)])
-            rows.append(row)
+    def matched_rows(keep=None, names=None):
+        names = list(maxima) if names is None else [n for n in dict.fromkeys(names) if n in maxima]
+        rows = []
+        for target in targets:
+            boot = {n: [caught(n, c, target, keep) for c in counts_list] for n in names}
+            for name in names:
+                share, achieved, later_share = caught(name, np.ones(D.n), target, keep)
+                row = {"window": freq, "model": name, "target_nonfailing_share": target,
+                       "nonfailing_share": achieved, "share_failing_drives_alerted": share,
+                       "share_failing_drives_alerted_ci": _interval([b[0] for b in boot[name]]),
+                       "alerted_negative_share_of_drives_failing_later": later_share}
+                if name != pair[1] and pair[1] in boot:
+                    row["versus"] = pair[1]
+                    row["difference"] = (share
+                                         - caught(pair[1], np.ones(D.n), target, keep)[0])
+                    row["difference_ci"] = _interval(
+                        [a[0] - b[0] for a, b in zip(boot[name], boot[pair[1]], strict=True)])
+                if name not in pair and pair[0] in boot:
+                    row["difference_vs_reference"] = (
+                        share - caught(pair[0], np.ones(D.n), target, keep)[0])
+                    row["difference_vs_reference_ci"] = _interval(
+                        [a[0] - b[0] for a, b in zip(boot[name], boot[pair[0]], strict=True)])
+                rows.append(row)
+        return rows
+
     return {"window": freq, "negative_units": int(len(neg_units)),
-            "negative_units_of_drives_failing_later": int(D.fails[neg_drive].sum()),
-            "positive_units": int(pos_drive.size), "matched": rows}
+            "negative_units_of_drives_failing_later": int(later.sum()),
+            "negative_weight_share_of_drives_failing_later": float(
+                np.sum(dw[neg_drive] * later) / np.sum(dw[neg_drive])),
+            "positive_units": int(pos_drive.size), "matched": matched_rows(),
+            "matched_without_later_failures": matched_rows((~later).astype(float), pair)}
 
 
 def concordance_table(test, models, cap, rounds, seed, tau, binary_horizon, log):
