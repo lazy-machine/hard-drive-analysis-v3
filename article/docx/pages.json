@@ -35,17 +35,18 @@
   "Figura 2 – ROC-AUC por horizonte no conjunto de teste, com intervalos de confiança de 95%": 23,
   "Tabela 3 – Raridade do evento e precisão média do modelo principal, por horizonte e por estimador": 23,
   "Tabela 4 – ROC-AUC em 30 dias por modelo e por recorte do conjunto de teste": 24,
-  "Tabela 5 – Desempenho dos alertas por retrato no conjunto de teste, por orçamento de falsos alarmes": 25,
+  "Tabela 5 – Síntese da comparação entre o modelo e a regra dos contadores críticos, por forma de contagem dos alertas": 25,
+  "Tabela 6 – Desempenho dos alertas por retrato no conjunto de teste, por orçamento de falsos alarmes": 26,
   "Figura 3 – Proporção de retratos de discos que falham com alerta, por dias até a falha (limiar do orçamento de 1%)": 27,
-  "Tabela 6 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente": 27,
-  "Tabela 7 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem": 28,
-  "Tabela 8 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência": 29,
-  "Tabela 9 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha": 30,
+  "Tabela 7 – Alertas por disco no conjunto de teste, com todos os discos avaliados semanalmente": 28,
+  "Tabela 8 – Discos que falham alertados com a mesma proporção de discos sem falha alertados, por janela de contagem": 28,
+  "Tabela 9 – Discos que falham alertados no período de teste, considerando o primeiro alerta de qualquer antecedência": 29,
+  "Tabela 10 – Retratos de discos que falham com mediana prevista dentro de um ano, por distância real até a falha": 31,
   "Figura 4 – Calibração por decil de risco no conjunto de teste, por horizonte (escalas logarítmicas)": 32,
-  "Tabela 10 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 33,
-  "Tabela 11 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 34,
+  "Tabela 11 – Risco de falha em 30 dias previsto e observado, por conjunto e ano": 33,
+  "Tabela 12 – Razão entre risco previsto e observado em 30 dias no teste, por grupo de discos": 34,
   "Quadro 3 – Versões do pipeline avaliadas no conjunto de teste": 44,
-  "Tabela 12 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes e com expoente 0,75": 46
+  "Tabela 13 – Diferença entre o modelo e a regra dos contadores críticos nos alertas por disco, nas cinco sementes e com expoente 0,75": 46
  },
  "total_pages": 46
 }
